@@ -1,0 +1,201 @@
+import { Input } from "@/modules/common/ui/input";
+import { Text } from "@/modules/common/ui/text";
+import Image from "next/image";
+import React, { useState } from "react";
+import { AnimatePresence, motion, Variants } from "framer-motion";
+import useGroupStore, { MemberType } from "@/modules/store/group-store";
+import { members } from "@/modules/assets/DUMMY";
+import { Button } from "@/modules/common/ui/button";
+import { X } from "lucide-react";
+
+const memberVariants: Variants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { duration: 0.5, type: "spring", stiffness: 300, damping: 20 },
+  },
+  exit: { y: 70, opacity: 0 },
+};
+
+const listItemVariants: Variants = {
+  hidden: { x: -150, opacity: 0 },
+  visible: {
+    x: 0,
+    opacity: 1,
+    transition: { duration: 0.1 },
+  },
+  exit: { opacity: 0 },
+};
+
+const inputVariants: Variants = {
+  hidden: { y: -10, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+      type: "spring",
+      stiffness: 300,
+      damping: 20,
+      delay: 0.2,
+    },
+  },
+  exit: { y: 70, opacity: 0 },
+};
+
+export default function AddMember() {
+  const [searchMember, setSearchMember] = useState<string>("");
+
+  const membersList = useGroupStore((state) => state.members);
+
+  const searchedMembers = searchMember
+    ? members.filter((member) =>
+        member.email.toLowerCase().includes(searchMember.toLowerCase())
+      )
+    : [];
+
+  return (
+    <div className='relative flex flex-col space-y-2'>
+      <motion.div variants={inputVariants} initial='hidden' animate='visible'>
+        <Input
+          onChange={(e) => setSearchMember(e.target.value)}
+          placeholder='Search member by email...'
+          className='placeholder:text-xs'
+        />
+      </motion.div>
+
+      {searchMember !== "" && (
+        <motion.div
+          variants={memberVariants}
+          initial='hidden'
+          animate='visible'
+          className='absolute top-10 z-30 w-full h-max max-h-40 overflow-y-auto flex flex-col space-y-1 bg-background rounded-b-md shadow-lg pb-2 overflow-hidden'>
+          {searchedMembers?.map((member) => (
+            <MemberItem
+              key={member.id + member.email}
+              setSearchedMembers={setSearchMember}
+              name={member.name}
+              email={member.email}
+              image={member.image}
+              id={member.id}
+            />
+          ))}
+
+          {searchMember !== "" && searchedMembers?.length === 0 && (
+            <div className='w-full grid place-items-center min-h-8'>
+              <Text variant={"p"} className='text-center italic text-foreground/60'>
+                Email not found
+              </Text>
+            </div>
+          )}
+        </motion.div>
+      )}
+
+      <AnimatePresence mode='wait'>
+        {membersList.length !== 0 && (
+          <div className='flex flex-col overflow-hidden max-h-64 overflow-y-auto'>
+            {membersList.map((member) => (
+              <MemberListItem
+                key={member.id + member.email}
+                name={member.name}
+                email={member.email}
+                image={member.image}
+                id={member.id}
+              />
+            ))}
+          </div>
+        )}
+      </AnimatePresence>
+
+      {membersList.length === 0 && (
+        <div className='w-full grid place-items-center h-40'>
+          <Text variant={"p"} className="italic text-foreground/60">Choose your team members</Text>
+        </div>
+      )}
+    </div>
+  );
+}
+
+interface MemberItemProps extends MemberType {
+  setSearchedMembers: (members: string) => void;
+}
+
+function MemberItem({
+  name,
+  email,
+  image,
+  id,
+  setSearchedMembers,
+}: MemberItemProps) {
+  const setMembers = useGroupStore((state) => state.setMembers);
+  const members = useGroupStore((state) => state.members);
+
+  const handleSelect = () => {
+    if (members.find((member) => member.id === id)) return;
+    setSearchedMembers("");
+    setMembers({ name, email, image, id });
+  };
+
+  return (
+    <div
+      onClick={handleSelect}
+      id={id}
+      className='flex items-center space-x-2 hover:bg-foreground/10 active:bg-foreground/15 transition-all duration-300 py-1 px-2 cursor-pointer'>
+      <div className='relative w-6 aspect-square rounded-full overflow-hidden flex items-center justify-center'>
+        <Image
+          src={`/images/${image}`}
+          alt={"profile" + name}
+          fill
+          className='object-cover'
+        />
+      </div>
+
+      <div className=''>
+        <Text variant={"p"} className=''>
+          {email}
+        </Text>
+      </div>
+    </div>
+  );
+}
+
+function MemberListItem({ name, email, image, id }: MemberType) {
+  const deleteItem = useGroupStore((state) => state.deleteMember);
+
+  return (
+    <motion.div
+      variants={listItemVariants}
+      initial='hidden'
+      animate='visible'
+      exit='exit'
+      className='flex items-center justify-between hover:bg-foreground/10 transition-all duration-300 py-1 px-2'>
+      <div className='flex space-x-2 items-center'>
+        <div className='relative w-6 aspect-square rounded-full overflow-hidden flex items-center justify-center'>
+          <Image
+            src={`/images/${image}`}
+            alt={"profile" + name}
+            fill
+            className='object-cover'
+          />
+        </div>
+
+        <div className=''>
+          <Text variant={"p"} className=''>
+            {email}
+          </Text>
+        </div>
+      </div>
+
+      <div>
+        <Button
+          onClick={() => deleteItem(id)}
+          variant={"ghost"}
+          size={"sm"}
+          className='bg-transparent hover:bg-transparent'>
+          <X strokeWidth={1.5} size={20} />
+        </Button>
+      </div>
+    </motion.div>
+  );
+}

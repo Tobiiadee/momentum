@@ -1,5 +1,9 @@
+"use client";
+
 import React from "react";
 import { ThemeProvider } from "./theme-provider";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 export default function ClientProvider({
   children,
@@ -8,7 +12,9 @@ export default function ClientProvider({
 }) {
   return (
     <>
-      <ThemeProvider defaultTheme='light'>{children}</ThemeProvider>
+      <ThemeProvider defaultTheme='light'>
+        <DndProvider backend={HTML5Backend}>{children}</DndProvider>
+      </ThemeProvider>
     </>
   );
 }

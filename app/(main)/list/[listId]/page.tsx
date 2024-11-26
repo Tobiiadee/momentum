@@ -1,14 +1,14 @@
 "use client";
 
-import { Text } from "@/modules/common/ui/text";
-import { useParams } from "next/navigation";
+import ListMain from "@/modules/common/components/desktop/main/list-main";
+// import { useParams } from "next/navigation";
 import React from "react";
 
 export default function DynamicList() {
-  const params = useParams();
+  // const params = useParams();
   return (
     <div>
-      <Text variant={"h3"}>Hello {params.listId}</Text>
+      <ListMain/>
     </div>
   );
 }

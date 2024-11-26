@@ -1,10 +1,12 @@
-import { Text } from '@/modules/common/ui/text'
-import React from 'react'
+import CompletedMain from "@/modules/common/components/desktop/main/completed-main";
+// import NoTask from "@/modules/common/components/shared/no-task";
+import React from "react";
 
 export default function Completed() {
   return (
     <div>
-      <Text variant={"h3"}>Helle Completed</Text>
+      {/* <NoTask module={"completed"} /> */}
+      <CompletedMain />
     </div>
-  )
+  );
 }

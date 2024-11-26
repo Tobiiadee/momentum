@@ -22,9 +22,9 @@ const variants: Variants = {
 };
 
 const groupNameVariants: Variants = {
-  hidden: { y: -20, opacity: 0 },
+  hidden: { x: -50, opacity: 0 },
   visible: {
-    y: 0,
+    x: 0,
     opacity: 1,
     transition: { duration: 1, type: "spring", stiffness: 300, damping: 20 },
   },
@@ -83,7 +83,7 @@ export default function NewGroup() {
       animate='visible'
       exit={"exit"}
       variants={variants}
-      className='absolute bottom-28 left-[22rem] z-50 w-[22rem] h-max min-h-72 flex flex-col justify-between shadow-lg bg-background rounded-md px-3 py-2'>
+      className='absolute bottom-28 left-[22rem] z-50 w-[22rem] h-max min-h-72 flex flex-col justify-between shadow-lg bg-background rounded-md px-3 py-2 overflow-hidden'>
       <div className='flex flex-col space-y-2'>
         {isGroupName && (
           <motion.div

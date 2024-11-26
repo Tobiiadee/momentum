@@ -1,10 +1,12 @@
-import { Text } from '@/modules/common/ui/text'
-import React from 'react'
+import PersonalMain from "@/modules/common/components/desktop/main/personal-main";
+// import NoTask from "@/modules/common/components/shared/no-task";
+import React from "react";
 
 export default function Personal() {
   return (
     <div>
-      <Text variant={"h3"}>Hello Personal</Text>
+      {/* <NoTask module={"personal"} /> */}
+      <PersonalMain/>
     </div>
-  )
+  );
 }

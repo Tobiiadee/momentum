@@ -1,6 +1,5 @@
 "use client";
 
-import { Checkbox } from "@/modules/common/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { Text } from "@/modules/common/ui/text";
 import { usePathname, useRouter } from "next/navigation";

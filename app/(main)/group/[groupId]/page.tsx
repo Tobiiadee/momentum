@@ -1,15 +1,15 @@
 "use client";
 
-import { Text } from "@/modules/common/ui/text";
-import { useParams } from "next/navigation";
+import GroupMain from "@/modules/common/components/desktop/main/group-main";
+// import { useParams } from "next/navigation";
 import React from "react";
 
-export default function GroupMain() {
-  const params = useParams();
+export default function DynamicGroup() {
+  // const params = useParams();
 
   return (
     <div>
-      <Text variant={"h3"}>Hello {params.groupId}</Text>
+      <GroupMain />
     </div>
   );
 }

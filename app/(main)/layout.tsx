@@ -10,7 +10,7 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className='relative'>
+    <div className='relative overflow-hidden'>
       <SideBar />
       <CreateNewTask />
       <Wrapper className='flex flex-col space-y-5'>

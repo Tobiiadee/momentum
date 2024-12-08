@@ -3,7 +3,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/modules/common/ui/accordion";
-import { useDrag } from "react-dnd";
+import { ConnectDragSource, useDrag } from "react-dnd";
 import { motion, Variants } from "framer-motion";
 import { Checkbox } from "../../ui/checkbox";
 import { Text } from "../../ui/text";
@@ -16,6 +16,7 @@ import {
 } from "@/modules/common/ui/dropdown-menu";
 import { Button } from "../../ui/button";
 import { cn } from "@/lib/utils";
+// import { mergeRefs } from "react-merge-refs";
 
 const accordionVariants: Variants = {
   hidden: { opacity: 0, x: -200 },
@@ -39,7 +40,9 @@ export default function TaskItem({
   category,
   completed,
 }: TaskItemProps) {
-  const [{ isDragging }, drag, preview] = useDrag(() => ({
+
+
+  const [{ isDragging }, dragRef] = useDrag(() => ({
     type: "task",
     item: { id: index },
     collect: (monitor) => ({
@@ -48,9 +51,9 @@ export default function TaskItem({
   }));
 
   return (
-    <>
+    <div ref={dragRef as ConnectDragSource}>
       <motion.div
-        ref={drag}
+        // ref={mergeRefs([dragRef, newRef])}
         variants={accordionVariants}
         key={index}
         custom={index}
@@ -66,7 +69,7 @@ export default function TaskItem({
               title={title}
               timeRange={timeRange}
               completed={completed}
-              category={category}
+              category={category.label}
             />
           </AccordionTrigger>
           <AccordionContent className='px-4 bg-background rounded-b-md'>
@@ -81,7 +84,7 @@ export default function TaskItem({
           timeRange={timeRange}
           completed={completed}
         /> */}
-    </>
+    </div>
   );
 }
 
@@ -89,7 +92,7 @@ interface CollapsibleTriggerProps {
   title: string;
   timeRange: string;
   completed: boolean;
-  category: "personal" | "work" | "completed";
+  category: string;
 }
 
 function CollapsibleTrigger({
@@ -102,7 +105,7 @@ function CollapsibleTrigger({
     e.stopPropagation();
   };
 
-  const categoryBorderColor = {
+  const categoryBorderColor: Record<string, string> = {
     completed: "#000000",
     personal: "#a569bd",
     work: "#3498db",
@@ -116,7 +119,7 @@ function CollapsibleTrigger({
           {title}
         </Text>
         <div
-          style={{ borderColor: categoryBorderColor[category] }}
+          style={{ borderColor: categoryBorderColor[category]}}
           className='w-5 aspect-square border bg-foreground/10 rounded'></div>
       </div>
 
@@ -151,8 +154,8 @@ function MoreOptionsDropdown({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='mr-14'>
-        <DropdownMenuItem>Archive</DropdownMenuItem>
-        <DropdownMenuItem>Delete</DropdownMenuItem>
+        <DropdownMenuItem onClick={(e) => e.stopPropagation()}>Archive</DropdownMenuItem>
+        <DropdownMenuItem onClick={(e) => e.stopPropagation()}>Delete</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

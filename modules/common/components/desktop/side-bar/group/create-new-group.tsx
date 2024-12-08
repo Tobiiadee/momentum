@@ -35,7 +35,7 @@ export default function CreateNewGroup() {
         </Text>
       </div>
 
-      <div className='flex items-center space-x-2 px-1.5 py-0.5 rounded-xl bg-foreground/15'>
+      <div className='flex items-center space-x-2 px-1.5 py-0.5 rounded-xl bg-foreground/10'>
         <Text variant={"p"} className='text-xs text-foreground/50 font-medium'>
           ctrl + G
         </Text>

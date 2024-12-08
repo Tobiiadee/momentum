@@ -5,12 +5,11 @@ import React, { useState } from "react";
 import { TaskNumber } from "../side-bar-links";
 import Link from "next/link";
 import { AnimatePresence, motion, Variants } from "framer-motion";
-import { CarSvg } from "@/modules/assets/svgs";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/modules/common/ui/button";
 import { X } from "lucide-react";
-import { useListStore } from "@/modules/store/list-store";
+import useAllListStore from "@/modules/store/all-list-store";
 
 const listItemVariants: Variants = {
   hidden: { x: 70, opacity: 0 },
@@ -34,19 +33,23 @@ const deleteListVariants: Variants = {
 export default function NewListItem({
   id,
   name,
+  icon,
+  numberOfTask,
 }: {
   id: string;
   name: string;
+  icon: React.ReactNode;
+  numberOfTask: number;
 }) {
   const [deleteList, setDeletelist] = useState(false);
-  const deleteitem = useListStore((state) => state.deleteList);
+  const removeFromList = useAllListStore((state) => state.removeFromList);
   const pathName = usePathname();
   const router = useRouter()
 
   const isActive = pathName === `/${name}`;
 
   const deleteListHandler = () => {
-    deleteitem(id)
+    removeFromList(id)
     router.push(`/list/${name}`)
   }
 
@@ -68,14 +71,14 @@ export default function NewListItem({
         )}>
         <div className='flex space-x-4 items-center'>
           <div className='w-5 aspect-square'>
-            <CarSvg />
+            {icon}
           </div>
           <Text variant={"p"} className='font-semibold'>
             {name}
           </Text>
         </div>
 
-        <TaskNumber numberOfTask={10} />
+        <TaskNumber numberOfTask={numberOfTask} />
       </Link>
 
       <AnimatePresence mode='wait'>

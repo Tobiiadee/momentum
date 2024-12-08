@@ -1,6 +1,7 @@
 import Header from "@/modules/common/components/desktop/header/header";
 import CreateNewTask from "@/modules/common/components/desktop/main/create-new-task";
 import SideBar from "@/modules/common/components/desktop/side-bar/side-bar";
+import NewTaskClient from "@/modules/common/components/task/new-task-client";
 import Wrapper from "@/modules/common/components/shared/wrapper";
 import React from "react";
 
@@ -13,6 +14,7 @@ export default function MainLayout({
     <div className='relative overflow-hidden'>
       <SideBar />
       <CreateNewTask />
+      <NewTaskClient />
       <Wrapper className='flex flex-col space-y-5'>
         <Header />
         {children}

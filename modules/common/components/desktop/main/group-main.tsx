@@ -15,7 +15,7 @@ export default function GroupMain() {
 
       <NoTask module='group' />
 
-      <div className='flex flex-col space-y-2 overflow-y-auto h-[60vh] pl-2 py-2 pr-2'></div>
+      <div className='flex flex-col space-y-2 overflow-y-auto pb-14 h-[70vh] pl-2 py-2 pr-2'></div>
     </div>
   );
 }

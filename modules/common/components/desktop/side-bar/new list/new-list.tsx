@@ -4,10 +4,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { motion, Variants } from "framer-motion";
 import { Input } from "@/modules/common/ui/input";
 import { Button } from "@/modules/common/ui/button";
-import { X } from "lucide-react";
+import { House, X } from "lucide-react";
 import { useListStore } from "@/modules/store/list-store";
 import InputFile from "../../../shared/input-file";
-import { useRouter } from "next/navigation";
+import useAllListStore from "@/modules/store/all-list-store";
 
 const variants: Variants = {
   hidden: { y: 0, opacity: 0 },
@@ -21,13 +21,12 @@ const variants: Variants = {
 
 export default function NewList() {
 
-  const router = useRouter();
-
   const [listName, setListName] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const setIsList = useListStore((state) => state.setIsList);
-  const setList = useListStore((state) => state.setLists);
   const isList = useListStore((state) => state.isList);
+
+  const addToList = useAllListStore((state) => state.addToList);
 
   useEffect(() => {
     if (isList === true && inputRef.current) {
@@ -37,16 +36,18 @@ export default function NewList() {
 
   const listHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const list = {
+    const list: ListType = {
       id: crypto.randomUUID(),
-      name: listName.trim(),
-      description: "",
+      label: listName.trim(),
+      numberOfTask: 0,
+      default: false,
+      icon: <House strokeWidth={1.5} size={20} />,
+      type: "list",
     };
 
     if (listName !== "") {
-      setIsList(false);
-      setList(list);
-      router.push(`/list/${list.name.toLowerCase()}`);
+      addToList(list)
+      setIsList(false)
     }
   };
 
@@ -57,7 +58,7 @@ export default function NewList() {
       animate='visible'
       exit={"exit"}
       variants={variants}
-      className='absolute bottom-52 left-[22rem] z-50 w-72 h-max flex flex-col space-y-4 shadow-lg bg-background rounded-md px-3 py-2'>
+      className='absolute top-1/3 -translate-y-1/3 left-[22rem] z-50 w-72 h-max flex flex-col space-y-4 shadow-lg bg-background rounded-md px-3 py-2'>
       <InputFile />
       <Input
         onChange={(e) => setListName(e.target.value)}

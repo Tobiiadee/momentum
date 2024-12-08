@@ -5,13 +5,12 @@ import { motion, Variants } from "framer-motion";
 import { Input } from "@/modules/common/ui/input";
 import { Button } from "@/modules/common/ui/button";
 import { ArrowUpFromLine, X } from "lucide-react";
-import { GroupType, useGroupStore } from "@/modules/store/group-store";
-
+import { useGroupStore } from "@/modules/store/group-store";
 import { Text } from "@/modules/common/ui/text";
 import AddMember from "./add-member";
-import { useRouter } from "next/navigation";
+import useAllListStore from "@/modules/store/all-list-store";
 
-const variants: Variants = {
+export const FadeInOutvariants: Variants = {
   hidden: { y: 0, opacity: 0 },
   visible: {
     y: -10,
@@ -21,7 +20,7 @@ const variants: Variants = {
   exit: { y: 70, opacity: 0 },
 };
 
-const groupNameVariants: Variants = {
+export const SlideInNameVariants: Variants = {
   hidden: { x: -50, opacity: 0 },
   visible: {
     x: 0,
@@ -32,9 +31,6 @@ const groupNameVariants: Variants = {
 
 export default function NewGroup() {
   const [groupName, setGroupName] = useState("");
-
-  const router = useRouter();
-
   const inputRef = useRef<HTMLInputElement>(null);
 
   const setIsGroup = useGroupStore((state) => state.setIsGroup);
@@ -45,6 +41,8 @@ export default function NewGroup() {
   const isGroupName = useGroupStore((state) => state.isGroupName);
   const isGroupMember = useGroupStore((state) => state.isGroupMember);
   const members = useGroupStore((state) => state.members);
+  const addToList = useAllListStore((state) => state.addToList);
+  const reset = useGroupStore((state) => state.reset);
 
   useEffect(() => {
     if (isGroup === true && inputRef.current) {
@@ -64,16 +62,14 @@ export default function NewGroup() {
       id: crypto.randomUUID(),
       name: groupName.trim(),
       members: members,
+      numberOfTask: 0,
+      default: false,
     };
 
-    if (groupName !== "") {
-      setIsGroup(false);
+    if (!!groupName) {
       setGroups(group);
-      setIsGroupMember(false);
-      setGroupName("");
-      setIsGroupName("");
-
-      router.push(`/group/${group.name.toLowerCase()}`);
+      addToList(group);
+      reset();
     }
   };
 
@@ -82,12 +78,12 @@ export default function NewGroup() {
       initial='hidden'
       animate='visible'
       exit={"exit"}
-      variants={variants}
-      className='absolute bottom-28 left-[22rem] z-50 w-[22rem] h-max min-h-72 flex flex-col justify-between shadow-lg bg-background rounded-md px-3 py-2 overflow-hidden'>
-      <div className='flex flex-col space-y-2'>
+      variants={FadeInOutvariants}
+      className='absolute top-1/3 -translate-y-1/3 left-[22rem] z-50 w-[22rem] h-max min-h-72 flex flex-col justify-between shadow-lg bg-background rounded-md px-3 py-2 '>
+      <div className='flex flex-col space-y-2 overflow-hidden p-0.5'>
         {isGroupName && (
           <motion.div
-            variants={groupNameVariants}
+            variants={SlideInNameVariants}
             initial='hidden'
             animate='visible'
             className=''>
@@ -116,8 +112,6 @@ export default function NewGroup() {
         ) : (
           <AddMember />
         )}
-
-        
       </div>
 
       <Button onClick={groupHandler} variant={"default"} className=''>

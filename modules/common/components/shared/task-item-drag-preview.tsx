@@ -3,7 +3,6 @@ import React from "react";
 import { Checkbox } from "../../ui/checkbox";
 import { Text } from "../../ui/text";
 import { Clock, EllipsisVertical } from "lucide-react";
-import type { ConnectDragPreview } from "react-dnd";
 
 
 type TaskitemDragPreviewProps = {
@@ -50,4 +49,6 @@ const TaskitemDragPreview = React.forwardRef<HTMLDivElement, TaskitemDragPreview
   }
 );
 
-export default TaskitemDragPreview;
+export default TaskitemDragPreview.displayName = "TaskitemDragPreview";
+
+

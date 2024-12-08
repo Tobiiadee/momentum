@@ -6,9 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useMemo } from "react";
 
 interface SideBarLinksProps {
-  href: string;
   icon?: React.ReactNode;
-  check?: boolean;
   className?: string;
   onClick?: () => void;
   numberOfTask?: string | number;
@@ -17,39 +15,20 @@ interface SideBarLinksProps {
 
 export default function SideBarLinks({
   className,
-  href,
   numberOfTask,
   label,
-  check,
   icon,
 }: SideBarLinksProps) {
   const pathname = usePathname();
   const router = useRouter();
 
+  const href = `/dashboard/${label?.toLowerCase()}`;
+
   const isActive = useMemo(() => pathname === href, [pathname, href]);
-
-  const borderColors = useMemo(
-    () => ({
-      completed: "#000000",
-      personal: "#a569bd",
-      work: "#3498db",
-    }),
-    []
-  );
-
-  type BorderColorKeys = keyof typeof borderColors;
-
-  const borderColor = useMemo(() => {
-    const key = label?.toLowerCase();
-    if (!key) return;
-    return Object.keys(borderColors).includes(key) ? borderColors[key as  BorderColorKeys] : undefined;
-  }, [label, borderColors]);
 
   const navigateHandler = () => {
     router.push(href);
   };
-
-  
 
   return (
     <div
@@ -60,15 +39,9 @@ export default function SideBarLinks({
         isActive && "bg-foreground/10"
       )}
       aria-current={isActive ? "page" : undefined}>
-      <div className="flex space-x-4 items-center">
-        {check && (
-          <div
-            style={{ borderColor: borderColor }}
-            className={cn(borderColor && `border`, "border-[1.4px] w-4 rounded aspect-square")} // Fallback Tailwind class
-          />
-        )}
+      <div className='flex space-x-4 items-center'>
         {icon}
-        <Text variant="p" className="text-sm font-semibold capitalize">
+        <Text variant='p' className='text-sm font-semibold capitalize'>
           {label}
         </Text>
       </div>
@@ -91,7 +64,7 @@ export function TaskNumber({
         className,
         "w-6 aspect-square rounded-full bg-foreground/5 flex items-center justify-center"
       )}>
-      <Text variant="p" className="text-xs font-semibold text-foreground/80">
+      <Text variant='p' className='text-xs font-semibold text-foreground/80'>
         {numberOfTask}
       </Text>
     </div>

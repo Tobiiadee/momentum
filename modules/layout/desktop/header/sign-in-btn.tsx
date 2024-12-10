@@ -5,7 +5,7 @@ import { Text } from "@/modules/common/ui/text";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-export default function SignIn() {
+export default function SignInBtn() {
   const { push } = useRouter();
 
   return (

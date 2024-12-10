@@ -1,10 +1,10 @@
-import { Text } from "@/modules/common/ui/text";
+import SignInMain from "@/modules/common/components/shared/sign-in-main";
 import React from "react";
 
 export default function Index() {
   return (
-    <div className='grid place-items-center min-h-screen'>
-      <Text variant={"h1"}>Sign In</Text>
+    <div className='h-screen'>
+      <SignInMain />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { Text } from "@/modules/common/ui/text";
 import React from "react";
 import HeaderNav from "./header-nav";
-import SignIn from "./sign-in";
+import SignInBtn from "./sign-in-btn";
 
 export default function IntroHeader() {
   return (
@@ -10,7 +10,7 @@ export default function IntroHeader() {
         <Text variant={"h4"} className="font-light">Momentum</Text>
         <HeaderNav />
       </div>
-      <SignIn />
+      <SignInBtn />
     </div>
   );
 }

@@ -10,7 +10,7 @@ import { updatedList } from "@/lib/helpers/helpers";
 
 const listVariant: Variants = {
   hidden: { opacity: 0, height: 100 },
-  visible: { opacity: 1, height: 300, transition: { duration: 0.4 } },
+  visible: { opacity: 1, height: 250, transition: { duration: 0.4 } },
 };
 
 export default function AvialableList() {

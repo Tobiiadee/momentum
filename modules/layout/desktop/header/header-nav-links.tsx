@@ -9,8 +9,8 @@ export interface HeaderNavLinksProps {
 
 export default function HeaderNavLinks({href, label}: HeaderNavLinksProps) {
   return (
-    <Link href={href} className='text-foreground/70 hover:text-foreground transition'>
-      <Text variant={"h5"} className=''>{label}</Text>
+    <Link href={href} className='text-foreground/60  hover:text-foreground transition'>
+      <Text variant={"h5"} className='text-xs'>{label}</Text>
     </Link>
   )
 }

@@ -4,15 +4,19 @@ import HeaderNavLinks from "./header-nav-links";
 const navLinks: ComponentProps<typeof HeaderNavLinks>[] = [
   {
     href: "/",
-    label: "Home",
+    label: "Features",
   },
   {
-    href: "/about",
-    label: "About",
+    href: "/",
+    label: "Solutions",
   },
   {
-    href: "/contact",
-    label: "Contact",
+    href: "/",
+    label: "Resources",
+  },
+  {
+    href: "/",
+    label: "Pricing",
   },
 ];
 

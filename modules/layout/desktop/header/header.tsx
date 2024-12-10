@@ -7,7 +7,7 @@ export default function IntroHeader() {
   return (
     <div className='w-full py-3 px-6 flex justify-between items-center'>
       <div className='w-1/2 flex justify-between items-center'>
-        <Text variant={"h2"}>Momentum</Text>
+        <Text variant={"h4"} className="font-light">Momentum</Text>
         <HeaderNav />
       </div>
       <SignIn />

@@ -1,10 +1,10 @@
-import { Text } from "@/modules/common/ui/text";
+import SignUpMain from "@/modules/common/components/shared/sign-up-main";
 import React from "react";
 
 export default function Index() {
   return (
-    <div className='grid place-items-center min-h-screen'>
-      <Text variant={"h1"}>Onboarding</Text>
+    <div className='h-screen'>
+      <SignUpMain />
     </div>
   );
 }

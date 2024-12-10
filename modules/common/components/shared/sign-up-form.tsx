@@ -14,12 +14,14 @@ import {
   FormMessage,
 } from "@/modules/common/ui/form";
 import { Input } from "@/modules/common/ui/input";
-import { Checkbox } from "../../ui/checkbox";
 import { Text } from "../../ui/text";
 import { useRouter } from "next/navigation";
 import { GoogleSignIn } from "./sign-in-page";
 
 const formSchema = z.object({
+  username: z.string().min(2, {
+    message: "Enter a valid username.",
+  }),
   email: z.string().min(2, {
     message: "Enter a valid email.",
   }),
@@ -28,13 +30,14 @@ const formSchema = z.object({
   }),
 });
 
-export default function SignInForm() {
+export default function SignUpForm() {
   const router = useRouter();
   // ...
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      username: "",
       email: "",
       password: "",
     },
@@ -51,6 +54,19 @@ export default function SignInForm() {
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className='space-y-4 w-[80%] lg:w-[60%]'>
+        <FormField
+          control={form.control}
+          name='username'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Username</FormLabel>
+              <FormControl>
+                <Input placeholder='Choose a username' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name='email'
@@ -83,43 +99,23 @@ export default function SignInForm() {
             </FormItem>
           )}
         />
-        <div className='flex justify-between items-center'>
-          <div className='flex space-x-2 items-center'>
-            <Checkbox name='remember' id='remember' />
-            <label htmlFor='remember'>
-              <Text
-                id='remember'
-                variant={"p"}
-                className='text-foreground/70 hover:text-foreground cursor-pointer'>
-                Remember for 30 days
-              </Text>
-            </label>
-          </div>
-          <Button
-            variant={"ghost"}
-            type='button'
-            className='bg-transparent hover:bg-transparent'>
-            <Text variant={"p"} className='font-normal text-foreground/70 text-red-500'>
-              Forgot password?
-            </Text>
-          </Button>
-        </div>
+
         <Button type='submit' className='w-full'>
           Sign in
         </Button>
-        <GoogleSignIn className="border border-foreground" />
+        <GoogleSignIn className='border border-foreground' />
 
         <span className='flex items-center space-x-1'>
           <Text variant={"p"} className='font-normal text-foreground/70'>
-            Don&apos;t have an account?
+            Already have an account?
           </Text>
           <Button
-            onClick={() => router.push("/auth/onboarding")}
-            type="button"
+            onClick={() => router.push("/auth/sign-in")}
+            type='button'
             variant={"ghost"}
             className='bg-transparent hover:bg-transparent p-0 hover:underline'>
             <Text variant={"p"} className='font-normal text-foreground'>
-              Sign up
+              Sign in
             </Text>
           </Button>
         </span>

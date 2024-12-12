@@ -18,7 +18,7 @@ type TaskItem = {
 type ListType = {
   id: string;
   label: string;
-  icon: React.ReactNode;
+  icon: React.ReactNode | string;
   numberOfTask: number;
   default: boolean;
   type?: "list";

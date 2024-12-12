@@ -11,6 +11,10 @@ interface ListStoreType {
   setIsList: (isList: boolean) => void;
   lists: ListType[] | null;
   setLists: (list: ListType | ListType[]) => void;
+  emoji: string;
+  setEmoji: (emoji: string) => void;
+  showEmojipicker: boolean;
+  setShowEmojipicker: (showEmojipicker: boolean) => void;
   deleteList: (listId: string) => void;
 }
 
@@ -27,7 +31,10 @@ export const useListStore = create<ListStoreType>((set) => ({
         ? newItems
         : [newItems],
     })),
-
+  emoji: "",
+  setEmoji: (emoji) => set({ emoji }),
+  showEmojipicker: false, 
+  setShowEmojipicker: (showEmojipicker) => set({ showEmojipicker }),
   deleteList: (listId) =>
     set((state) => ({
       lists: state.lists?.filter((list) => list.id !== listId) || null,

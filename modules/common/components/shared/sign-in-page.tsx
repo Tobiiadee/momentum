@@ -39,6 +39,7 @@ export function GoogleSignIn({ className }: { className?: string }) {
   return (
     <Button
       variant={"ghost"}
+      type="button"
       className={cn(className, "flex items-center space-x-2 w-full")}>
       <svg
         width='20px'

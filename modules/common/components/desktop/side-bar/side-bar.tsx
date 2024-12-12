@@ -34,9 +34,9 @@ export default function SideBar() {
     } else if (list.label === "completed") {
       taskCount = tasks.filter((task) => task.completed).length;
     } else if (list.label === "personal") {
-      taskCount = tasks.filter((task) => task.category === "personal").length;
+      taskCount = tasks.filter((task) => task.category.label === "personal").length;
     } else if (list.label === "work") {
-      taskCount = tasks.filter((task) => task.category === "work").length;
+      taskCount = tasks.filter((task) => task.category.label === "work").length;
     }
 
     return { ...list, numberOfTask: taskCount }; // Update numberOfTask

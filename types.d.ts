@@ -12,6 +12,7 @@ type TaskItem = {
   timeRange: string;
   category: taskCategory;
   completed: boolean;
+  type: "list" | "group";
 };
 
 type ListType = {
@@ -34,11 +35,13 @@ type MemberType = {
 
 type GroupType = {
   id: string;
-  name: string;
+  label: string;
+  icon?: React.ReactNode;
   numberOfTask: number;
   members: MemberType[];
   default: boolean;
   type?: "group";
+
 };
 
 type GroupArrayType = GroupType[];

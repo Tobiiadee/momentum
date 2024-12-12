@@ -13,12 +13,14 @@ export default function TaskSaveBtn() {
     const task: TaskItem = {
       id: crypto.randomUUID(),
       title: useNewTaskStore.getState().title,
+      description: useNewTaskStore.getState().description,
       timeRange: `${useNewTaskStore.getState().taskTimeFrom} - ${
         useNewTaskStore.getState().taskTimeUntil
       }`,
       date: useNewTaskStore.getState().taskDate,
       category: useNewTaskStore.getState().selectedCategory!,
       completed: false,
+      type: useNewTaskStore.getState().type,
     };
 
     setTask(task);

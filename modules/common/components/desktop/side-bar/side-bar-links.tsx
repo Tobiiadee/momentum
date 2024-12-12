@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Text } from "@/modules/common/ui/text";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useMemo } from "react";
+import TaskNumber from "../../shared/task-number";
 
 interface SideBarLinksProps {
   icon?: React.ReactNode;
@@ -22,7 +23,8 @@ export default function SideBarLinks({
   const pathname = usePathname();
   const router = useRouter();
 
-  const href = `/dashboard/${label?.toLowerCase()}`;
+  const href =
+    label === "home" ? "/dashboard" : `/dashboard/${label?.toLowerCase()}`;
 
   const isActive = useMemo(() => pathname === href, [pathname, href]);
 
@@ -51,22 +53,4 @@ export default function SideBarLinks({
   );
 }
 
-export function TaskNumber({
-  numberOfTask,
-  className,
-}: {
-  numberOfTask?: string | number;
-  className?: string;
-}) {
-  return (
-    <div
-      className={cn(
-        className,
-        "w-6 aspect-square rounded-full bg-foreground/5 flex items-center justify-center"
-      )}>
-      <Text variant='p' className='text-xs font-semibold text-foreground/80'>
-        {numberOfTask}
-      </Text>
-    </div>
-  );
-}
+

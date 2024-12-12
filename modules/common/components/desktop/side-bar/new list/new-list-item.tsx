@@ -2,14 +2,14 @@
 
 import { Text } from "@/modules/common/ui/text";
 import React, { useState } from "react";
-import { TaskNumber } from "../side-bar-links";
 import Link from "next/link";
 import { AnimatePresence, motion, Variants } from "framer-motion";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/modules/common/ui/button";
 import { X } from "lucide-react";
 import useAllListStore from "@/modules/store/all-list-store";
+import TaskNumber from "../../../shared/task-number";
 
 const listItemVariants: Variants = {
   hidden: { x: 70, opacity: 0 },
@@ -44,13 +44,11 @@ export default function NewListItem({
   const [deleteList, setDeletelist] = useState(false);
   const removeFromList = useAllListStore((state) => state.removeFromList);
   const pathName = usePathname();
-  const router = useRouter()
 
   const isActive = pathName === `/${name}`;
 
   const deleteListHandler = () => {
     removeFromList(id)
-    router.push(`/list/${name}`)
   }
 
   return (

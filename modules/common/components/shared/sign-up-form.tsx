@@ -90,7 +90,7 @@ export default function SignUpForm() {
               <FormControl>
                 <Input
                   type='password'
-                  placeholder='Enter your password'
+                  placeholder='Choose your password'
                   {...field}
                 />
               </FormControl>

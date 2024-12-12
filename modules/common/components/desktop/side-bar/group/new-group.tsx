@@ -60,7 +60,7 @@ export default function NewGroup() {
   const groupHandler = () => {
     const group: GroupType = {
       id: crypto.randomUUID(),
-      name: groupName.trim(),
+      label: groupName.trim(),
       members: members,
       numberOfTask: 0,
       default: false,

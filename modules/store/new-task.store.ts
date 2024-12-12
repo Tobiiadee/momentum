@@ -5,6 +5,8 @@ interface NewTaskStore {
   setIsNewTask: (isNewTask: boolean) => void;
   title: string;
   setTitle: (title: string) => void;
+  description: string;
+  setDescription: (description: string) => void;
   taskDate: string;
   setTaskDate: (taskDate: string) => void;
   isTaskTime: boolean;
@@ -19,6 +21,8 @@ interface NewTaskStore {
   setSelectedCategory: (selectedCategory: taskCategory) => void;
   task: TaskItem[];
   setTask: (task: TaskItem) => void;
+  type: "list" | "group";
+  setType: (type: "list" | "group") => void;
   reset: () => void;
 }
 
@@ -27,6 +31,10 @@ const useNewTaskStore = create<NewTaskStore>((set) => ({
   setIsNewTask: (isNewTask) => set(() => ({ isNewTask })),
   title: "",
   setTitle: (title) => set(() => ({ title })),
+  description: "",
+  setDescription: (description) => set(() => ({ description })),
+  type: "list",
+  setType: (type) => set(() => ({ type })),
   taskDate: "",
   setTaskDate: (taskDate) => set(() => ({ taskDate })),
   isTaskTime: false,

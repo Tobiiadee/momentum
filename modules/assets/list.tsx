@@ -8,7 +8,6 @@ export const list: ListType[] = [
     numberOfTask: 0, // Default value
     icon: <HouseSvg />,
     default: true,
-    
   },
   {
     id: crypto.randomUUID(),

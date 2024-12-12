@@ -3,10 +3,10 @@ import { Text } from "@/modules/common/ui/text";
 import Image from "next/image";
 import React, { useState } from "react";
 import { AnimatePresence, motion, Variants } from "framer-motion";
-import useGroupStore, { MemberType } from "@/modules/store/group-store";
+import useGroupStore from "@/modules/store/group-store";
 import { members } from "@/modules/assets/DUMMY";
 import { Button } from "@/modules/common/ui/button";
-import { X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 
 const memberVariants: Variants = {
   hidden: { y: 20, opacity: 0 },
@@ -63,6 +63,10 @@ export default function AddMember() {
           placeholder='Search member by email...'
           className='placeholder:text-xs'
         />
+
+        <Button variant={"outline"} size={"icon"} className=''>
+          <Plus strokeWidth={1.5} size={20} />
+        </Button>
       </motion.div>
 
       {searchMember !== "" && (
@@ -84,7 +88,9 @@ export default function AddMember() {
 
           {searchMember !== "" && searchedMembers?.length === 0 && (
             <div className='w-full grid place-items-center min-h-8'>
-              <Text variant={"p"} className='text-center italic text-foreground/60'>
+              <Text
+                variant={"p"}
+                className='text-center italic text-foreground/60'>
                 Email not found
               </Text>
             </div>
@@ -110,7 +116,9 @@ export default function AddMember() {
 
       {membersList.length === 0 && (
         <div className='w-full grid place-items-center h-40'>
-          <Text variant={"p"} className="italic text-foreground/60">Choose your team members</Text>
+          <Text variant={"p"} className='italic text-foreground/60'>
+            Choose your team members
+          </Text>
         </div>
       )}
     </div>

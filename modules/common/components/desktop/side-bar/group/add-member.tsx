@@ -6,7 +6,7 @@ import { AnimatePresence, motion, Variants } from "framer-motion";
 import useGroupStore from "@/modules/store/group-store";
 import { members } from "@/modules/assets/DUMMY";
 import { Button } from "@/modules/common/ui/button";
-import { Plus, X } from "lucide-react";
+import { X } from "lucide-react";
 
 const memberVariants: Variants = {
   hidden: { y: 20, opacity: 0 },
@@ -56,17 +56,17 @@ export default function AddMember() {
     : [];
 
   return (
-    <div className='relative flex flex-col space-y-2'>
-      <motion.div variants={inputVariants} initial='hidden' animate='visible'>
+    <div className='relative flex flex-col space-y-2 h-48 max-h-48 '>
+      <motion.div
+        variants={inputVariants}
+        initial='hidden'
+        animate='visible'
+        className='flex items-center space-x-3'>
         <Input
           onChange={(e) => setSearchMember(e.target.value)}
           placeholder='Search member by email...'
           className='placeholder:text-xs'
         />
-
-        <Button variant={"outline"} size={"icon"} className=''>
-          <Plus strokeWidth={1.5} size={20} />
-        </Button>
       </motion.div>
 
       {searchMember !== "" && (
@@ -74,7 +74,7 @@ export default function AddMember() {
           variants={memberVariants}
           initial='hidden'
           animate='visible'
-          className='absolute top-10 z-30 w-full h-max max-h-40 overflow-y-auto flex flex-col space-y-1 bg-background rounded-b-md shadow-lg pb-2 overflow-hidden'>
+          className='absolute top-10 z-30 w-full h-max max-h-[9rem] overflow-y-auto flex flex-col space-y-1 bg-background rounded-b-md shadow-lg pb-2'>
           {searchedMembers?.map((member) => (
             <MemberItem
               key={member.id + member.email}
@@ -100,7 +100,7 @@ export default function AddMember() {
 
       <AnimatePresence mode='wait'>
         {membersList.length !== 0 && (
-          <div className='flex flex-col overflow-hidden max-h-64 overflow-y-auto'>
+          <div className='flex flex-col h-max max-h-48 overflow-y-auto'>
             {membersList.map((member) => (
               <MemberListItem
                 key={member.id + member.email}

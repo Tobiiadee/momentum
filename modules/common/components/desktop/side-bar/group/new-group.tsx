@@ -79,7 +79,7 @@ export default function NewGroup() {
       animate='visible'
       exit={"exit"}
       variants={FadeInOutvariants}
-      className='absolute top-1/3 -translate-y-1/3 left-[22rem] z-50 w-[22rem] h-max min-h-72 flex flex-col justify-between shadow-lg bg-background rounded-md px-3 py-2 '>
+      className='absolute top-1/3 -translate-y-1/3 left-[22rem] z-50 w-[22rem] h-max min-h-72 max-h-72 flex flex-col justify-between shadow-lg bg-background rounded-md px-3 py-2'>
       <div className='flex flex-col space-y-2 overflow-hidden p-0.5'>
         {isGroupName && (
           <motion.div
@@ -96,7 +96,7 @@ export default function NewGroup() {
         {!isGroupMember ? (
           <form
             onSubmit={groupNameHandler}
-            className='w-full flex items-center space-x-4'>
+            className='w-full flex items-center space-x-1'>
             <Input
               onChange={(e) => setGroupName(e.target.value)}
               ref={inputRef}
@@ -105,7 +105,7 @@ export default function NewGroup() {
               className='placeholder:text-xs'
             />
 
-            <Button type='submit' disabled={!groupName} className=''>
+            <Button type='submit' variant={"ghost"} disabled={!groupName} className=''>
               <ArrowUpFromLine strokeWidth={1.5} size={18} />
             </Button>
           </form>
@@ -129,22 +129,3 @@ export default function NewGroup() {
     </motion.div>
   );
 }
-
-// function AddMenberButton() {
-//   return (
-//     <TooltipProvider>
-//       <Tooltip>
-//         <TooltipTrigger asChild>
-//           <Button variant={"ghost"} size={"icon"}>
-//             <Plus strokeWidth={1.5} size={24} />
-//           </Button>
-//         </TooltipTrigger>
-//         <TooltipContent>
-//           <Text variant={"p"} className='text-xs'>
-//             Add a member
-//           </Text>
-//         </TooltipContent>
-//       </Tooltip>
-//     </TooltipProvider>
-//   );
-// }

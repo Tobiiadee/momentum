@@ -20,10 +20,10 @@ import useAllListStore from "@/modules/store/all-list-store";
 
 export default function SideBar() {
   const isList = useListStore((state) => state.isList);
-  const setIsList = useListStore((state) => state.setIsList);
+  const resetList = useListStore((state) => state.reset);
 
   const isGroup = useGroupStore((state) => state.isGroup);
-  const setIsGroup = useGroupStore((state) => state.setIsGroup);
+  const resetGroup = useGroupStore((state) => state.reset);
 
   // Calculate task counts dynamically
   const updatedList = list.map((list) => {
@@ -71,14 +71,14 @@ export default function SideBar() {
 
       <AnimatePresence mode="wait">
         {isList && (
-          <Modal onClick={() => setIsList(false)}>
+          <Modal onClick={() => resetList()}>
             <NewList />
           </Modal>
         )}
       </AnimatePresence>
       <AnimatePresence mode="wait">
         {isGroup && (
-          <Modal onClick={() => setIsGroup(false)}>
+          <Modal onClick={() => resetGroup()}>
             <NewGroup />
           </Modal>
         )}

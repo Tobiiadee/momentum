@@ -1,6 +1,6 @@
 import { Button } from "@/modules/common/ui/button";
 import { Text } from "@/modules/common/ui/text";
-import { MemberType, useGroupStore } from "@/modules/store/group-store";
+import { useGroupStore } from "@/modules/store/group-store";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import { X } from "lucide-react";
 import Image from "next/image";
@@ -40,7 +40,9 @@ export default function GroupItem({ id, name, members }: GroupItemProps) {
     deleteItem(id);
     router.back();
   };
- 
+
+  const sliceMembers = members.slice(0, 5);
+  const remaininMembers = members.length - 5;
 
   return (
     <motion.div
@@ -54,9 +56,10 @@ export default function GroupItem({ id, name, members }: GroupItemProps) {
       className='relative flex flex-col space-y-2 cursor-pointer group'>
       <div className='w-full aspect-square rounded bg-foreground/10 group-hover:bg-foreground/15 group-active:scale-95 transition-all duration-300 grid place-content-center'>
         <div className='grid grid-cols-2 grid-flow-dense'>
-          {members.map((member) => (
+          {sliceMembers.map((member) => (
             <GroupItemImage key={member.id} image={member.image} />
           ))}
+          {members.length > 5 && <GroupRemainingMembers remainingMembers={remaininMembers} />}
         </div>
       </div>
 
@@ -76,10 +79,7 @@ export default function GroupItem({ id, name, members }: GroupItemProps) {
             animate='visible'
             exit={"hidden"}
             className='absolute -top-[1.5rem] -right-3 w-8 aspect-square shadow-md bg-background flex justify-center items-center rounded-full overflow-hidden'>
-            <Button
-              onClick={handleDeleteGroup}
-              variant={"ghost"}
-              className=''>
+            <Button onClick={handleDeleteGroup} variant={"ghost"} className=''>
               <X strokeWidth={1.5} size={20} />
             </Button>
           </motion.div>
@@ -100,6 +100,16 @@ function GroupItemImage({ image }: { image: string }) {
           className='object-cover'
         />
       </div>
+    </div>
+  );
+}
+
+function GroupRemainingMembers({ remainingMembers: remainingMembers }: { remainingMembers: number }) {
+  return (
+    <div className='w-8 aspect-square rounded-full border border-foreground/30 bg-background grid place-items-center -ml-2'>
+      <Text variant={"p"} className='font-semibold'>
+        {"+"+ remainingMembers}
+      </Text>
     </div>
   );
 }

@@ -21,6 +21,7 @@ export default function PickEmoji() {
           {!showEmojiPicker ? (
             <Button
               onClick={() => setShowEmojipicker(true)}
+              type="button"
               variant={"ghost"}
               aria-label='Select an emoji'
               size={"icon"}
@@ -30,6 +31,7 @@ export default function PickEmoji() {
           ) : (
             <Button
               onClick={() => setShowEmojipicker(false)}
+              type="button"
               variant={"ghost"}
               aria-label='Select an emoji'
               size={"icon"}

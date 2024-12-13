@@ -24,12 +24,13 @@ const variants: Variants = {
 export default function NewList() {
   const [listName, setListName] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const setIsList = useListStore((state) => state.setIsList);
+  // const setIsList = useListStore((state) => state.setIsList);
   const isList = useListStore((state) => state.isList);
   const showEmojiPicker = useListStore((state) => state.showEmojipicker);
   const setShowEmojiPicker = useListStore((state) => state.setShowEmojipicker);
   const setEmoji = useListStore((state) => state.setEmoji);
   const emoji = useListStore((state) => state.emoji);
+  const reset = useListStore((state) => state.reset);
 
   const handleEmojiClick = (emojiData: EmojiClickData) => {
     setEmoji(emojiData.emoji);
@@ -57,9 +58,10 @@ export default function NewList() {
 
     if (listName !== "") {
       addToList(list);
-      setIsList(false);
+      reset();
     }
   };
+
 
   return (
     <>
@@ -92,7 +94,7 @@ export default function NewList() {
 
         <div className='absolute -top-[2.5rem] -right-4 w-8 aspect-square shadow-md bg-background flex justify-center items-center rounded-full overflow-hidden'>
           <Button
-            onClick={() => setIsList(false)}
+            onClick={() => reset()}
             variant={"ghost"}
             className=''>
             <X strokeWidth={1.5} size={20} />

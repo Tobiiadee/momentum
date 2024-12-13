@@ -16,7 +16,7 @@ export default function Group() {
       </Text>
       <div className='grid grid-cols-2 gap-2 w-full'>
         {groups?.map((group) => (
-          <GroupItem key={group.id} id={group.id} name={group.name} members={group.members} />
+          <GroupItem key={group.id} id={group.id} name={group.label} members={group.members} />
         ))}
       </div>
 

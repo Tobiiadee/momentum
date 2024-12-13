@@ -55,7 +55,7 @@ export default function GroupItem({ id, name, members }: GroupItemProps) {
       id={id}
       className='relative flex flex-col space-y-2 cursor-pointer group'>
       <div className='w-full aspect-square rounded bg-foreground/10 group-hover:bg-foreground/15 group-active:scale-95 transition-all duration-300 grid place-content-center'>
-        <div className='grid grid-cols-2 grid-flow-dense'>
+        <div className='relative grid grid-cols-2 grid-flow-dense'>
           {sliceMembers.map((member) => (
             <GroupItemImage key={member.id} image={member.image} />
           ))}
@@ -89,9 +89,9 @@ export default function GroupItem({ id, name, members }: GroupItemProps) {
   );
 }
 
-function GroupItemImage({ image }: { image: string }) {
+export function GroupItemImage({ image }: { image: string }) {
   return (
-    <div className='w-8 relative aspect-square -ml-2 rounded-full bg-yellow-300 border-2 border-background'>
+    <div className='w-8 z-0 relative aspect-square -ml-2 rounded-full bg-yellow-300 border-2 border-background'>
       <div className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 aspect-square rounded-full flex items-center justify-center overflow-hidden'>
         <Image
           src={`/images/${image}`}
@@ -104,9 +104,9 @@ function GroupItemImage({ image }: { image: string }) {
   );
 }
 
-function GroupRemainingMembers({ remainingMembers: remainingMembers }: { remainingMembers: number }) {
+export function GroupRemainingMembers({ remainingMembers: remainingMembers }: { remainingMembers: number }) {
   return (
-    <div className='w-8 aspect-square rounded-full border border-foreground/30 bg-background grid place-items-center -ml-2'>
+    <div className='w-7 z-10 aspect-square rounded-full border border-foreground/30 bg-background grid place-items-center -ml-2'>
       <Text variant={"p"} className='font-semibold'>
         {"+"+ remainingMembers}
       </Text>

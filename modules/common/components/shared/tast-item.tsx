@@ -16,6 +16,8 @@ import {
 } from "@/modules/common/ui/dropdown-menu";
 import { Button } from "../../ui/button";
 import { cn } from "@/lib/utils";
+import TaskGroupImg from "./task-group-img";
+import TaskGroupTitle from "./task-group-title";
 // import { mergeRefs } from "react-merge-refs";
 
 const accordionVariants: Variants = {
@@ -39,9 +41,8 @@ export default function TaskItem({
   id,
   category,
   completed,
+  type,
 }: TaskItemProps) {
-
-
   const [{ isDragging }, dragRef] = useDrag(() => ({
     type: "task",
     item: { id: index },
@@ -70,6 +71,7 @@ export default function TaskItem({
               timeRange={timeRange}
               completed={completed}
               category={category.label}
+              type={type}
             />
           </AccordionTrigger>
           <AccordionContent className='px-4 bg-background rounded-b-md'>
@@ -93,6 +95,7 @@ interface CollapsibleTriggerProps {
   timeRange: string;
   completed: boolean;
   category: string;
+  type?: "list" | "group";
 }
 
 function CollapsibleTrigger({
@@ -100,7 +103,10 @@ function CollapsibleTrigger({
   title,
   completed,
   category,
+  type,
 }: CollapsibleTriggerProps) {
+  // if (type === "group") fetch group members
+
   const itemOptionHandler = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
@@ -119,11 +125,13 @@ function CollapsibleTrigger({
           {title}
         </Text>
         <div
-          style={{ borderColor: categoryBorderColor[category]}}
+          style={{ borderColor: categoryBorderColor[category] }}
           className='w-5 aspect-square border bg-foreground/10 rounded'></div>
+        {type === "group" && <TaskGroupTitle groupTitle='Test' />}
       </div>
 
       <div className='flex space-x-2 items-center'>
+        {type === "group" && <TaskGroupImg members={[]}/>}
         <div className='flex space-x-1 items-center bg-foreground/10 px-2 py-1 rounded-md'>
           <Clock strokeWidth={1.5} size={18} className='text-foreground/60' />
           <Text variant={"p"} className='text-foreground/60 text-xs'>
@@ -154,8 +162,12 @@ function MoreOptionsDropdown({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='mr-14'>
-        <DropdownMenuItem onClick={(e) => e.stopPropagation()}>Archive</DropdownMenuItem>
-        <DropdownMenuItem onClick={(e) => e.stopPropagation()}>Delete</DropdownMenuItem>
+        <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
+          Archive
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
+          Delete
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

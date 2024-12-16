@@ -6,6 +6,7 @@ import { Text } from "@/modules/common/ui/text";
 import useNewTaskStore from "@/modules/store/new-task.store";
 import { Variants, motion } from "framer-motion";
 import { Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const NewTaskVariant: Variants = {
@@ -20,6 +21,11 @@ const NewTaskVariant: Variants = {
 export default function CreateNewTask() {
   const setIsNewTask = useNewTaskStore((state) => state.setIsNewTask);
   const isNewTask = useNewTaskStore((state) => state.isNewTask);
+
+  const router = useRouter();
+  // const pathName = usePathname();
+
+  // const hide = pathName === "/dashboard/create-new-task";
 
   const handleKeyEvent = (e: KeyboardEvent) => {
     if (e.altKey && e.key === "n") {
@@ -36,18 +42,25 @@ export default function CreateNewTask() {
   });
 
   return (
-    <div className="w-screen flex justify-center items-center backdrop-blur-sm absolute left-1/2 -translate-x-1/2 bottom-0  h-16 z-30">
+    <div
+      className={cn(
+        "w-screen flex justify-center items-center backdrop-blur-sm absolute left-1/2 -translate-x-1/2 bottom-0 h-16 z-30"
+      )}>
       <motion.div
         variants={NewTaskVariant}
         initial='hidden'
         animate='visible'
         className='w-[30%] h-12'>
         <Button
-          onClick={() => setIsNewTask(true)}
+          onClick={() => router.push("/dashboard/create-new-task")}
           variant={"ghost"}
           className='w-full h-full flex justify-between rounded-3xl space-x-4 bg-foreground text-background hover:text-background hover:bg-foreground/95 active:bg-foreground/90 transition-all duration-300'>
           <div className='flex items-center space-x-2 '>
-            <Plus strokeWidth={2} size={20} className={cn(isNewTask && "rotate-45 transition")}/>
+            <Plus
+              strokeWidth={2}
+              size={20}
+              className={cn(isNewTask && "rotate-45 transition")}
+            />
             <Text variant={"p"} className='font-medium'>
               Create new task
             </Text>

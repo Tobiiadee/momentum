@@ -2,8 +2,8 @@ import { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    theme_color: "#ffffff",
-    background_color: "#000000",
+    theme_color: "#000000",
+    background_color: "#ffffff",
     icons: [
       {
         purpose: "maskable",
@@ -25,7 +25,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Momentum",
     short_name: "Momentum",
     description: "Small Steps, Big Momentum.",
-    start_url: "/",
-    scope: "/",
+    start_url: "/dashboard",
+    scope: "/dashboard",
   };
 }

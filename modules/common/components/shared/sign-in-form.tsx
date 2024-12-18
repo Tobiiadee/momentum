@@ -45,6 +45,7 @@ export default function SignInForm() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
+    router.push("/dashboard");
   }
   return (
     <Form {...form}>
@@ -99,7 +100,9 @@ export default function SignInForm() {
             variant={"ghost"}
             type='button'
             className='bg-transparent hover:bg-transparent'>
-            <Text variant={"p"} className='font-normal text-foreground/70 text-red-500'>
+            <Text
+              variant={"p"}
+              className='font-normal text-foreground/70 text-blue-600'>
               Forgot password?
             </Text>
           </Button>
@@ -107,7 +110,7 @@ export default function SignInForm() {
         <Button type='submit' className='w-full'>
           Sign in
         </Button>
-        <GoogleSignIn className="border border-foreground" />
+        <GoogleSignIn className='border border-foreground' />
 
         <span className='flex items-center space-x-1'>
           <Text variant={"p"} className='font-normal text-foreground/70'>
@@ -115,7 +118,7 @@ export default function SignInForm() {
           </Text>
           <Button
             onClick={() => router.push("/auth/onboarding")}
-            type="button"
+            type='button'
             variant={"ghost"}
             className='bg-transparent hover:bg-transparent p-0 hover:underline'>
             <Text variant={"p"} className='font-normal text-foreground'>

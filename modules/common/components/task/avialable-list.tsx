@@ -51,16 +51,17 @@ function ListItem({ numberOfTask, icon, label, id, type }: ListItemProps) {
   const setSelectedList = useNewTaskStore((state) => state.setSelectedCategory);
   const selectedList = useNewTaskStore((state) => state.selectedCategory);
   const setType = useNewTaskStore((state) => state.setType);
+  const setList = useNewTaskStore((state) => state.setList);
 
   const isActive = selectedList?.id === id;
 
   const handleSelect = () => {
     setSelectedList({ id, label, icon });
     setType(type);
+    setList(label);
   };
 
   // console.log(numberOfTask);
-  
 
   return (
     <div

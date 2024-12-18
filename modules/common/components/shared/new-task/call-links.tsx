@@ -10,15 +10,19 @@ import {
   DropdownMenuTrigger,
 } from "@/modules/common/ui/dropdown-menu";
 import CallMethods from "./call-methods";
+import useNewTaskStore from "@/modules/store/new-task.store";
 
 export default function CallLinks() {
+
+  const setCallLink = useNewTaskStore((state) => state.setCallLink);
+
   return (
     <div className='flex flex-col space-y-4 w-full bg-background py-4 px-4 rounded-lg'>
       <Text variant={"p"} className='font-medium border-b pb-2'>
         Add call links to your task
       </Text>
       <div className='relative flex items-center space-x-8'>
-        <Input placeholder='Paste link here...' className='placeholder:text-xs' />
+        <Input onChange={(e) => setCallLink(e.target.value)} placeholder='Paste link here...' className='placeholder:text-xs' />
         <CallMethods />
       </div>
     </div>

@@ -7,7 +7,7 @@ import { motion, Variants } from "framer-motion";
 import { Button } from "@/modules/common/ui/button";
 import { ArrowBigLeft } from "lucide-react";
 
-const taskTimeVariant: Variants = {
+export const taskTimeVariant: Variants = {
   hidden: { opacity: 0, x: 100 },
   visible: { opacity: 1, x: 0, transition: { delay: 0.2 } },
 };

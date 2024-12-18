@@ -23,10 +23,21 @@ interface NewTaskStore {
   setTask: (task: TaskItem) => void;
   type: "list" | "group";
   setType: (type: "list" | "group") => void;
+  isTask: boolean;
+  setIsTask: (isTask: boolean) => void;
+  list: string;
+  setList: (list: string) => void;
+  previewTask: boolean;
+  setPreviewTask: (previewTask: boolean) => void;
+  callMethod: string;
+  setCallMethod: (method: string) => void;
+  callLink: string;
+  setCallLink: (link: string) => void;
   reset: () => void;
+  isValid: () => boolean;
 }
 
-const useNewTaskStore = create<NewTaskStore>((set) => ({
+const useNewTaskStore = create<NewTaskStore>((set, get) => ({
   isNewTask: false,
   setIsNewTask: (isNewTask) => set(() => ({ isNewTask })),
   title: "",
@@ -50,10 +61,22 @@ const useNewTaskStore = create<NewTaskStore>((set) => ({
     set(() => ({ selectedCategory: selectedCategory })),
   task: [],
   setTask: (newTask) => set((state) => ({ task: [...state.task, newTask] })),
+  isTask: false,
+  setIsTask: (isTask) => set(() => ({ isTask })),
+  previewTask: false,
+  setPreviewTask: (previewTask) => set(() => ({ previewTask })),
+  callMethod: "",
+  setCallMethod: (method) => set(() => ({ callMethod: method })),
+  callLink: "",
+  setCallLink: (link) => set(() => ({ callLink: link })),
+  list: "",
+  setList: (list) => set(() => ({ list })),
   reset: () =>
     set(() => ({
       isNewTask: false,
       title: "",
+      description: "",
+      type: "list",
       taskDate: "",
       isTaskTime: false,
       taskTimeFrom: "",
@@ -61,7 +84,22 @@ const useNewTaskStore = create<NewTaskStore>((set) => ({
       isTaskList: false,
       selectedCategory: null,
       task: [],
+      isTask: false,
+      previewTask: false,
+      callMethod: "whatsapp",
+      callLink: "",
+      list: "",
     })),
+    isValid: () => {
+      const { title, taskDate, taskTimeFrom, taskTimeUntil, list } = get();
+      return (
+        title.trim() !== "" &&
+        taskDate.trim() !== "" &&
+        taskTimeFrom.trim() !== "" &&
+        taskTimeUntil.trim() !== "" &&
+        list.trim() !== ""
+      );
+    },
 }));
 
 export default useNewTaskStore;

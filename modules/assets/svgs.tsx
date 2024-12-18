@@ -100,8 +100,8 @@ export function WhatsAppSVG() {
       xmlns='http://www.w3.org/2000/svg'
       fillRule='evenodd'
       clipRule='evenodd'
-      stroke-linejoin='round'
-      stroke-miterlimit='2'
+      strokeLinejoin='round'
+      strokeMiterlimit='2'
       width='30'
       height='30'>
       <path
@@ -134,7 +134,7 @@ export function ZoomSVG() {
         clipRule='evenodd'
         d='M14.866 32.574h16.755V20.288c0-1.851-1.5-3.351-3.351-3.351H11.515v12.286c0 1.851 1.5 3.351 3.351 3.351zm18.988-4.467l6.702 4.467V16.937l-6.701 4.468z'
         fill='#fff'
-        fill-rule='evenodd'
+        fillRule='evenodd'
       />
     </svg>
   );

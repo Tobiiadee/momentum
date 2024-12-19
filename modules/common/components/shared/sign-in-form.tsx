@@ -18,6 +18,8 @@ import { Checkbox } from "../../ui/checkbox";
 import { Text } from "../../ui/text";
 import { useRouter } from "next/navigation";
 import { GoogleSignIn } from "./sign-in-page";
+// import { signIn } from "@/modules/supabase/auth-fn";
+import { useAuth } from "@/hooks/use-auth";
 
 const formSchema = z.object({
   email: z.string().min(2, {
@@ -30,6 +32,7 @@ const formSchema = z.object({
 
 export default function SignInForm() {
   const router = useRouter();
+  const {signInWithEmailPassword, loading, } = useAuth();
   // ...
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -42,10 +45,8 @@ export default function SignInForm() {
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-    router.push("/dashboard");
+    signInWithEmailPassword(values.email, values.password);
+    // router.push("/dashboard");
   }
   return (
     <Form {...form}>
@@ -107,7 +108,7 @@ export default function SignInForm() {
             </Text>
           </Button>
         </div>
-        <Button type='submit' className='w-full'>
+        <Button isLoading={loading} type='submit' className='w-full'>
           Sign in
         </Button>
         <GoogleSignIn className='border border-foreground' />

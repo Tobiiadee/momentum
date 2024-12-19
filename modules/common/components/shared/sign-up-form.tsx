@@ -17,6 +17,7 @@ import { Input } from "@/modules/common/ui/input";
 import { Text } from "../../ui/text";
 import { useRouter } from "next/navigation";
 import { GoogleSignIn } from "./sign-in-page";
+import { signUpWithUsername } from "@/modules/supabase/auth-fn";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -45,10 +46,14 @@ export default function SignUpForm() {
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+    signUpWithUsername({
+      email: values.email,
+      password: values.password,
+      username: values.username,
+    });
+    // router.push("/dashboard");
   }
+
   return (
     <Form {...form}>
       <form
@@ -101,7 +106,7 @@ export default function SignUpForm() {
         />
 
         <Button type='submit' className='w-full'>
-          Sign in
+          Sign up
         </Button>
         <GoogleSignIn className='border border-foreground' />
 

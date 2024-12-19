@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
   DropdownMenu,
@@ -8,20 +10,26 @@ import {
   DropdownMenuTrigger,
 } from "@/modules/common/ui/dropdown-menu";
 import Image from "next/image";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function AdminProfile() {
+  const { signOut, user } = useAuth();
+
+  console.log(user);
+  
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <ProfileImage />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="mr-5">
+      <DropdownMenuContent className='mr-5'>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>Profile</DropdownMenuItem>
         <DropdownMenuItem>Billing</DropdownMenuItem>
         <DropdownMenuItem>Team</DropdownMenuItem>
-        <DropdownMenuItem>Subscription</DropdownMenuItem>
+        {user && <DropdownMenuItem onClick={() => signOut()}>Log out</DropdownMenuItem>}
       </DropdownMenuContent>
     </DropdownMenu>
   );

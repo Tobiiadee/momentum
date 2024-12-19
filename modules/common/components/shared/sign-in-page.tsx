@@ -7,6 +7,7 @@ import { Button } from "../../ui/button";
 import { MoveLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { signInWithGoogle } from "@/modules/supabase/auth-fn";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -38,8 +39,9 @@ export default function SignInPage() {
 export function GoogleSignIn({ className }: { className?: string }) {
   return (
     <Button
+      onClick={() => signInWithGoogle()}
       variant={"ghost"}
-      type="button"
+      type='button'
       className={cn(className, "flex items-center space-x-2 w-full")}>
       <svg
         width='20px'

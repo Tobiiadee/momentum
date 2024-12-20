@@ -1,23 +1,19 @@
-// middleware.ts
-import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest } from 'next/server'
+import { updateSession } from './modules/supabase/utils/middleware'
 
-export async function middleware(req: NextRequest) {
-  const supabase = createMiddlewareClient({ req, res: NextResponse.next() });
+export async function middleware(request: NextRequest) {
+  return await updateSession(request)
+}
 
-  // Check if the user is authenticated
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  // Protected routes
-  const PROTECTED_ROUTES = ["/dashboard", "/profile", "/settings"];
-
-  // If the user is not authenticated and the route is protected, redirect
-  if (!session && PROTECTED_ROUTES.some((route) => req.nextUrl.pathname.startsWith(route))) {
-    const signInUrl = new URL("/auth/sign-in", req.url);
-    return NextResponse.redirect(signInUrl);
-  }
-
-  return NextResponse.next();
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * Feel free to modify this pattern to include more paths.
+     */
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
 }

@@ -14,11 +14,11 @@ import {
   FormMessage,
 } from "@/modules/common/ui/form";
 import { Input } from "@/modules/common/ui/input";
-import { Text } from "../../ui/text";
+import { Text } from "../../common/ui/text";
 import { useRouter } from "next/navigation";
-import { GoogleSignIn } from "./sign-in-page";
 import { useAuth } from "@/hooks/use-auth";
-import InputPassword from "../../ui/input-password";
+import InputPassword from "../../common/ui/input-password";
+import GoogleSignIn from "../google-sign-in/google-sign-in";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -32,7 +32,7 @@ const formSchema = z.object({
   }),
 });
 
-export default function SignUpForm() {
+export default function RegisterForm() {
   const router = useRouter();
   const { signUpWithUsername, loading } = useAuth();
   // 1. Define your form.

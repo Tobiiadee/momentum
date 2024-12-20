@@ -1,3 +1,11 @@
+type UserDataType = {
+  id: string;
+  name: string;
+  email: string;
+  avatar: string;
+  picture: string;
+};
+
 type taskCategory = {
   id: string;
   label: string;
@@ -41,7 +49,6 @@ type GroupType = {
   members: MemberType[];
   default: boolean;
   type?: "group";
-
 };
 
 type GroupArrayType = GroupType[];

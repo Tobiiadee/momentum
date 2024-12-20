@@ -1,6 +1,5 @@
 import { tasks } from "@/modules/assets/DUMMY_TASK";
 import { list } from "@/modules/assets/list";
-import { supabase } from "@/modules/supabase/supabase";
 
 // Calculate task counts dynamically
 export const updatedList = list.map((list) => {
@@ -21,10 +20,4 @@ export const updatedList = list.map((list) => {
   return { ...list, numberOfTask: taskCount }; // Update numberOfTask
 });
 
-export async function getUser() {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
-  return user?.user_metadata.display_name;
-}

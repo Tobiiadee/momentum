@@ -5,7 +5,7 @@ import { Text } from "../../ui/text";
 import { Button } from "../../ui/button";
 import { MoveLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import SignUpForm from "./sign-up-form";
+import RegisterForm from "../../../auth/register/register-form";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -28,7 +28,7 @@ export default function SignUpPage() {
            Create your account to start using Momentum.
           </Text>
         </div>
-        <SignUpForm />
+        <RegisterForm />
       </div>
     </div>
   );

@@ -9,13 +9,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/modules/common/ui/dropdown-menu";
-import Image from "next/image";
-import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/modules/supabase/supabase";
+import { useAuth } from "@/hooks/use-auth";
+import ProfileImage from "./profile-image";
 
 export default function AdminProfile() {
   const router = useRouter();
-  const { signOut, user } = useAuth();
+  const user = supabase.auth.getUser();
+  const { signOut } = useAuth();
 
   return (
     <DropdownMenu>
@@ -25,30 +27,19 @@ export default function AdminProfile() {
       <DropdownMenuContent className='mr-5'>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Profile</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/dashboard/profile")}>
+          Profile
+        </DropdownMenuItem>
         <DropdownMenuItem>Achieve</DropdownMenuItem>
 
         {!!user ? (
           <DropdownMenuItem onClick={() => signOut()}>Log out</DropdownMenuItem>
         ) : (
-          <DropdownMenuItem onClick={() => router.push("/auth/sign-in")}>
-            Sign in
+          <DropdownMenuItem onClick={() => router.push("/auth/login")}>
+            Login
           </DropdownMenuItem>
         )}
       </DropdownMenuContent>
     </DropdownMenu>
-  );
-}
-
-function ProfileImage() {
-  return (
-    <div className='relative rounded-full w-8 aspect-square flex items-center justify-center overflow-hidden'>
-      <Image
-        src={"/images/img2.jpg"}
-        alt='avatar'
-        fill
-        className='object-cover'
-      />
-    </div>
   );
 }

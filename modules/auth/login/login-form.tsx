@@ -13,13 +13,13 @@ import {
   FormMessage,
 } from "@/modules/common/ui/form";
 import { Input } from "@/modules/common/ui/input";
-import { Checkbox } from "../../ui/checkbox";
-import { Text } from "../../ui/text";
+import { Checkbox } from "../../common/ui/checkbox";
+import { Text } from "../../common/ui/text";
 import { useRouter } from "next/navigation";
-import { GoogleSignIn } from "./sign-in-page";
 import { useAuth } from "@/hooks/use-auth";
-import ErrorTemp from "./error-temp";
-import InputPassword from "../../ui/input-password";
+import ErrorTemp from "../../common/components/shared/error-temp";
+import InputPassword from "../../common/ui/input-password";
+import GoogleSignIn from "../google-sign-in/google-sign-in";
 
 const formSchema = z.object({
   email: z.string().min(2, {
@@ -30,7 +30,7 @@ const formSchema = z.object({
   }),
 });
 
-export default function SignInForm() {
+export default function LoginForm() {
   const router = useRouter();
   const { signInWithEmailPassword, loading, error } = useAuth();
   // ...

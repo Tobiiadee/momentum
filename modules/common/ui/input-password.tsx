@@ -1,0 +1,65 @@
+import React, { useState } from "react";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "./form";
+import { Input } from "./input";
+import { Button } from "./button";
+import { Eye, EyeOff } from "lucide-react";
+
+interface InputPasswordProps {
+  control: any;
+}
+
+export default function InputPassword({ control }: InputPasswordProps) {
+  const [showPassword, setShowPassword] = useState(false);
+
+  return (
+    <FormField
+      control={control}
+      name='password'
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Password</FormLabel>
+          <FormControl>
+            <div className='relative'>
+              <Input
+                type={showPassword ? "text" : "password"}
+                placeholder='Choose your password'
+                {...field}
+              />
+              <ShowPassword show={showPassword} setShow={setShowPassword} />
+            </div>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+}
+
+function ShowPassword({
+  show,
+  setShow,
+}: {
+  show: boolean;
+  setShow: (show: boolean) => void;
+}) {
+  return (
+    <Button
+      type='button'
+      onClick={() => setShow(!show)}
+      variant={"ghost"}
+      size={"sm"}
+      className='absolute top-1/2 -translate-y-1/2 right-1 bg-transparent hover:bg-transparent'>
+      {!show ? (
+        <EyeOff size={24} strokeWidth={1.5} />
+      ) : (
+        <Eye size={24} strokeWidth={1.5} />
+      )}
+    </Button>
+  );
+}

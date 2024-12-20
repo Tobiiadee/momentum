@@ -173,7 +173,7 @@ export function GoogleMeetSVG() {
 export function LogoSVG() {
   return (
     <svg width='35px' height='35px' viewBox='0 0 24 24'>
-      <g fill='none' fill-rule='evenodd'>
+      <g fill='none' fillRule='evenodd'>
         <path
           fill='#000000'
           fillRule='nonzero'

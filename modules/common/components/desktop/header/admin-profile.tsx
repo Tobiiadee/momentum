@@ -11,12 +11,11 @@ import {
 } from "@/modules/common/ui/dropdown-menu";
 import Image from "next/image";
 import { useAuth } from "@/hooks/use-auth";
+import { useRouter } from "next/navigation";
 
 export default function AdminProfile() {
+  const router = useRouter();
   const { signOut, user } = useAuth();
-
-  console.log(user);
-  
 
   return (
     <DropdownMenu>
@@ -27,9 +26,15 @@ export default function AdminProfile() {
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>Profile</DropdownMenuItem>
-        <DropdownMenuItem>Billing</DropdownMenuItem>
-        <DropdownMenuItem>Team</DropdownMenuItem>
-        {user && <DropdownMenuItem onClick={() => signOut()}>Log out</DropdownMenuItem>}
+        <DropdownMenuItem>Achieve</DropdownMenuItem>
+
+        {!!user ? (
+          <DropdownMenuItem onClick={() => signOut()}>Log out</DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem onClick={() => router.push("/auth/sign-in")}>
+            Sign in
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

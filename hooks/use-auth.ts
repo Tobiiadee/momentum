@@ -1,5 +1,5 @@
+import { useEffect, useState } from "react";
 import { supabase } from "@/modules/supabase/supabase";
-import { useState } from "react";
 import type { User, AuthError, PostgrestError } from "@supabase/supabase-js";
 
 interface SignUpData {
@@ -9,15 +9,43 @@ interface SignUpData {
 }
 
 export const useAuth = () => {
-  const [user, setUser] = useState<User | null>(null); // State to store user information
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<
     AuthError | PostgrestError | string | null
   >(null);
 
+  // Initialize user session and listen for auth state changes
+  useEffect(() => {
+    setLoading(true);
+    const initializeUser = async () => {
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
+
+      if (error) {
+        console.error("Error fetching session:", error.message);
+        setError(error.message);
+      } else {
+        setUser(session?.user || null);
+      }
+      setLoading(false);
+    };
+
+    initializeUser();
+
+    const subscription = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => {
+      subscription.data.subscription.unsubscribe();
+    };
+  }, []);
+
   const signInWithEmailPassword = async (email: string, password: string) => {
     setLoading(true);
-    setUser(null);
     setError(null);
 
     try {
@@ -25,20 +53,16 @@ export const useAuth = () => {
         email,
         password,
       });
-
       if (error) throw new Error(error.message);
-      setLoading(false);
+
       setUser(data.user);
-      setError(null);
       console.log("Sign-in successful:", data);
-      window.location.href = "/dashboard"; // Redirect to dashboard
+      window.location.href = "/dashboard";
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        setError(error.message); // Set the error message in the state
-        console.error("Error signing in:", error.message);
-      } else {
-        setError("Unexpected error occurred");
-      }
+      setError(
+        error instanceof Error ? error.message : "Unexpected error occurred"
+      );
+    } finally {
       setLoading(false);
     }
   };
@@ -46,19 +70,15 @@ export const useAuth = () => {
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
-
       if (error) throw new Error(error.message);
 
-      setUser(null); // Clear user state on sign-out
+      setUser(null);
       console.log("Sign-out successful");
-      
-      window.location.reload();
+      window.location.href = "/auth/sign-in";
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        setError(error.message); // Set the error message in the state
-      } else {
-        setError("Unexpected error occurred");
-      }
+      setError(
+        error instanceof Error ? error.message : "Unexpected error occurred"
+      );
     }
   };
 
@@ -68,52 +88,48 @@ export const useAuth = () => {
     username,
   }: SignUpData) => {
     setLoading(true);
-    setUser(null);
     setError(null);
 
     try {
+      // Sign up the user
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
       });
 
       if (authError) {
-        setError(authError);
-        setLoading(false);
+        setError(authError.message);
         throw new Error(authError.message);
       }
 
       const user = authData.user;
       if (!user) throw new Error("User not created.");
 
+      // Insert additional profile data
       const { error: profileError } = await supabase
         .from("profiles")
         .insert([{ id: user.id, username }]);
 
       if (profileError) {
-        setError(profileError);
-        setLoading(false);
+        setError(profileError.message);
         throw new Error(profileError.message);
       }
 
       console.log("Sign-up and profile creation successful!");
-      setLoading(false);
-      setUser(user); // Update user state
+      setUser(user);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        setError(error.message); // Set the error message in the state
-      } else {
-        setError("Unexpected error occurred");
-        console.error("Error during sign-up:", error);
-      }
+      setError(
+        error instanceof Error ? error.message : "Unexpected error occurred"
+      );
+    } finally {
       setLoading(false);
     }
   };
 
   return {
     user,
-    error,
     loading,
+    error,
     signInWithEmailPassword,
     signOut,
     signUpWithUsername,

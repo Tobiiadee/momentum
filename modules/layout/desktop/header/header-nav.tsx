@@ -24,7 +24,7 @@ export default function HeaderNav() {
   return (
     <div className='flex items-center space-x-6'>
       {navLinks.map((navLink) => (
-        <HeaderNavLinks key={navLink.href} {...navLink} />
+        <HeaderNavLinks key={navLink.label} {...navLink} />
       ))}
     </div>
   );

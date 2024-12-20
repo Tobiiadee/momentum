@@ -13,19 +13,19 @@ export default function Logo() {
       <path
         d='M70 100 L90 130 L140 70'
         stroke='black'
-        stroke-width='10'
+        strokeWidth='10'
         fill='none'
-        stroke-linecap='round'
-        stroke-linejoin='round'
+        strokeLinecap='round'
+        strokeLinejoin='round'
       />
 
       <path
         d='M40 160 L60 120 L80 160 L100 120 L120 160'
         stroke='black'
-        stroke-width='10'
+        strokeWidth='10'
         fill='none'
-        stroke-linecap='round'
-        stroke-linejoin='round'
+        strokeLinecap='round'
+        strokeLinejoin='round'
       />
     </svg>
   );

@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
 import { Button } from "@/modules/common/ui/button";
 import {
   Form,
@@ -18,8 +17,9 @@ import { Checkbox } from "../../ui/checkbox";
 import { Text } from "../../ui/text";
 import { useRouter } from "next/navigation";
 import { GoogleSignIn } from "./sign-in-page";
-// import { signIn } from "@/modules/supabase/auth-fn";
 import { useAuth } from "@/hooks/use-auth";
+import ErrorTemp from "./error-temp";
+import InputPassword from "../../ui/input-password";
 
 const formSchema = z.object({
   email: z.string().min(2, {
@@ -32,7 +32,7 @@ const formSchema = z.object({
 
 export default function SignInForm() {
   const router = useRouter();
-  const {signInWithEmailPassword, loading, } = useAuth();
+  const { signInWithEmailPassword, loading, error } = useAuth();
   // ...
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -48,6 +48,7 @@ export default function SignInForm() {
     signInWithEmailPassword(values.email, values.password);
     // router.push("/dashboard");
   }
+
   return (
     <Form {...form}>
       <form
@@ -67,24 +68,10 @@ export default function SignInForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name='password'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input
-                  type='password'
-                  placeholder='Enter your password'
-                  {...field}
-                />
-              </FormControl>
+        <InputPassword control={form.control} />
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {!!error && <ErrorTemp error={error as string} />}
+
         <div className='flex justify-between items-center'>
           <div className='flex space-x-2 items-center'>
             <Checkbox name='remember' id='remember' />
@@ -97,6 +84,7 @@ export default function SignInForm() {
               </Text>
             </label>
           </div>
+
           <Button
             variant={"ghost"}
             type='button'

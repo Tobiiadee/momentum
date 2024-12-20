@@ -17,7 +17,8 @@ import { Input } from "@/modules/common/ui/input";
 import { Text } from "../../ui/text";
 import { useRouter } from "next/navigation";
 import { GoogleSignIn } from "./sign-in-page";
-import { signUpWithUsername } from "@/modules/supabase/auth-fn";
+import { useAuth } from "@/hooks/use-auth";
+import InputPassword from "../../ui/input-password";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -33,7 +34,7 @@ const formSchema = z.object({
 
 export default function SignUpForm() {
   const router = useRouter();
-  // ...
+  const { signUpWithUsername, loading } = useAuth();
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -86,27 +87,10 @@ export default function SignUpForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name='password'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input
-                  type='password'
-                  placeholder='Choose your password'
-                  {...field}
-                />
-              </FormControl>
+        <InputPassword control={form.control} />
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <Button type='submit' className='w-full'>
-          Sign up
+        <Button isLoading={loading} type='submit' className='w-full'>
+          Create account
         </Button>
         <GoogleSignIn className='border border-foreground' />
 

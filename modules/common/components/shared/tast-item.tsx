@@ -51,8 +51,10 @@ export default function TaskItem({
     }),
   }));
 
+  
+  // removed ref={dragRef as ConnectDragSource}
   return (
-    <div ref={dragRef as ConnectDragSource}>
+    <div>
       <motion.div
         // ref={mergeRefs([dragRef, newRef])}
         variants={accordionVariants}
@@ -131,7 +133,7 @@ function CollapsibleTrigger({
       </div>
 
       <div className='flex space-x-2 items-center'>
-        {type === "group" && <TaskGroupImg members={[]}/>}
+        {type === "group" && <TaskGroupImg members={[]} />}
         <div className='flex space-x-1 items-center bg-foreground/10 px-2 py-1 rounded-md'>
           <Clock strokeWidth={1.5} size={18} className='text-foreground/60' />
           <Text variant={"p"} className='text-foreground/60 text-xs'>
@@ -164,6 +166,9 @@ function MoreOptionsDropdown({
       <DropdownMenuContent className='mr-14'>
         <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
           Archive
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
+          Reschedule
         </DropdownMenuItem>
         <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
           Delete

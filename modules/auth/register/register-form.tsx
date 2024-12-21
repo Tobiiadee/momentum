@@ -99,7 +99,7 @@ export default function RegisterForm() {
             Already have an account?
           </Text>
           <Button
-            onClick={() => router.push("/auth/sign-in")}
+            onClick={() => router.push("/auth/login")}
             type='button'
             variant={"ghost"}
             className='bg-transparent hover:bg-transparent p-0 hover:underline'>

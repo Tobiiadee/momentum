@@ -106,7 +106,7 @@ export default function LoginForm() {
             Don&apos;t have an account?
           </Text>
           <Button
-            onClick={() => router.push("/auth/onboarding")}
+            onClick={() => router.push("/auth/create-account")}
             type='button'
             variant={"ghost"}
             className='bg-transparent hover:bg-transparent p-0 hover:underline'>

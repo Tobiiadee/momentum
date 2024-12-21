@@ -18,7 +18,7 @@ export const useAuth = () => {
 
   // Initialize user session and listen for auth state changes
   useEffect(() => {
-    setIsSubmitting(true);
+    // setIsSubmitting(true);
     const initializeUser = async () => {
       const {
         data: { session },

@@ -36,7 +36,7 @@ export default function ThinkPlan() {
           Efficiently manage your task and boost productivity
         </Text>
 
-        <Button onClick={() => router.push("/auth/onboarding")} variant={"default"} className='self-center'>
+        <Button onClick={() => router.push("/auth/create-account")} variant={"default"} className='self-center'>
           Get Started
         </Button>
       </div>

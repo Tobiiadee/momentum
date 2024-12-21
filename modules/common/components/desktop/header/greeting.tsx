@@ -4,12 +4,12 @@ import { Text } from "@/modules/common/ui/text";
 import React from "react";
 
 export default async function Greeting() {
-  const { name } = await getUserData();
+  const { name, email } = await getUserData();
   return (
     <div>
-      <Text variant={"h3"} className="capitalize">
+      <Text variant={"h3"} className="capitalize font-medium">
         <span className='text-foreground/60 capitalize'>{getGreeting()}, </span>
-        {name || "User"} 👏
+        {name || email} 👏
       </Text>
       <Text variant={"h4"} className='text-foreground/60'>
         Today {getFormattedDate()}

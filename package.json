@@ -18,9 +18,9 @@
     "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.4",
-    "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.47.9",
+    "chroma-js": "^3.1.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
@@ -42,6 +42,7 @@
     "zustand": "^5.0.1"
   },
   "devDependencies": {
+    "@types/chroma-js": "^2.4.5",
     "@types/next": "^9.0.0",
     "@types/node": "^20",
     "@types/react": "^18",

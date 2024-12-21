@@ -10,7 +10,7 @@ export default function SignInBtn() {
 
   return (
     <Button
-      onClick={() => push("/auth/sign-in")}
+      onClick={() => push("/auth/login")}
       variant={"ghost"}
       className='border border-foreground rounded-2xl'>
       <Text variant={"p"} className='font-medium'>

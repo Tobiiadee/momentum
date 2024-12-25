@@ -10,6 +10,7 @@ import { Button } from "@/modules/common/ui/button";
 import { X } from "lucide-react";
 import useAllListStore from "@/modules/store/all-list-store";
 import TaskNumber from "../../../shared/task-number";
+import Image from "next/image";
 
 const listItemVariants: Variants = {
   hidden: { x: 70, opacity: 0 },
@@ -33,12 +34,12 @@ const deleteListVariants: Variants = {
 export default function NewListItem({
   id,
   name,
-  icon,
+  svgImage,
   numberOfTask,
 }: {
   id: string;
   name: string;
-  icon: React.ReactNode;
+  svgImage: string;
   numberOfTask: number;
 }) {
   const [deleteList, setDeletelist] = useState(false);
@@ -48,8 +49,8 @@ export default function NewListItem({
   const isActive = pathName === `/${name}`;
 
   const deleteListHandler = () => {
-    removeFromList(id)
-  }
+    removeFromList(id);
+  };
 
   return (
     <motion.div
@@ -68,10 +69,10 @@ export default function NewListItem({
           "w-full flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-foreground/10 active:bg-foreground/20  transition-all duration-300 cursor-pointer"
         )}>
         <div className='flex space-x-4 items-center'>
-          <div className='w-5 aspect-square'>
-            {icon}
+          <div className='w-8 relative aspect-square grid place-items-center'>
+            <Image src={svgImage} alt={`${name} icon`} fill priority className="object-cover" />
           </div>
-          <Text variant={"p"} className='font-semibold'>
+          <Text variant={"p"} className='font-semibold capitalize'>
             {name}
           </Text>
         </div>
@@ -87,10 +88,7 @@ export default function NewListItem({
             animate='visible'
             exit={"hidden"}
             className='absolute left-1/2 -top-6 -translate-x-1/2  w-8 aspect-square shadow-md bg-background flex justify-center items-center rounded-full overflow-hidden'>
-            <Button
-              onClick={deleteListHandler}
-              variant={"ghost"}
-              className=''>
+            <Button onClick={deleteListHandler} variant={"ghost"} className=''>
               <X strokeWidth={1.5} size={20} />
             </Button>
           </motion.div>

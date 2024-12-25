@@ -7,9 +7,8 @@ import { Button } from "@/modules/common/ui/button";
 import { X } from "lucide-react";
 import { useListStore } from "@/modules/store/list-store";
 import useAllListStore from "@/modules/store/all-list-store";
-import PickEmoji from "./pick-emoji";
-import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
-import EmojiSelect from "./emoji-select";
+import SVGSelected from "./svg-selected";
+import SelectSvg from "./select-svg";
 
 const variants: Variants = {
   hidden: { y: 0, opacity: 0 },
@@ -26,17 +25,8 @@ export default function NewList() {
   const inputRef = useRef<HTMLInputElement>(null);
   // const setIsList = useListStore((state) => state.setIsList);
   const isList = useListStore((state) => state.isList);
-  const showEmojiPicker = useListStore((state) => state.showEmojipicker);
-  const setShowEmojiPicker = useListStore((state) => state.setShowEmojipicker);
-  const setEmoji = useListStore((state) => state.setEmoji);
-  const emoji = useListStore((state) => state.emoji);
+  const svgImage = useListStore((state) => state.svgImage);
   const reset = useListStore((state) => state.reset);
-
-  const handleEmojiClick = (emojiData: EmojiClickData) => {
-    setEmoji(emojiData.emoji);
-    setShowEmojiPicker(false);
-  };
-
   const addToList = useAllListStore((state) => state.addToList);
 
   useEffect(() => {
@@ -52,7 +42,7 @@ export default function NewList() {
       label: listName.trim(),
       numberOfTask: 0,
       default: false,
-      icon: emoji,
+      icon: svgImage,
       type: "list",
     };
 
@@ -61,7 +51,6 @@ export default function NewList() {
       reset();
     }
   };
-
 
   return (
     <>
@@ -72,40 +61,39 @@ export default function NewList() {
         exit={"exit"}
         variants={variants}
         className='absolute top-1/3 -translate-y-1/3 left-[22rem] z-50 w-72 h-max flex flex-col space-y-4 shadow-lg bg-background rounded-md px-3 py-4'>
+        {!!svgImage && <SVGSelected />}
+
         <div className='relative flex space-x-1 items-center'>
           <Input
             onChange={(e) => setListName(e.target.value)}
             ref={inputRef}
             value={listName}
             placeholder='Choose a list name...'
-            className='placeholder:text-xs pl-10'
+            className='placeholder:text-xs'
           />
-          <PickEmoji />
-          <EmojiSelect />
+          {/* <PickSvg /> */}
+          {/* <EmojiSelect /> */}
         </div>
+
+        {!!listName && (
+          <div className='relative w-full'>
+            <SelectSvg seed={listName} />
+          </div>
+        )}
 
         <Button
           type='submit'
-          disabled={!listName}
+          disabled={!listName || svgImage === ""}
           variant={"default"}
           className=''>
           Add
         </Button>
 
         <div className='absolute -top-[2.5rem] -right-4 w-8 aspect-square shadow-md bg-background flex justify-center items-center rounded-full overflow-hidden'>
-          <Button
-            onClick={() => reset()}
-            variant={"ghost"}
-            className=''>
+          <Button type="button" onClick={() => reset()} variant={"ghost"} className=''>
             <X strokeWidth={1.5} size={20} />
           </Button>
         </div>
-
-        {showEmojiPicker && (
-          <div className='absolute left-[110%] -top-20 z-10 mt-2'>
-            <EmojiPicker onEmojiClick={handleEmojiClick} />
-          </div>
-        )}
       </motion.form>
     </>
   );

@@ -24,7 +24,7 @@ export default function WorkTask({
   if (isLoading) {
     return (
       <div className='flex flex-col space-y-4'>
-        {Array.from({ length: 8 }).map((_, i) => (
+        {Array.from({ length: 5 }).map((_, i) => (
           <TaskSkeleton key={i} />
         ))}
       </div>
@@ -50,9 +50,7 @@ export default function WorkTask({
         ))}
       </div>
 
-      <div className='grid place-items-center h-[60vh]'>
-        {isLoading && task?.length === 0 && <EmptyTaskModule module='work' />}
-      </div>
+      {isLoading && task?.length === 0 && <EmptyTaskModule module='work' />}
     </Accordion>
   );
 }

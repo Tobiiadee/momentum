@@ -1,5 +1,5 @@
 import { Button } from "@/modules/common/ui/button";
-import { SmilePlus, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import React from "react";
 import {
   Tooltip,
@@ -10,7 +10,7 @@ import {
 import { Text } from "@/modules/common/ui/text";
 import useListStore from "@/modules/store/list-store";
 
-export default function PickEmoji() {
+export default function PickSvg() {
   const setShowEmojipicker = useListStore((state) => state.setShowEmojipicker);
   const showEmojiPicker = useListStore((state) => state.showEmojipicker);
 
@@ -26,7 +26,7 @@ export default function PickEmoji() {
               aria-label='Select an emoji'
               size={"icon"}
               className='flex items-center space-x-2 hover:bg-transparent'>
-              <SmilePlus strokeWidth={1.5} size={20} />
+              <Plus strokeWidth={1.5} size={20} />
             </Button>
           ) : (
             <Button
@@ -42,7 +42,7 @@ export default function PickEmoji() {
         </TooltipTrigger>
         <TooltipContent>
           <Text variant={"p"} className='text-xs'>
-            Select an emoji
+            Select an svg
           </Text>
         </TooltipContent>
       </Tooltip>

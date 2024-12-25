@@ -5,6 +5,7 @@ import { Text } from "@/modules/common/ui/text";
 import { MoveLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { VerifyEmail } from "./verify-email";
 
 export default function EmailConfirmPage() {
   const router = useRouter();
@@ -18,15 +19,19 @@ export default function EmailConfirmPage() {
         <MoveLeft size={20} strokeWidth={1.5} />
         <Text variant={"p"}>Back</Text>
       </Button>
-      <div className='self-center flex flex-col h-full w-full space-y-6 items-center mt-32 lg:mt-0 lg:justify-center'>
-        <div className='flex flex-col space-y-4'>
-          <Text variant={"h2"} className='font-normal text-center'>
-            Hi, we&apos;ve just sent you a confirmation email.
+      <div className='flex flex-col h-full w-full space-y-6 items-center mt-32 lg:mt-0 lg:justify-center'>
+        <div className='flex flex-col space-y-2'>
+          <Text variant={"h2"} className='font-normal text-center capitalize'>
+            Verify your email address
           </Text>
-          <Text variant={"p"} className='font-normal text-foreground/70 text-center'>
-            Please check your inbox and click the link to confirm your account.
+          <Text
+            variant={"p"}
+            className='font-normal text-foreground/70 text-center'>
+            Please enter the 6-digit code we sent to your email address.
           </Text>
         </div>
+        
+        <VerifyEmail />
       </div>
     </div>
   );

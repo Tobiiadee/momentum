@@ -40,7 +40,7 @@ type TaskItem = {
 type ListType = {
   id: string;
   label: string;
-  icon: React.ReactNode | string;
+  icon: string;
   numberOfTask: number;
   default: boolean;
   type?: "list";
@@ -58,7 +58,7 @@ type MemberType = {
 type GroupType = {
   id: string;
   label: string;
-  icon?: React.ReactNode;
+  icon?: string;
   numberOfTask: number;
   members: MemberType[];
   default: boolean;
@@ -70,7 +70,7 @@ type GroupArrayType = GroupType[];
 type TaskType = {
   id: string;
   label: string;
-  icon: React.ReactNode;
+  icon: React.ReactNode | string;
   numberOfTask: number;
   default: boolean;
   type?: "task";

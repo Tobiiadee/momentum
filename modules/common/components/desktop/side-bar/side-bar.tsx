@@ -79,7 +79,7 @@ export default function SideBar() {
                 key={list.id}
                 id={list.id}
                 name={list.label}
-                icon={list.icon}
+                svgImage={list.icon as string}
                 numberOfTask={list.numberOfTask}
               />
             ))}

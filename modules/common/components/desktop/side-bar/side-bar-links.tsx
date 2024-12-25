@@ -12,6 +12,7 @@ interface SideBarLinksProps {
   onClick?: () => void;
   numberOfTask?: string | number;
   label?: string;
+  isLoading?: boolean;
 }
 
 export default function SideBarLinks({
@@ -19,6 +20,7 @@ export default function SideBarLinks({
   numberOfTask,
   label,
   icon,
+  isLoading,
 }: SideBarLinksProps) {
   const pathname = usePathname();
   const router = useRouter();
@@ -48,9 +50,7 @@ export default function SideBarLinks({
         </Text>
       </div>
 
-      {numberOfTask && <TaskNumber numberOfTask={numberOfTask} />}
+      <TaskNumber isLoading={isLoading} numberOfTask={numberOfTask} />
     </div>
   );
 }
-
-

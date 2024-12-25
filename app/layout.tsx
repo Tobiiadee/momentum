@@ -3,6 +3,7 @@ import "./globals.css";
 import "@fontsource-variable/nunito-sans";
 import ClientProvider from "@/modules/common/components/shared/client-provider";
 import { getUserData } from "@/lib/helpers/get-user-data";
+import { Toaster } from "@/modules/common/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Momentum",
@@ -15,6 +16,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
 
+
   const user = await getUserData();
 
   return (
@@ -22,6 +24,7 @@ export default async function RootLayout({
       <body>
         <div id='overlay'></div>
         <ClientProvider user={user}>{children}</ClientProvider>
+        <Toaster />
       </body>
     </html>
   );

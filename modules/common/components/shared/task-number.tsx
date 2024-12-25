@@ -1,23 +1,29 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Text } from "../../ui/text";
+import { LoaderCircle } from "lucide-react";
 
 export default function TaskNumber({
-    numberOfTask,
-    className,
-  }: {
-    numberOfTask?: string | number;
-    className?: string;
-  }) {
-    return (
-      <div
-        className={cn(
-          className,
-          "w-6 aspect-square rounded-full bg-foreground/5 flex items-center justify-center"
-        )}>
+  numberOfTask,
+  className,
+  isLoading,
+}: {
+  numberOfTask?: string | number;
+  className?: string;
+  isLoading?: boolean;
+}) {
+  return (
+    <div
+      className={cn(
+        className,
+        "w-6 aspect-square rounded-full bg-foreground/5 flex items-center justify-center"
+      )}>
+      {!isLoading && (
         <Text variant='p' className='text-xs font-semibold text-foreground/80'>
           {numberOfTask}
         </Text>
-      </div>
-    );
-  }
+      )}
+      {isLoading && <LoaderCircle className='h-4 w-4 animate-spin text-foreground/70' />}
+    </div>
+  );
+}

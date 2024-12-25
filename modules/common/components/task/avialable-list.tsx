@@ -5,8 +5,10 @@ import { motion, Variants } from "framer-motion";
 // import TaskCreateNewList from "./task-create-new-list";
 import useNewTaskStore from "@/modules/store/new-task.store";
 // import useAllListStore from "@/modules/store/all-list-store";
-import { updatedList } from "@/lib/helpers/helpers";
 import TaskNumber from "../shared/task-number";
+import { list } from "@/modules/assets/list";
+import useUserStore from "@/modules/store/user-store";
+import { useNewTask } from "@/hooks/use-new-task";
 
 const listVariant: Variants = {
   hidden: { opacity: 0, height: 100 },
@@ -14,9 +16,25 @@ const listVariant: Variants = {
 };
 
 export default function AvialableList() {
-  const modifiedList = updatedList.filter(
+  const updatedList = list.filter(
     (list) => list.label !== "completed" && list.label !== "home"
   );
+
+  const user = useUserStore((state) => state.user);
+  const { allTasks, isLoadingAllTasks } = useNewTask(user?.id as string);
+
+  // Calculate task counts dynamically
+  const modifiedList = updatedList.map((list) => {
+    let taskCount: number | undefined = 0;
+
+    if (list.label === "personal") {
+      taskCount = allTasks?.filter((task) => task.list === "personal").length;
+    } else if (list.label === "work") {
+      taskCount = allTasks?.filter((task) => task.list === "work").length;
+    }
+
+    return { ...list, numberOfTask: taskCount }; // Update numberOfTask
+  });
 
   return (
     <motion.div
@@ -29,6 +47,7 @@ export default function AvialableList() {
           <ListItem
             key={index + list.id}
             type={list.type as "list" | "group"}
+            isLoading={isLoadingAllTasks}
             {...list}
           />
         ))}
@@ -45,6 +64,7 @@ interface ListItemProps {
   numberOfTask?: string | number;
   id: string;
   type: "list" | "group";
+  isLoading?: boolean;
 }
 
 function ListItem({ numberOfTask, icon, label, id, type }: ListItemProps) {

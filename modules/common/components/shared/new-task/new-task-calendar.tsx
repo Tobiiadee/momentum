@@ -6,18 +6,18 @@ import { taskTimeVariant } from "./new-task-time";
 import { motion } from "framer-motion";
 
 const months = [
-  "January",
-  "February",
+  "Jan",
+  "Feb",
   "March",
   "April",
   "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sept",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
 
 export default function NewTaskCalendar() {
@@ -28,7 +28,8 @@ export default function NewTaskCalendar() {
     const date = new Date(day as Date);
     const dayDate = date.getDate();
     const month = date.getMonth();
-    const taskDate = ` ${dayDate} ${months[month]}`;
+    const year = date.getFullYear();
+    const taskDate = ` ${dayDate} ${months[month]}, ${year}`;
     setTaskDate(taskDate);
   };
 

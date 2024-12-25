@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import InputPassword from "../../common/ui/input-password";
 import GoogleSignIn from "../google-sign-in/google-sign-in";
+import useUserStore from "@/modules/store/user-store";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -34,7 +35,10 @@ const formSchema = z.object({
 
 export default function RegisterForm() {
   const router = useRouter();
-  const { signUpWithUsername, loading } = useAuth();
+  const { signUpWithUsername, loading, error } = useAuth();
+  const setUserConfirmation = useUserStore(
+    (state) => state.setUserConfirmation
+  );
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -52,6 +56,10 @@ export default function RegisterForm() {
       password: values.password,
       username: values.username,
     });
+
+    if (!loading && !error) {
+      setUserConfirmation(true);
+    }
     // router.push("/dashboard");
   }
 
@@ -104,7 +112,7 @@ export default function RegisterForm() {
             variant={"ghost"}
             className='bg-transparent hover:bg-transparent p-0 hover:underline'>
             <Text variant={"p"} className='font-normal text-foreground'>
-              Sign in
+              Login
             </Text>
           </Button>
         </span>

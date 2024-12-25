@@ -5,17 +5,26 @@ import { Button } from "@/modules/common/ui/button";
 import Modal from "@/modules/common/ui/modal";
 import { Text } from "@/modules/common/ui/text";
 import useNewTaskStore from "@/modules/store/new-task.store";
-import { X } from "lucide-react";
+import { SquarePen, X } from "lucide-react";
 import React from "react";
 import { motion, Variants } from "framer-motion";
+import useUserStore from "@/modules/store/user-store";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useNewTask } from "@/hooks/use-new-task";
 
-const previewVariant: Variants = {
+export const previewVariant: Variants = {
   hidden: { opacity: 0, scale: 0.9 },
   visible: { opacity: 1, scale: 1 },
   exit: { opacity: 0, scale: 0.9 },
 };
 
 export default function PreviewTask() {
+  const router = useRouter();
+  const user = useUserStore((state) => state.user);
+  const { addTaskMutate, isAddingTask, isAddTaskError, addTaskError } =
+    useNewTask(user?.id as string);
+
   const setPreviewTask = useNewTaskStore((state) => state.setPreviewTask);
   const taskTitle = useNewTaskStore((state) => state.title);
   const taskDescription = useNewTaskStore((state) => state.description);
@@ -24,14 +33,35 @@ export default function PreviewTask() {
   const taskUntil = useNewTaskStore((state) => state.taskTimeUntil);
   const list = useNewTaskStore((state) => state.list);
   const callLink = useNewTaskStore((state) => state.callLink);
+  const type = useNewTaskStore((state) => state.type);
 
   const handleClosePreview = () => {
     setPreviewTask(false);
   };
 
-  const handleSaveTask = () => {
-    setPreviewTask(false);
-  };
+  const handleSaveTask = async () => {
+    await addTaskMutate({
+      user_id: user?.id as string,
+      task_id: crypto.randomUUID() as string,
+      title: taskTitle,
+      description: taskDescription,
+      due_date: taskDate,
+      time_range: formatTaskTime(),
+      completed: false,
+      list,
+      call_link: callLink,
+      type,
+    });
+    if (isAddTaskError) {
+      toast.error(addTaskError?.message);
+    }
+
+    if (!isAddingTask && !isAddTaskError) {
+      toast.success("Task added successfully");
+      setPreviewTask(false);
+      router.push(`/dashboard/${list}`);
+    }
+  };  
 
   const formatTaskTime = () => {
     if (!taskFrom || !taskUntil) return "";
@@ -57,11 +87,26 @@ export default function PreviewTask() {
           <Button
             onClick={handleClosePreview}
             variant={"ghost"}
+            aria-label='close preview task'
             size={"sm"}
             className='rounded-full group px-[7px]'>
             <X
               strokeWidth={2}
               size={24}
+              className='text-foreground/60 group-hover:text-foreground'
+            />
+          </Button>
+        </div>
+        <div className='mt-4 flex justify-end px-4'>
+          <Button
+            onClick={() => setPreviewTask(false)}
+            variant={"ghost"}
+            size={"sm"}
+            aria-label='edit task'
+            className='group'>
+            <SquarePen
+              strokeWidth={2}
+              size={20}
               className='text-foreground/60 group-hover:text-foreground'
             />
           </Button>
@@ -130,14 +175,12 @@ export default function PreviewTask() {
           </div>
         </div>
 
-        <div className='w-full px-4 mt-8 flex justify-between'>
+        <div className='w-full px-4 mt-8 flex justify-start'>
           <Button
-            onClick={() => setPreviewTask(false)}
-            variant={"outline"}
+            isLoading={isAddingTask}
+            onClick={handleSaveTask}
+            aria-label='save task'
             className=''>
-            <Text variant={"p"}>Edit Task</Text>
-          </Button>
-          <Button onClick={handleSaveTask} className=''>
             <Text variant={"p"}>Save Task</Text>
           </Button>
         </div>

@@ -20,6 +20,7 @@ import { useAuth } from "@/hooks/use-auth";
 import ErrorTemp from "../../common/components/shared/error-temp";
 import InputPassword from "../../common/ui/input-password";
 import GoogleSignIn from "../google-sign-in/google-sign-in";
+import useUserStore from "@/modules/store/user-store";
 
 const formSchema = z.object({
   email: z.string().min(2, {
@@ -33,6 +34,9 @@ const formSchema = z.object({
 export default function LoginForm() {
   const router = useRouter();
   const { signInWithEmailPassword, loading, error } = useAuth();
+  const setIsForgotPassword = useUserStore(
+    (state) => state.setIsForgotPassword
+  );
   // ...
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -70,7 +74,15 @@ export default function LoginForm() {
         />
         <InputPassword control={form.control} />
 
-        {!!error && <ErrorTemp error={error as string} />}
+        {!!error && (
+          <ErrorTemp
+            error={
+              error === "fetch failed"
+                ? "Oops...Network error!"
+                : (error as string)
+            }
+          />
+        )}
 
         <div className='flex justify-between items-center'>
           <div className='flex space-x-2 items-center'>
@@ -87,17 +99,18 @@ export default function LoginForm() {
 
           <Button
             variant={"ghost"}
+            onClick={() => setIsForgotPassword(true)}
             type='button'
             className='bg-transparent hover:bg-transparent'>
             <Text
               variant={"p"}
-              className='font-normal text-foreground/70 text-blue-600'>
+              className='font-normal text-foreground/70 text-blue-600 active:scale-95 transition'>
               Forgot password?
             </Text>
           </Button>
         </div>
         <Button isLoading={loading} type='submit' className='w-full'>
-          Sign in
+          Login
         </Button>
         <GoogleSignIn className='border border-foreground' />
 
@@ -111,7 +124,7 @@ export default function LoginForm() {
             variant={"ghost"}
             className='bg-transparent hover:bg-transparent p-0 hover:underline'>
             <Text variant={"p"} className='font-normal text-foreground'>
-              Sign up
+              Create account
             </Text>
           </Button>
         </span>

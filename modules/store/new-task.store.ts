@@ -33,6 +33,8 @@ interface NewTaskStore {
   setCallMethod: (method: string) => void;
   callLink: string;
   setCallLink: (link: string) => void;
+  isReschedule: boolean;
+  setIsReschedule: (isReschedule: boolean) => void;
   reset: () => void;
   isValid: () => boolean;
 }
@@ -71,6 +73,8 @@ const useNewTaskStore = create<NewTaskStore>((set, get) => ({
   setCallLink: (link) => set(() => ({ callLink: link })),
   list: "",
   setList: (list) => set(() => ({ list })),
+  isReschedule: false,
+  setIsReschedule: (isReschedule) => set(() => ({ isReschedule })),
   reset: () =>
     set(() => ({
       isNewTask: false,

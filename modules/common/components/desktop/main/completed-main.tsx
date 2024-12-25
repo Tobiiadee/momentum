@@ -13,7 +13,7 @@ export default function CompletedMain() {
         </div>
       </div>
 
-      <div className='flex flex-col space-y-2 overflow-y-auto pb-14 h-[70vh] pl-2 py-2 pr-2'>
+      <div className='flex flex-col space-y-2 overflow-y-auto pb-14 h-[75vh] pl-2 py-2 pr-2'>
         <CompletedTask />
       </div>
     </div>

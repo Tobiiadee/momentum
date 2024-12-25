@@ -2,14 +2,19 @@
 
 import React, { useCallback } from "react";
 // import TaskitemDragPreview from "./task-item-drag-preview";
+// import { tasks } from "@/modules/assets/DUMMY_TASK";
 import { Accordion } from "../../ui/accordion";
 import TaskItem from "./tast-item";
+import useUserStore from "@/modules/store/user-store";
 import TaskSkeleton from "../../ui/skeleton/task-skeleton";
 import { useNewTask } from "@/hooks/use-new-task";
-import useUserStore from "@/modules/store/user-store";
 import EmptyTaskModule from "./empty-state/empty-task-module";
+import { formatDate } from "@/lib/helpers/format";
 
-export default function CompletedTask() {
+export const today = new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
+
+export default function TodaysTask() {
+  // const task = tasks;
   const user = useUserStore((state) => state.user);
   const {
     refetchAllTasks,
@@ -19,11 +24,13 @@ export default function CompletedTask() {
     allTasksError,
   } = useNewTask(user?.id as string);
 
-  const completedTask = allTasks?.filter((task) => task.completed === true);
-
   useCallback(() => {
     refetchAllTasks();
-  }, []);
+  }, [refetchAllTasks]);
+
+  const todaysTask = allTasks?.filter(
+    (task) => formatDate(task.due_date) === today
+  );
 
   if (isLoadingAllTasks) {
     return (
@@ -42,14 +49,20 @@ export default function CompletedTask() {
   return (
     <Accordion type='single' collapsible className=''>
       <div className='flex flex-col space-y-3'>
-        {completedTask?.map((task, index) => (
-          <TaskItem key={index} index={index} {...task} />
+        {todaysTask?.map((task, index) => (
+          <TaskItem
+            key={task.task_id}
+            index={index}
+            dueDate={task.due_date}
+            timeRange={task.time_range}
+            callLink={task.call_link}
+            {...task}
+          />
         ))}
       </div>
-
-      <div className='grid place-items-center h-[60vh]'>
-        {completedTask?.length === 0 && <EmptyTaskModule module='completed' />}
-      </div>
+      {todaysTask?.length === 0 && (
+        <EmptyTaskModule text="You don't have any tasks today" />
+      )}
     </Accordion>
   );
 }

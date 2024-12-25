@@ -55,3 +55,45 @@ export function getGreeting(): string {
     return "Good evening";
   }
 }
+
+export function formatDate(inputDate: string): string {
+  // Try to parse the input date using the built-in Date object
+  const parsedDate = new Date(inputDate);
+
+  // Check if the date is valid
+  if (isNaN(parsedDate.getTime())) {
+    throw new Error("Invalid date format");
+  }
+
+  // Format the date as YYYY-MM-DD
+  const year = parsedDate.getFullYear();
+  const month = String(parsedDate.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+  const day = String(parsedDate.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+type SortOrder = "asc" | "desc";
+
+export function sortArray<T extends Record<string, any>>(
+  array: T[],
+  key: keyof T,
+  order: SortOrder = "asc"
+): T[] {
+  return array?.sort((a, b) => {
+    if (!a[key] || !b[key]) return 0;
+
+    const isDate = !isNaN(Date.parse(a[key])) && !isNaN(Date.parse(b[key]));
+    const valueA = isDate
+      ? new Date(a[key]).getTime()
+      : a[key].toString().toLowerCase();
+    const valueB = isDate
+      ? new Date(b[key]).getTime()
+      : b[key].toString().toLowerCase();
+
+    if (valueA < valueB) return order === "asc" ? -1 : 1;
+    if (valueA > valueB) return order === "asc" ? 1 : -1;
+    return 0;
+  });
+}
+

@@ -1,10 +1,10 @@
-import { Text } from "@/modules/common/ui/text";
+import ProfileMain from "@/modules/common/components/shared/profile/profile-main";
 import React from "react";
 
 export default function Page() {
   return (
     <div>
-      <Text variant={"h1"}>Profile</Text>
+      <ProfileMain />
     </div>
   );
 }

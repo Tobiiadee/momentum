@@ -6,6 +6,19 @@ type UserDataType = {
   picture: string;
 };
 
+type Task = {
+  task_id: string;
+  user_id: string;
+  title: string;
+  description?: string;
+  completed: boolean;
+  call_link?: string;
+  list: string;
+  due_date: string;
+  time_range: string;
+  type: "list" | "group";
+};
+
 type taskCategory = {
   id: string;
   label: string;
@@ -13,13 +26,14 @@ type taskCategory = {
 };
 
 type TaskItem = {
-  id: string;
+  task_id: string;
   title: string;
   description?: string;
-  date: string;
+  dueDate: string;
   timeRange: string;
-  category: taskCategory;
+  category?: taskCategory;
   completed: boolean;
+  callLink?: string;
   type: "list" | "group";
 };
 

@@ -3,11 +3,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/modules/common/ui/accordion";
-import { ConnectDragSource, useDrag } from "react-dnd";
+import { useDrag } from "react-dnd";
 import { motion, Variants } from "framer-motion";
 import { Checkbox } from "../../ui/checkbox";
 import { Text } from "../../ui/text";
-import { Clock, EllipsisVertical } from "lucide-react";
+import { CalendarDays, Clock, EllipsisVertical } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +18,10 @@ import { Button } from "../../ui/button";
 import { cn } from "@/lib/utils";
 import TaskGroupImg from "./task-group-img";
 import TaskGroupTitle from "./task-group-title";
+import useNewTaskStore from "@/modules/store/new-task.store";
+import { useNewTask } from "@/hooks/use-new-task";
+import useUserStore from "@/modules/store/user-store";
+import { toast } from "sonner";
 // import { mergeRefs } from "react-merge-refs";
 
 const accordionVariants: Variants = {
@@ -27,10 +31,12 @@ const accordionVariants: Variants = {
     x: 0,
     transition: { duration: 0.5, type: "tween", delay: index * 0.08 }, // Adjust delay per index
   }),
+  exit: { opacity: 0, x: 200 },
 };
 
 interface TaskItemProps extends TaskItem {
   index: number;
+  list?: string;
 }
 
 export default function TaskItem({
@@ -38,12 +44,15 @@ export default function TaskItem({
   title,
   description,
   timeRange,
-  id,
+  task_id: id,
   category,
   completed,
+  list,
   type,
+  dueDate,
+  callLink,
 }: TaskItemProps) {
-  const [{ isDragging }, dragRef] = useDrag(() => ({
+  const [{ isDragging }] = useDrag(() => ({
     type: "task",
     item: { id: index },
     collect: (monitor) => ({
@@ -51,7 +60,6 @@ export default function TaskItem({
     }),
   }));
 
-  
   // removed ref={dragRef as ConnectDragSource}
   return (
     <div>
@@ -61,7 +69,8 @@ export default function TaskItem({
         key={index}
         custom={index}
         initial='hidden'
-        animate='visible'>
+        animate='visible'
+        exit={"exit"}>
         <AccordionItem value={`item-${id}`} className=''>
           <AccordionTrigger
             className={cn(
@@ -70,14 +79,30 @@ export default function TaskItem({
             )}>
             <CollapsibleTrigger
               title={title}
+              taskId={id}
               timeRange={timeRange}
               completed={completed}
-              category={category.label}
+              category={category?.label as string}
               type={type}
+              list={list as string}
+              dueDate={dueDate}
             />
           </AccordionTrigger>
           <AccordionContent className='px-4 bg-background rounded-b-md'>
-            {description}
+            <div className='w-full flex items-start justify-between'>
+              {!!description && <Text variant={"p"}>{description}</Text>}
+              {!!callLink && (
+                <Text variant={"p"} className='underline'>
+                  <a
+                    title='tasks call link'
+                    href={callLink}
+                    target='_blank'
+                    rel='noreferrer'>
+                    {callLink}
+                  </a>
+                </Text>
+              )}
+            </div>
           </AccordionContent>
         </AccordionItem>
       </motion.div>
@@ -97,6 +122,9 @@ interface CollapsibleTriggerProps {
   timeRange: string;
   completed: boolean;
   category: string;
+  taskId: string;
+  list: string;
+  dueDate: string;
   type?: "list" | "group";
 }
 
@@ -104,8 +132,11 @@ function CollapsibleTrigger({
   timeRange,
   title,
   completed,
-  category,
+  // category, fix category instead of list
   type,
+  taskId,
+  list,
+  dueDate,
 }: CollapsibleTriggerProps) {
   // if (type === "group") fetch group members
 
@@ -115,19 +146,19 @@ function CollapsibleTrigger({
 
   const categoryBorderColor: Record<string, string> = {
     completed: "#000000",
-    personal: "#a569bd",
-    work: "#3498db",
+    work: "#a569bd",
+    personal: "#3498db",
   };
 
   return (
     <div className='w-full flex justify-between items-center'>
       <div className='flex items-center w-1/2 space-x-4 h-max'>
-        <Checkbox checked={completed} />
+        <Checkbox onClick={(e) => e.stopPropagation()} />
         <Text variant={"p"} className=''>
           {title}
         </Text>
         <div
-          style={{ borderColor: categoryBorderColor[category] }}
+          style={{ borderColor: categoryBorderColor[list] }}
           className='w-5 aspect-square border bg-foreground/10 rounded'></div>
         {type === "group" && <TaskGroupTitle groupTitle='Test' />}
       </div>
@@ -140,8 +171,21 @@ function CollapsibleTrigger({
             {timeRange}
           </Text>
         </div>
+        <div className='flex space-x-1 items-center bg-foreground/10 px-2 py-1 rounded-md'>
+          <CalendarDays
+            strokeWidth={1.5}
+            size={18}
+            className='text-foreground/60'
+          />
+          <Text variant={"p"} className='text-foreground/60 text-xs'>
+            {dueDate}
+          </Text>
+        </div>
 
-        <MoreOptionsDropdown itemOptionHandler={itemOptionHandler} />
+        <MoreOptionsDropdown
+          taskId={taskId}
+          itemOptionHandler={itemOptionHandler}
+        />
       </div>
     </div>
   );
@@ -149,9 +193,19 @@ function CollapsibleTrigger({
 
 function MoreOptionsDropdown({
   itemOptionHandler,
+  taskId,
 }: {
   itemOptionHandler: (e: React.MouseEvent) => void;
+  taskId: string;
 }) {
+  const setIsReschedule = useNewTaskStore((state) => state.setIsReschedule);
+  const user = useUserStore((state) => state.user);
+  const { deleteTaskMutate, deleteTaskError } = useNewTask(user?.id as string);
+
+  if (deleteTaskError) {
+    toast.error(deleteTaskError.message);
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -164,13 +218,24 @@ function MoreOptionsDropdown({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='mr-14'>
-        <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
+        <DropdownMenuItem
+          onClick={(e) => {
+            e.stopPropagation();
+          }}>
           Archive
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
+        <DropdownMenuItem
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsReschedule(true);
+          }}>
           Reschedule
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
+        <DropdownMenuItem
+          onClick={(e) => {
+            e.stopPropagation();
+            deleteTaskMutate(taskId);
+          }}>
           Delete
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -48,14 +48,14 @@ export default function GroupItem({ id, name, members }: GroupItemProps) {
     <motion.div
       onMouseEnter={() => setDeleteGroup(true)}
       onMouseLeave={() => setDeleteGroup(false)}
-      onClick={() => router.push(`/group/${name.toLowerCase()}`)}
+      onClick={() => router.push(`/dashboard/group/${name.toLowerCase()}`)}
       variants={groupItemVariants}
       initial='hidden'
       animate='visible'
       id={id}
       className='relative flex flex-col space-y-2 cursor-pointer group'>
       <div className='w-full aspect-square rounded bg-foreground/10 group-hover:bg-foreground/15 group-active:scale-95 transition-all duration-300 grid place-content-center'>
-        <div className='relative grid grid-cols-2 grid-flow-dense'>
+        <div className='relative grid grid-cols-3 grid-flow-dense'>
           {sliceMembers.map((member) => (
             <GroupItemImage key={member.id} image={member.image} />
           ))}

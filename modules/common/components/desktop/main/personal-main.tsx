@@ -20,7 +20,7 @@ export default function PersonalMain() {
   const setDataOnLoad = useSortArrayStore((state) => state.setSortData);
 
   const sortedTasks = useSortArrayStore((state) => state.sortData);
-  const personalTask = allTasks?.filter((task) => task.list === "personal");
+  const personalTask = allTasks?.filter((task) => task.list_label === "personal");
 
   useEffect(() => {
     refetchAllTasks();

@@ -6,6 +6,11 @@ export type ListType = {
   description?: string;
 };
 
+type deleteObj = {
+  list_Id: string;
+  list_label: string;
+};
+
 interface ListStoreType {
   isList: boolean;
   setIsList: (isList: boolean) => void;
@@ -15,14 +20,19 @@ interface ListStoreType {
   setSvgImage: (emoji: string) => void;
   showEmojipicker: boolean;
   setShowEmojipicker: (showEmojipicker: boolean) => void;
+  isDeleteList: boolean;
   deleteList: (listId: string) => void;
+  setIsDeleteList: (isDeleteList: boolean) => void;
+  deleteObject: deleteObj | null;
+  setDeleteObject: (listObj: deleteObj) => void;
   reset: () => void;
 }
 
 export const useListStore = create<ListStoreType>((set) => ({
   isList: false,
   setIsList: (isList) => set({ isList }),
-
+  isDeleteList: false,
+  setIsDeleteList: (isDeleteList) => set({ isDeleteList }),
   lists: null,
   setLists: (newItems) =>
     set((state) => ({
@@ -39,6 +49,11 @@ export const useListStore = create<ListStoreType>((set) => ({
   deleteList: (listId) =>
     set((state) => ({
       lists: state.lists?.filter((list) => list.id !== listId) || null,
+    })),
+  deleteObject: null,
+  setDeleteObject: (listObj) =>
+    set((state) => ({
+      deleteObject: listObj,
     })),
   reset: () =>
     set({

@@ -1,10 +1,10 @@
-import ProfileMain from "@/modules/common/components/shared/profile/profile-main";
+import SettingsMain from "@/modules/common/components/shared/settings/settings-main";
 import React from "react";
 
 export default function Page() {
   return (
     <div>
-      <ProfileMain />
+      <SettingsMain />
     </div>
   );
 }

@@ -1,9 +1,13 @@
 type UserDataType = {
   id: string;
-  name: string;
+  username: string;
   email: string;
   avatar: string;
-  picture: string;
+  phone_number: string;
+  full_name: string;
+  country: string;
+  city_state: string;
+  bio: string;
 };
 
 type Task = {
@@ -13,7 +17,9 @@ type Task = {
   description?: string;
   completed: boolean;
   call_link?: string;
-  list: string;
+  list_label: string;
+  list_icon: string;
+  list_id: string;
   due_date: string;
   time_range: string;
   type: "list" | "group";
@@ -29,20 +35,21 @@ type TaskItem = {
   task_id: string;
   title: string;
   description?: string;
-  dueDate: string;
-  timeRange: string;
+  due_date: string;
+  time_range: string;
   category?: taskCategory;
   completed: boolean;
   callLink?: string;
+  list_id: string;
+  list_icon: string;
+  list_label?: string;
   type: "list" | "group";
 };
 
 type ListType = {
-  id: string;
+  list_id: string;
   label: string;
   icon: string;
-  numberOfTask: number;
-  default: boolean;
   type?: "list";
 };
 
@@ -56,12 +63,9 @@ type MemberType = {
 };
 
 type GroupType = {
-  id: string;
+  list_id: string;
   label: string;
-  icon?: string;
-  numberOfTask: number;
   members: MemberType[];
-  default: boolean;
   type?: "group";
 };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { motion, Variants } from "framer-motion";
 import { Input } from "@/modules/common/ui/input";
 import { Button } from "@/modules/common/ui/button";
@@ -9,6 +9,9 @@ import { useListStore } from "@/modules/store/list-store";
 import useAllListStore from "@/modules/store/all-list-store";
 import SVGSelected from "./svg-selected";
 import SelectSvg from "./select-svg";
+import useListAction from "@/hooks/use-list-action";
+import useUserStore from "@/modules/store/user-store";
+import { v4 as uuidv4 } from 'uuid';
 
 const variants: Variants = {
   hidden: { y: 0, opacity: 0 },
@@ -22,33 +25,43 @@ const variants: Variants = {
 
 export default function NewList() {
   const [listName, setListName] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
+  // const inputRef = useRef<HTMLInputElement>(null);
   // const setIsList = useListStore((state) => state.setIsList);
   const isList = useListStore((state) => state.isList);
   const svgImage = useListStore((state) => state.svgImage);
   const reset = useListStore((state) => state.reset);
   const addToList = useAllListStore((state) => state.addToList);
 
-  useEffect(() => {
-    if (isList === true && inputRef.current) {
-      inputRef.current.focus();
+  //Get user Id
+  const user_id = useUserStore((state) => state.user?.id);
+
+  //Create list on database
+  const { addListMutate, isAddListError, isAddingList } = useListAction(
+    user_id as string
+  );
+
+  //set focus on input field when list is true
+  const inputRef = (Element: HTMLInputElement) => {
+    if (Element && isList === true) {
+      Element.focus();
     }
-  }, [isList]);
+  };
 
   const listHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const list: ListType = {
-      id: crypto.randomUUID(),
+      list_id: uuidv4() as string,
       label: listName.trim(),
-      numberOfTask: 0,
-      default: false,
       icon: svgImage,
       type: "list",
     };
 
     if (listName !== "") {
-      addToList(list);
-      reset();
+      addListMutate(list);
+      if (!isAddListError) {
+        addToList(list);
+        reset();
+      }
     }
   };
 
@@ -83,6 +96,7 @@ export default function NewList() {
 
         <Button
           type='submit'
+          isLoading={isAddingList}
           disabled={!listName || svgImage === ""}
           variant={"default"}
           className=''>
@@ -90,7 +104,11 @@ export default function NewList() {
         </Button>
 
         <div className='absolute -top-[2.5rem] -right-4 w-8 aspect-square shadow-md bg-background flex justify-center items-center rounded-full overflow-hidden'>
-          <Button type="button" onClick={() => reset()} variant={"ghost"} className=''>
+          <Button
+            type='button'
+            onClick={() => reset()}
+            variant={"ghost"}
+            className=''>
             <X strokeWidth={1.5} size={20} />
           </Button>
         </div>

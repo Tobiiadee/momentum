@@ -1,5 +1,6 @@
 "use client";
 
+import ReactDOMServer from "react-dom/server";
 import { formatTimeIntl } from "@/lib/helpers/format";
 import { Button } from "@/modules/common/ui/button";
 import Modal from "@/modules/common/ui/modal";
@@ -12,11 +13,12 @@ import useUserStore from "@/modules/store/user-store";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useNewTask } from "@/hooks/use-new-task";
+import { v4 as uuidv4 } from 'uuid';
 
 export const previewVariant: Variants = {
-  hidden: { opacity: 0, scale: 0.9 },
-  visible: { opacity: 1, scale: 1 },
-  exit: { opacity: 0, scale: 0.9 },
+  hidden: { scale: 0.9 },
+  visible: { scale: 1, transition: { duration: 0.1 } },
+  exit: { opacity: 0, scale: 0.8 },
 };
 
 export default function PreviewTask() {
@@ -31,24 +33,39 @@ export default function PreviewTask() {
   const taskDate = useNewTaskStore((state) => state.taskDate);
   const taskFrom = useNewTaskStore((state) => state.taskTimeFrom);
   const taskUntil = useNewTaskStore((state) => state.taskTimeUntil);
-  const list = useNewTaskStore((state) => state.list);
   const callLink = useNewTaskStore((state) => state.callLink);
   const type = useNewTaskStore((state) => state.type);
+  const selectedCategory = useNewTaskStore((state) => state.selectedCategory);
+  const reset = useNewTaskStore((state) => state.reset);
 
   const handleClosePreview = () => {
     setPreviewTask(false);
   };
 
+  //list_icon can be string or ReactNode
+  //in other to store it as a string on the database, it needs to be converted to a string
+  const listIconAsNode = (listIcon: string | React.ReactNode) => {
+    if (React.isValidElement(listIcon)) {
+      return ReactDOMServer.renderToString(listIcon); // Convert ReactNode to HTML string
+    } else {
+      return listIcon; // Return the string as is
+    }
+  };
+
   const handleSaveTask = async () => {
     await addTaskMutate({
       user_id: user?.id as string,
-      task_id: crypto.randomUUID() as string,
+      task_id: uuidv4() as string,
       title: taskTitle,
       description: taskDescription,
       due_date: taskDate,
       time_range: formatTaskTime(),
       completed: false,
-      list,
+      list_label: selectedCategory ? selectedCategory?.label : "",
+      list_icon: selectedCategory
+        ? (listIconAsNode(selectedCategory?.icon) as string)
+        : "",
+      list_id: selectedCategory ? selectedCategory?.id : "",
       call_link: callLink,
       type,
     });
@@ -58,10 +75,11 @@ export default function PreviewTask() {
 
     if (!isAddingTask && !isAddTaskError) {
       toast.success("Task added successfully");
-      setPreviewTask(false);
-      router.push(`/dashboard/${list}`);
+      // setPreviewTask(false);
+      reset();
+      router.push(`/dashboard/${selectedCategory?.label}`);
     }
-  };  
+  };
 
   const formatTaskTime = () => {
     if (!taskFrom || !taskUntil) return "";
@@ -159,7 +177,7 @@ export default function PreviewTask() {
                 List Category
               </Text>
               <Text variant={"p"} className='font-semibold capitalize'>
-                {list}
+                {selectedCategory?.label}
               </Text>
             </div>
             {!!callLink && (

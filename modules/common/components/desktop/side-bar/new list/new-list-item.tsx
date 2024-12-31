@@ -2,15 +2,15 @@
 
 import { Text } from "@/modules/common/ui/text";
 import React, { useState } from "react";
-import Link from "next/link";
 import { AnimatePresence, motion, Variants } from "framer-motion";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/modules/common/ui/button";
-import { X } from "lucide-react";
-import useAllListStore from "@/modules/store/all-list-store";
+import { Loader, X } from "lucide-react";
+// import useAllListStore from "@/modules/store/all-list-store";
 import TaskNumber from "../../../shared/task-number";
 import Image from "next/image";
+import useListStore from "@/modules/store/list-store";
 
 const listItemVariants: Variants = {
   hidden: { x: 70, opacity: 0 },
@@ -22,7 +22,7 @@ const listItemVariants: Variants = {
   exit: { x: -70, opacity: 0 },
 };
 
-const deleteListVariants: Variants = {
+export const deleteListVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -31,26 +31,37 @@ const deleteListVariants: Variants = {
   },
 };
 
+interface NewListItemProps {
+  id: string;
+  name: string;
+  svgImage: string;
+  numberOfTask: number;
+  isRemoving: boolean;
+}
+
 export default function NewListItem({
   id,
   name,
   svgImage,
   numberOfTask,
-}: {
-  id: string;
-  name: string;
-  svgImage: string;
-  numberOfTask: number;
-}) {
+  isRemoving,
+}: NewListItemProps) {
   const [deleteList, setDeletelist] = useState(false);
-  const removeFromList = useAllListStore((state) => state.removeFromList);
+  // const removeFromList = useAllListStore((state) => state.removeFromList);
   const pathName = usePathname();
+  const router = useRouter();
+  const setIsDeleteList = useListStore((state) => state.setIsDeleteList);
+  const setDeleteObject = useListStore((state) => state.setDeleteObject);
 
-  const isActive = pathName === `/${name}`;
+  const isActive = pathName === `/dashboard/list/${name.toLowerCase()}`;
 
-  const deleteListHandler = () => {
-    removeFromList(id);
+  const handleDeleteList = () => {
+    setIsDeleteList(true);
+    setDeleteObject({ list_Id: id, list_label: name });
   };
+
+
+  // console.log(id);
 
   return (
     <motion.div
@@ -61,16 +72,22 @@ export default function NewListItem({
       animate='visible'
       exit='exit'
       className='relative'>
-      <Link
-        href={`/list/${name.toLowerCase()}`}
+      <div
+        onClick={() => router.push(`/dashboard/list/${name.toLowerCase()}`)}
         id={id}
         className={cn(
           isActive && "bg-foreground/10",
-          "w-full flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-foreground/10 active:bg-foreground/20  transition-all duration-300 cursor-pointer"
+          "relative w-full flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-foreground/10 active:bg-foreground/20  transition-all duration-300 cursor-pointer overflow-hidden"
         )}>
-        <div className='flex space-x-4 items-center'>
-          <div className='w-8 relative aspect-square grid place-items-center'>
-            <Image src={svgImage} alt={`${name} icon`} fill priority className="object-cover" />
+        <div className='flex space-x-2 items-center'>
+          <div className='w-6 relative aspect-square grid place-items-center'>
+            <Image
+              src={svgImage}
+              alt={`${name} icon`}
+              fill
+              priority
+              className='object-cover'
+            />
           </div>
           <Text variant={"p"} className='font-semibold capitalize'>
             {name}
@@ -78,7 +95,17 @@ export default function NewListItem({
         </div>
 
         <TaskNumber numberOfTask={numberOfTask} />
-      </Link>
+
+        {isRemoving && (
+          <div className='absolute top-0 left-0 bg-foreground/10 backdrop-blur-md w-full h-full z-10 flex items-center justify-end px-4 rounde-md'>
+            <Loader
+              size={20}
+              strokeWidth={1.5}
+              className='animate-spin text-foreground/20'
+            />
+          </div>
+        )}
+      </div>
 
       <AnimatePresence mode='wait'>
         {deleteList && (
@@ -88,7 +115,7 @@ export default function NewListItem({
             animate='visible'
             exit={"hidden"}
             className='absolute left-1/2 -top-6 -translate-x-1/2  w-8 aspect-square shadow-md bg-background flex justify-center items-center rounded-full overflow-hidden'>
-            <Button onClick={deleteListHandler} variant={"ghost"} className=''>
+            <Button onClick={handleDeleteList} variant={"ghost"} className=''>
               <X strokeWidth={1.5} size={20} />
             </Button>
           </motion.div>

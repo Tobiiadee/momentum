@@ -20,7 +20,7 @@ export default function WorkMain() {
   const sortedTasks = useSortArrayStore((state) => state.sortData);
   const setSortData = useSortArrayStore((state) => state.setSortData);
 
-  const workTask = allTasks?.filter((task) => task.list === "work");
+  const workTask = allTasks?.filter((task) => task.list_label === "work");
 
   useEffect(() => {
     refetchAllTasks();

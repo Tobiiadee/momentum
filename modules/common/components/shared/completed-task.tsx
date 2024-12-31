@@ -43,7 +43,7 @@ export default function CompletedTask() {
     <Accordion type='single' collapsible className=''>
       <div className='flex flex-col space-y-3'>
         {completedTask?.map((task, index) => (
-          <TaskItem key={index} index={index} {...task} />
+          <TaskItem key={task.task_id} index={index} {...task} />
         ))}
       </div>
 

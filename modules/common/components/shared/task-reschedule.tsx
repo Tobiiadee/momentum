@@ -10,13 +10,69 @@ import { motion } from "framer-motion";
 import { Button } from "../../ui/button";
 import { Text } from "../../ui/text";
 import { X } from "lucide-react";
+import { UpdateTaskType, useNewTask } from "@/hooks/use-new-task";
+import useUserStore from "@/modules/store/user-store";
+import { formatTimeIntl } from "@/lib/helpers/format";
+import { toast } from "sonner";
 
 export default function TaskReschedule() {
   const setIsReschedule = useNewTaskStore((state) => state.setIsReschedule);
+  const taskDate = useNewTaskStore((state) => state.taskDate);
+  const taskFrom = useNewTaskStore((state) => state.taskTimeFrom);
+  const taskUntil = useNewTaskStore((state) => state.taskTimeUntil);
+  const taskId = useNewTaskStore((state) => state.taskId);
+  const reset = useNewTaskStore((state) => state.reset);
   // const isReschedule = useNewTaskStore((state) => state.isReschedule);
+  const user = useUserStore((state) => state.user);
+
+  const {
+    updateTaskMutate,
+    isUpdatingTask,
+    isUpdateTaskError,
+    updateTaskError,
+    isUpdateTaskSuccess,
+    refetchAllTasks,
+  } = useNewTask(user?.id as string);
+
+  const formatTaskTime = () => {
+    if (!taskFrom || !taskUntil) return "";
+    const timeFrom = formatTimeIntl(taskFrom);
+    const timeUntil = formatTimeIntl(taskUntil);
+    return `${timeFrom} - ${timeUntil}`;
+  };
+
+  const isDisabled = taskFrom === "" || taskUntil === "" || taskDate === "";
+
+  const rescheduleHandler = () => {
+    const taskUpdate: Partial<Task> = {
+      time_range: formatTaskTime(),
+      due_date: taskDate,
+    };
+
+    const updateObj: UpdateTaskType = {
+      task_id: taskId as string,
+      updatedTask: taskUpdate,
+    };
+
+    updateTaskMutate(updateObj);
+    if (!isUpdatingTask && !isUpdateTaskError) {
+      setIsReschedule(false);
+      refetchAllTasks();
+      reset();
+    }
+  };
+
+  if (isUpdateTaskError) {
+    toast.error(updateTaskError?.message);
+  }
+  if (isUpdateTaskSuccess) {
+    toast.success("Task rescheduled successfully");
+  }
 
   return (
-    <Modal onClick={() => setIsReschedule(false)} className="bg-foreground/30 backdrop-blur-sm">
+    <Modal
+      onClick={() => setIsReschedule(false)}
+      className='bg-foreground/30 backdrop-blur-sm'>
       <motion.div
         variants={previewVariant}
         initial='hidden'
@@ -42,6 +98,15 @@ export default function TaskReschedule() {
         </div>
         <TaskRescheduleCalendar />
         <TaskRescheduleInputs />
+        <div className='px-4 w-full'>
+          <Button
+            disabled={isDisabled}
+            isLoading={isUpdatingTask}
+            onClick={rescheduleHandler}
+            className='w-full'>
+            Save
+          </Button>
+        </div>
       </motion.div>
     </Modal>
   );

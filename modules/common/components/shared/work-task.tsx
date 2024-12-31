@@ -42,15 +42,13 @@ export default function WorkTask({
           <TaskItem
             key={task.task_id}
             index={index}
-            dueDate={task.due_date}
-            timeRange={task.time_range}
             callLink={task.call_link}
             {...task}
           />
         ))}
       </div>
 
-      {isLoading && task?.length === 0 && <EmptyTaskModule module='work' />}
+      {task?.length === 0 && <EmptyTaskModule module='work' />}
     </Accordion>
   );
 }

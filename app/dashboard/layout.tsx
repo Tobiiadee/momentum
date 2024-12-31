@@ -6,6 +6,7 @@ import React from "react";
 // import TaskButtons from "@/modules/common/components/desktop/main/task-buttons";
 import PreviewTaskClient from "@/modules/common/components/shared/new-task/preview-task-client";
 import TaskRescheduleClient from "@/modules/common/components/shared/task-reschedule-client";
+import EditClient from "@/modules/common/components/shared/settings/edit-client";
 
 export default function MainLayout({
   children,
@@ -18,6 +19,7 @@ export default function MainLayout({
       {/* <TaskButtons /> */}
       <NewTaskClient />
       <PreviewTaskClient />
+      <EditClient />
       <TaskRescheduleClient />
       <Wrapper className='flex flex-col space-y-5'>
         <Header />

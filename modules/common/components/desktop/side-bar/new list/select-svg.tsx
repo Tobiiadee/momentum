@@ -22,7 +22,7 @@ import {
 import useListStore from "@/modules/store/list-store";
 import { Button } from "@/modules/common/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import useScroll from "@/hooks/use-scroll";
+import useCustomScroll from "@/hooks/use-custom-scroll";
 
 interface SelectSvgProps {
   seed: string;
@@ -47,7 +47,7 @@ const styles = [
 
 export default function SelectSvg({ seed }: SelectSvgProps) {
   const { showLeft, showRight, scrollLeft, scrollRight, scrollRef } =
-    useScroll();
+    useCustomScroll();
 
   const avatars = styles.map((style) =>
     createAvatar(style, { seed, scale: 80 })

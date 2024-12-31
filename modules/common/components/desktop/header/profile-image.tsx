@@ -1,13 +1,14 @@
-import useUserStore from "@/modules/store/user-store";
 import Image from "next/image";
 
-export default function ProfileImage() {
-  const user = useUserStore((state) => state.user);
+interface ProfileImageProps {
+  image: string;
+}
 
+export default function ProfileImage({ image }: ProfileImageProps) {
   return (
     <div className='relative rounded-full w-8 aspect-square flex items-center justify-center overflow-hidden'>
       <Image
-        src={user?.avatar || user?.picture || "/images/img2.jpg"}
+        src={image || "/images/image_placeholder.jpg"}
         alt='avatar'
         fill
         className='object-cover'

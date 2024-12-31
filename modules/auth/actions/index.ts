@@ -40,7 +40,7 @@ export async function createAccount({
 
   // Insert additional profile data
   const { error: profileError } = await (await supabase)
-    .from("profiles")
+    .from("users")
     .insert([{ id: user.id, username }]);
 
   if (profileError) return profileError.message;
@@ -60,7 +60,7 @@ export async function logout(): Promise<string | never> {
 
 export const signInWithGoogle = async () => {
   console.log("signInWithGoogle");
-  
+
   // const supabase = createClient();
   // const { error } = await (
   //   await supabase

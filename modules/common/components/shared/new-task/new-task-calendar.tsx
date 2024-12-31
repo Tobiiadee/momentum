@@ -5,7 +5,7 @@ import React from "react";
 import { taskTimeVariant } from "./new-task-time";
 import { motion } from "framer-motion";
 
-const months = [
+export const months = [
   "Jan",
   "Feb",
   "March",

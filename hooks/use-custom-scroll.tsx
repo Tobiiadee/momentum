@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-export default function useScroll() {
+export default function useCustomScroll() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [showLeft, setShowLeft] = useState<boolean>(false);
   const [showRight, setShowRight] = useState<boolean>(true);

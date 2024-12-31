@@ -7,7 +7,7 @@ import {
 } from "@/modules/supabase/utils/actions";
 import { useRouter } from "next/navigation";
 
-interface UpdateTaskType {
+export interface UpdateTaskType {
   updatedTask: Partial<Task>;
   task_id: string;
 }
@@ -52,6 +52,7 @@ export function useNewTask(user_id: string) {
     mutate: updateTaskMutate,
     isError: isUpdateTaskError,
     error: updateTaskError,
+    isSuccess: isUpdateTaskSuccess,
   } = useMutation({
     mutationFn: ({ task_id, updatedTask }: UpdateTaskType) =>
       updateTask(task_id, updatedTask),
@@ -67,7 +68,7 @@ export function useNewTask(user_id: string) {
     isError: isDeleteTaskError,
     error: deleteTaskError,
   } = useMutation({
-    mutationFn: (task_id: string) => deleteTask(task_id),
+    mutationFn: (task_id: string | string[]) => deleteTask(task_id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["all-task", user_id] });
     },
@@ -92,6 +93,7 @@ export function useNewTask(user_id: string) {
     updateTaskMutate,
     isUpdateTaskError,
     updateTaskError,
+    isUpdateTaskSuccess,
 
     // Delete task
     isDeletingTask,

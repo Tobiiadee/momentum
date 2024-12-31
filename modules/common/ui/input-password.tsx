@@ -12,9 +12,15 @@ import { Eye, EyeOff } from "lucide-react";
 
 interface InputPasswordProps {
   control: any;
+  placeholder?: string;
+  label?: string;
 }
 
-export default function InputPassword({ control }: InputPasswordProps) {
+export default function InputPassword({
+  control,
+  placeholder = "Choose your password",
+  label = "Password",
+}: InputPasswordProps) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -23,12 +29,12 @@ export default function InputPassword({ control }: InputPasswordProps) {
       name='password'
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Password</FormLabel>
+          <FormLabel>{label}</FormLabel>
           <FormControl>
             <div className='relative'>
               <Input
                 type={showPassword ? "text" : "password"}
-                placeholder='Choose your password'
+                placeholder={placeholder}
                 {...field}
               />
               <ShowPassword show={showPassword} setShow={setShowPassword} />

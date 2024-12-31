@@ -92,7 +92,7 @@ export default function LoginForm() {
                 id='remember'
                 variant={"p"}
                 className='text-foreground/70 hover:text-foreground cursor-pointer'>
-                Remember for 30 days
+                Keep me signed in
               </Text>
             </label>
           </div>

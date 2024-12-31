@@ -22,6 +22,7 @@ import useNewTaskStore from "@/modules/store/new-task.store";
 import { useNewTask } from "@/hooks/use-new-task";
 import useUserStore from "@/modules/store/user-store";
 import { toast } from "sonner";
+import Image from "next/image";
 // import { mergeRefs } from "react-merge-refs";
 
 const accordionVariants: Variants = {
@@ -43,15 +44,17 @@ export default function TaskItem({
   index,
   title,
   description,
-  timeRange,
+  time_range,
   task_id: id,
   category,
   completed,
   list,
   type,
-  dueDate,
+  due_date,
   callLink,
+  list_icon,
 }: TaskItemProps) {
+  // making the task item draggable
   const [{ isDragging }] = useDrag(() => ({
     type: "task",
     item: { id: index },
@@ -80,12 +83,13 @@ export default function TaskItem({
             <CollapsibleTrigger
               title={title}
               taskId={id}
-              timeRange={timeRange}
+              timeRange={time_range}
               completed={completed}
               category={category?.label as string}
               type={type}
-              list={list as string}
-              dueDate={dueDate}
+              list_label={list as string}
+              list_icon={list_icon}
+              dueDate={due_date}
             />
           </AccordionTrigger>
           <AccordionContent className='px-4 bg-background rounded-b-md'>
@@ -123,7 +127,8 @@ interface CollapsibleTriggerProps {
   completed: boolean;
   category: string;
   taskId: string;
-  list: string;
+  list_label: string;
+  list_icon: string;
   dueDate: string;
   type?: "list" | "group";
 }
@@ -131,12 +136,13 @@ interface CollapsibleTriggerProps {
 function CollapsibleTrigger({
   timeRange,
   title,
-  completed,
+  // completed,
   // category, fix category instead of list
   type,
   taskId,
-  list,
+  list_icon,
   dueDate,
+  list_label
 }: CollapsibleTriggerProps) {
   // if (type === "group") fetch group members
 
@@ -144,11 +150,17 @@ function CollapsibleTrigger({
     e.stopPropagation();
   };
 
-  const categoryBorderColor: Record<string, string> = {
-    completed: "#000000",
-    work: "#a569bd",
-    personal: "#3498db",
-  };
+  function convertStringToHTML({ list_icon }: { list_icon: string }) {
+    const htmlRegex = /<\/?[a-z][\s\S]*>/i; // Matches strings with HTML-like tags
+    if (htmlRegex.test(list_icon)) {
+      return <div dangerouslySetInnerHTML={{ __html: list_icon }} />;
+    } else
+      return (
+        <div className='relative w-6 aspect-square grid place-items-center'>
+          <Image src={list_icon} alt={list_label} fill priority />
+        </div>
+      );
+  }
 
   return (
     <div className='w-full flex justify-between items-center'>
@@ -157,9 +169,9 @@ function CollapsibleTrigger({
         <Text variant={"p"} className=''>
           {title}
         </Text>
-        <div
-          style={{ borderColor: categoryBorderColor[list] }}
-          className='w-5 aspect-square border bg-foreground/10 rounded'></div>
+        <div className='w-max aspect-square p-[2px] grid place-items-center border bg-foreground/10 rounded'>
+          {convertStringToHTML({ list_icon })}
+        </div>
         {type === "group" && <TaskGroupTitle groupTitle='Test' />}
       </div>
 
@@ -199,6 +211,7 @@ function MoreOptionsDropdown({
   taskId: string;
 }) {
   const setIsReschedule = useNewTaskStore((state) => state.setIsReschedule);
+  const setTaskId = useNewTaskStore(state => state.setTaskId)
   const user = useUserStore((state) => state.user);
   const { deleteTaskMutate, deleteTaskError } = useNewTask(user?.id as string);
 
@@ -228,6 +241,7 @@ function MoreOptionsDropdown({
           onClick={(e) => {
             e.stopPropagation();
             setIsReschedule(true);
+            setTaskId(taskId)
           }}>
           Reschedule
         </DropdownMenuItem>

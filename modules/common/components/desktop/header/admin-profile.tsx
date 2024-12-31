@@ -32,8 +32,8 @@ export default function AdminProfile() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        {userData?.avatar && userData.picture ? (
-          <ProfileImage />
+        {userData?.avatar ? (
+          <ProfileImage image={userData?.avatar} />
         ) : (
           <GenerateAvatar letter={letter} color={color} />
         )}

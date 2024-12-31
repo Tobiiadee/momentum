@@ -27,6 +27,8 @@ interface NewTaskStore {
   setIsTask: (isTask: boolean) => void;
   list: string;
   setList: (list: string) => void;
+  listId: string;
+  setListId: (listId: string) => void;
   previewTask: boolean;
   setPreviewTask: (previewTask: boolean) => void;
   callMethod: string;
@@ -35,6 +37,8 @@ interface NewTaskStore {
   setCallLink: (link: string) => void;
   isReschedule: boolean;
   setIsReschedule: (isReschedule: boolean) => void;
+  taskId: string | null;
+  setTaskId: (taskId: string) => void;
   reset: () => void;
   isValid: () => boolean;
 }
@@ -42,6 +46,8 @@ interface NewTaskStore {
 const useNewTaskStore = create<NewTaskStore>((set, get) => ({
   isNewTask: false,
   setIsNewTask: (isNewTask) => set(() => ({ isNewTask })),
+  taskId: null,
+  setTaskId: (taskId) => set(() => ({ taskId })),
   title: "",
   setTitle: (title) => set(() => ({ title })),
   description: "",
@@ -73,6 +79,8 @@ const useNewTaskStore = create<NewTaskStore>((set, get) => ({
   setCallLink: (link) => set(() => ({ callLink: link })),
   list: "",
   setList: (list) => set(() => ({ list })),
+  listId: "",
+  setListId: (listId) => set(() => ({ listId })),
   isReschedule: false,
   setIsReschedule: (isReschedule) => set(() => ({ isReschedule })),
   reset: () =>
@@ -94,16 +102,16 @@ const useNewTaskStore = create<NewTaskStore>((set, get) => ({
       callLink: "",
       list: "",
     })),
-    isValid: () => {
-      const { title, taskDate, taskTimeFrom, taskTimeUntil, list } = get();
-      return (
-        title.trim() !== "" &&
-        taskDate.trim() !== "" &&
-        taskTimeFrom.trim() !== "" &&
-        taskTimeUntil.trim() !== "" &&
-        list.trim() !== ""
-      );
-    },
+  isValid: () => {
+    const { title, taskDate, taskTimeFrom, taskTimeUntil, list } = get();
+    return (
+      title.trim() !== "" &&
+      taskDate.trim() !== "" &&
+      taskTimeFrom.trim() !== "" &&
+      taskTimeUntil.trim() !== "" &&
+      list.trim() !== ""
+    );
+  },
 }));
 
 export default useNewTaskStore;

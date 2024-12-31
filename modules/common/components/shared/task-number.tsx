@@ -1,7 +1,7 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Text } from "../../ui/text";
-import { LoaderCircle } from "lucide-react";
+import { Loader } from "lucide-react";
 
 export default function TaskNumber({
   numberOfTask,
@@ -23,7 +23,9 @@ export default function TaskNumber({
           {numberOfTask}
         </Text>
       )}
-      {isLoading && <LoaderCircle className='h-4 w-4 animate-spin text-foreground/70' />}
+      {isLoading && (
+        <Loader className='h-4 w-4 animate-spin text-foreground/60' />
+      )}
     </div>
   );
 }

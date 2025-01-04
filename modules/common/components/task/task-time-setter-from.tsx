@@ -65,7 +65,7 @@ export default function TaskTimeSetterFrom() {
               time === timeSet
                 ? "bg-foreground text-background"
                 : "bg-foreground/5 text-foreground hover:bg-foreground/10",
-              "grid place-items-center px-2 py-1 rounded-xl cursor-pointer"
+              "grid place-items-center px-2 py-2 rounded-b-md cursor-pointer"
             )}>
             <Text variant={"p"} className='text-xs'>
               {timeSet}

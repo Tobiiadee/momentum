@@ -1,4 +1,4 @@
-import SignUpMain from "@/modules/common/components/shared/sign-up-main";
+import SignUpMain from "@/modules/common/components/shared/auth/sign-up-main";
 import React from "react";
 
 export default function Index() {

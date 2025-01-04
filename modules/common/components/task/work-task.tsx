@@ -3,10 +3,10 @@
 import React from "react";
 // import TaskitemDragPreview from "./task-item-drag-preview";
 import { Accordion } from "../../ui/accordion";
-import TaskItem from "./tast-item";
+import TaskItem from "../shared/task-main/task-item";
 
 import TaskSkeleton from "../../ui/skeleton/task-skeleton";
-import EmptyTaskModule from "./empty-state/empty-task-module";
+import EmptyTaskModule from "../shared/empty-state/empty-task-module";
 
 export interface ComponentTaskProps {
   task: Task[] | undefined;

@@ -9,13 +9,13 @@ import {
 export default function DaySelector() {
   return (
     <Select>
-      <SelectTrigger className='w-[180px] bg-background border-none ring-0'>
+      <SelectTrigger className='w-[150px] bg-background border-none text-xs'>
         <SelectValue placeholder='Day' />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value='light'>Today</SelectItem>
-        <SelectItem value='dark'>Yesterday</SelectItem>
-        <SelectItem value='system'>This week</SelectItem>
+        <SelectItem value='today'>Today</SelectItem>
+        <SelectItem value='yesterday'>Yesterday</SelectItem>
+        <SelectItem value='this-week'>This week</SelectItem>
       </SelectContent>
     </Select>
   );

@@ -4,6 +4,9 @@ import {
   deleteTask,
   fetchTasks,
   addTask,
+  uploadTaskFiles,
+  deleteTaskFiles,
+  fetchTaskFiles,
 } from "@/modules/supabase/utils/actions";
 import { useRouter } from "next/navigation";
 
@@ -12,7 +15,7 @@ export interface UpdateTaskType {
   task_id: string;
 }
 
-export function useNewTask(user_id: string) {
+export function useNewTask(user_id: string, task_id?: string) {
   const queryClient = useQueryClient();
   const router = useRouter();
   // Fetch all tasks
@@ -74,6 +77,64 @@ export function useNewTask(user_id: string) {
     },
   });
 
+  //upload task files
+
+  type UploadTaskFilesType = {
+    task_id: string;
+    files: File[];
+  };
+
+  const {
+    mutate: uploadTaskFilesMutate,
+    isPending: isUploadingTaskFiles,
+    isSuccess: isUploadTaskFilesSuccess,
+    isError: isUploadTaskFilesError,
+    error: uploadTaskFilesError,
+  } = useMutation({
+    mutationFn: ({ task_id, files }: UploadTaskFilesType) =>
+      uploadTaskFiles(task_id, files),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["all-task", user_id] });
+    },
+  });
+
+  //fetch task files
+
+  const {
+    isLoading: isFetchingTaskFiles,
+    isError: isFetchTaskFilesError,
+    data: taskFiles,
+    error: fetchTaskFilesError,
+    refetch: refetchTaskFiles,
+  } = useQuery({
+    queryKey: ["task-files", task_id],
+    queryFn: async () => {
+      if (!user_id) throw new Error("User ID is required");
+      if (!task_id) throw new Error("Task ID is required");
+      return fetchTaskFiles(task_id as string);
+    },
+    enabled: !!user_id && !!task_id,
+  });
+
+  // Delete a task file
+  type DeleteTaskFileType = {
+    fileUrls: string[];
+    taskId: string;
+  };
+
+  const {
+    mutate: deleteTaskFileMutate,
+    isPending: isDeletingTaskFile,
+    isError: isDeleteTaskFileError,
+    isSuccess: isDeleteTaskFileSuccess,
+  } = useMutation({
+    mutationFn: ({ fileUrls, taskId }: DeleteTaskFileType) =>
+      deleteTaskFiles(fileUrls, taskId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["all-task", user_id] });
+    },
+  });
+
   return {
     // Tasks
     allTasks,
@@ -100,5 +161,25 @@ export function useNewTask(user_id: string) {
     deleteTaskMutate,
     isDeleteTaskError,
     deleteTaskError,
+
+    // Upload task files
+    isUploadingTaskFiles,
+    uploadTaskFilesMutate,
+    isUploadTaskFilesSuccess,
+    isUploadTaskFilesError,
+    uploadTaskFilesError,
+
+    // Delete task file
+    isDeletingTaskFile,
+    deleteTaskFileMutate,
+    isDeleteTaskFileError,
+    isDeleteTaskFileSuccess,
+
+    // Fetch task files
+    isFetchingTaskFiles,
+    refetchTaskFiles,
+    isFetchTaskFilesError,
+    fetchTaskFilesError,
+    taskFiles,
   };
 }

@@ -10,7 +10,7 @@ export default function TaskTimeSetterUntill() {
   const setTaskTimeUntil = useNewTaskStore((state) => state.setTaskTimeUntil);
 
   return (
-    <div className="w-full h-full flex flex-col space-y-2">
+    <div className='w-full h-full flex flex-col space-y-2'>
       <Text variant={"p"} className='font-medium'>
         To:
       </Text>
@@ -30,7 +30,7 @@ export default function TaskTimeSetterUntill() {
               time === timeSet
                 ? "bg-foreground text-background"
                 : "bg-foreground/5 text-foreground hover:bg-foreground/10",
-              "grid place-items-center px-2 py-1 rounded-xl cursor-pointer"
+              "relative grid place-items-center px-2 py-2 rounded-b-md cursor-pointer overflow-hidden"
             )}>
             <Text variant={"p"} className='text-xs'>
               {timeSet}

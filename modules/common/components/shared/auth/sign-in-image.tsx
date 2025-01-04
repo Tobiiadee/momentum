@@ -1,8 +1,8 @@
+import { Text } from "@/modules/common/ui/text";
 import Image from "next/image";
 import React from "react";
-import { Text } from "../../ui/text";
 
-export default function SignUpImage() {
+export default function SignInImage() {
   return (
     <div className='relative hidden lg:block w-full h-full px-8 pt-10 overflow-hidden bg-foreground/5'>
       <div className='flex flex-col space-y-2'>
@@ -10,7 +10,7 @@ export default function SignUpImage() {
           Think, Plan and Track
         </Text>
         <Text variant={"p"} className='font-normal'>
-          Efficiently manage your task and boost productivity
+          Efficiently manage your task and boost productivity{" "}
         </Text>
       </div>
 

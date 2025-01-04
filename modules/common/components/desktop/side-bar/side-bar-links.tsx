@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { Text } from "@/modules/common/ui/text";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useMemo } from "react";
-import TaskNumber from "../../shared/task-number";
+import TaskNumber from "../../task/task-number";
 
 interface SideBarLinksProps {
   icon?: React.ReactNode;

@@ -36,6 +36,13 @@ export default function GroupPermission() {
         </Text>
         <Switch />
       </div>
+
+      <div className='flex justify-between items-center w-[70%]'>
+        <Text variant={"p"} className=''>
+          Set group theme
+        </Text>
+        <div className=''></div>
+      </div>
     </div>
   );
 }

@@ -1,5 +1,10 @@
 import { create } from "zustand";
 
+export type TaskFileType = {
+  id: string;
+  file: File;
+};
+
 interface NewTaskStore {
   isNewTask: boolean;
   setIsNewTask: (isNewTask: boolean) => void;
@@ -39,6 +44,9 @@ interface NewTaskStore {
   setIsReschedule: (isReschedule: boolean) => void;
   taskId: string | null;
   setTaskId: (taskId: string) => void;
+  taskFile: TaskFileType[];
+  setTaskFile: (taskFile: TaskFileType) => void;
+  deleteTaskFile: (file_id: string) => void;
   reset: () => void;
   isValid: () => boolean;
 }
@@ -83,6 +91,13 @@ const useNewTaskStore = create<NewTaskStore>((set, get) => ({
   setListId: (listId) => set(() => ({ listId })),
   isReschedule: false,
   setIsReschedule: (isReschedule) => set(() => ({ isReschedule })),
+  taskFile: [],
+  setTaskFile: (taskFile) =>
+    set((state) => ({ taskFile: [taskFile, ...state.taskFile] })),
+  deleteTaskFile: (file_id) =>
+    set((state) => ({
+      taskFile: state.taskFile?.filter((file) => file.id !== file_id),
+    })),
   reset: () =>
     set(() => ({
       isNewTask: false,
@@ -101,6 +116,7 @@ const useNewTaskStore = create<NewTaskStore>((set, get) => ({
       callMethod: "whatsapp",
       callLink: "",
       list: "",
+      taskFile: [],
     })),
   isValid: () => {
     const { title, taskDate, taskTimeFrom, taskTimeUntil, list } = get();

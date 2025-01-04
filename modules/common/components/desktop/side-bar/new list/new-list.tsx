@@ -11,7 +11,7 @@ import SVGSelected from "./svg-selected";
 import SelectSvg from "./select-svg";
 import useListAction from "@/hooks/use-list-action";
 import useUserStore from "@/modules/store/user-store";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 const variants: Variants = {
   hidden: { y: 0, opacity: 0 },
@@ -84,8 +84,6 @@ export default function NewList() {
             placeholder='Choose a list name...'
             className='placeholder:text-xs'
           />
-          {/* <PickSvg /> */}
-          {/* <EmojiSelect /> */}
         </div>
 
         {!!listName && (

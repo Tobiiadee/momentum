@@ -5,12 +5,13 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-// Fetch tasks for the user
+// Fetch tasks for the user, excluding soft-deleted tasks
 export const fetchTasks = async (userId: string): Promise<Task[]> => {
   const { data, error } = await supabase
     .from("tasks")
     .select("*")
-    .eq("user_id", userId);
+    .eq("user_id", userId)
+    .eq("is_deleted", false); // Exclude soft-deleted tasks
 
   if (error) throw error;
 
@@ -35,13 +36,14 @@ export const updateTask = async (taskId: string, updates: Partial<Task>) => {
   if (error) throw error;
 };
 
+//soft delete task
 export const deleteTask = async (task_id: string | string[]) => {
   // Ensure `task_id` is always an array
   const taskIds = Array.isArray(task_id) ? task_id : [task_id];
 
   const { error } = await supabase
     .from("tasks")
-    .delete()
+    .update({ is_deleted: true })
     .in("task_id", taskIds); // Use `in` to match multiple task IDs
 
   if (error) throw error;
@@ -117,7 +119,8 @@ export async function fetchLists(userId: string): Promise<ListType[]> {
   const { data, error } = await supabase
     .from("lists")
     .select("*")
-    .eq("user_id", userId);
+    .eq("user_id", userId)
+    .eq("is_deleted", false); // Exclude soft-deleted lists
 
   if (error) throw error;
 
@@ -137,10 +140,11 @@ export async function createList(userId: string, list: ListType) {
   return error;
 }
 
+//soft detete list
 export async function deleteList(list_id: string) {
   const { error } = await supabase
     .from("lists")
-    .delete()
+    .update({ is_deleted: true })
     .eq("list_id", list_id);
 
   if (error) throw error;
@@ -151,10 +155,7 @@ export async function createGroup(userId: string, group: GroupType) {
     throw new Error("No user ID found");
   }
 
-  const { error } = await supabase
-    .from("groups")
-    .insert([{ user_id: userId, ...group }])
-    .select();
+  const { error } = await supabase.from("groups").insert([group]).select();
 
   return error;
 }
@@ -163,7 +164,7 @@ export async function fetchGroups(userId: string): Promise<GroupType[]> {
   const { data, error } = await supabase
     .from("groups")
     .select("*")
-    .eq("user_id", userId);
+    .eq("creator_id", userId);
 
   if (error) throw error;
 
@@ -177,4 +178,157 @@ export async function deleteGroup(group_id: string) {
     .eq("group_id", group_id);
 
   if (error) throw error;
+}
+
+//fetch all users
+export async function fetchUsers(): Promise<UserDataType[]> {
+  const { data, error } = await supabase.from("users").select("*");
+
+  if (error) throw error;
+
+  return data || [];
+}
+
+//search users
+export async function searchUsers(searchTerm: string): Promise<UserDataType[]> {
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .ilike("email", `%${searchTerm}%`);
+
+  if (error) throw error;
+
+  return data || [];
+}
+
+// Fetch a single user by their ID
+export async function fetchUser(userId: string): Promise<UserDataType> {
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("id", userId);
+
+  if (error) throw error;
+
+  return data[0] || null;
+}
+
+export async function uploadTaskFiles(task_id: string, files: File[]) {
+  if (!task_id) {
+    throw new Error("No task ID found");
+  }
+
+  const bucketName = "task_files";
+
+  // Map over the files array and upload each file
+  const uploadPromises = files.map(async (file) => {
+    const filePath = `${task_id}/${file.name}`;
+
+    // Upload the file to the specified bucket
+    const { error: uploadError } = await supabase.storage
+      .from(bucketName)
+      .upload(filePath, file, {
+        cacheControl: "3600", // 1 hour cache
+        upsert: true, // If file already exists, overwrite it
+      });
+
+    if (uploadError) {
+      console.error(`Error uploading file ${file.name}:`, uploadError.message);
+      return {
+        fileName: file.name,
+        success: false,
+        error: uploadError.message,
+      };
+    }
+
+    // Generate a public URL for the uploaded file
+    const { data: publicUrlData } = supabase.storage
+      .from(bucketName)
+      .getPublicUrl(filePath);
+    const publicUrl = publicUrlData?.publicUrl;
+
+    if (!publicUrl) {
+      console.error(`Error generating URL for file ${file.name}`);
+      return {
+        fileName: file.name,
+        success: false,
+        error: "Failed to generate public URL",
+      };
+    }
+
+    // Save metadata to the database
+    const { error: dbError } = await supabase.from("task_files").insert({
+      task_id: task_id,
+      file_url: publicUrl,
+      file_name: file.name,
+      uploaded_at: new Date(),
+    });
+
+    if (dbError) {
+      console.error(
+        `Error saving file metadata ${file.name}:`,
+        dbError.message
+      );
+      return { fileName: file.name, success: false, error: dbError.message };
+    }
+
+    // Return success for the current file
+    return { fileName: file.name, success: true, fileUrl: publicUrl };
+  });
+
+  // Execute all file upload promises concurrently
+  const results = await Promise.all(uploadPromises);
+
+  // Return the results array for further processing
+  return results;
+}
+
+export async function fetchTaskFiles(task_id: string): Promise<TaskFileType[]> {
+  const { data, error } = await supabase
+    .from("task_files")
+    .select("*")
+    .eq("task_id", task_id);
+
+  if (error) throw error;
+
+  return data || [];
+}
+
+export async function deleteTaskFiles(fileUrls: string[], taskId: string) {
+  const bucketName = "task_files";
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+  if (!supabaseUrl) {
+    throw new Error("No Supabase URL found");
+  }
+
+  // Map fileUrls to file paths
+  const filePaths = fileUrls.map((fileUrl) =>
+    fileUrl.replace(
+      `https://${supabaseUrl}/storage/v1/object/public/${bucketName}/`,
+      ""
+    )
+  );
+
+  // Delete from Storage
+  const { error: storageError } = await supabase.storage
+    .from(bucketName)
+    .remove(filePaths);
+
+  if (storageError) {
+    return storageError.message;
+  }
+
+  // Delete from Database
+  const { error: dbError } = await supabase
+    .from("task_files")
+    .delete()
+    .in("file_url", fileUrls)
+    .eq("task_id", taskId);
+
+  if (dbError) {
+    return dbError.message;
+  }
+
+  return true;
 }

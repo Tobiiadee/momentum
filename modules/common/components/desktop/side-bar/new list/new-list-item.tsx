@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/modules/common/ui/button";
 import { Loader, X } from "lucide-react";
 // import useAllListStore from "@/modules/store/all-list-store";
-import TaskNumber from "../../../shared/task-number";
+import TaskNumber from "../../../task/task-number";
 import Image from "next/image";
 import useListStore from "@/modules/store/list-store";
 

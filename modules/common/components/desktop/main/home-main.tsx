@@ -1,5 +1,5 @@
 import React from "react";
-import TodaysTask from "../../shared/todays-task";
+import TodaysTask from "../../task/todays-task";
 import DaySelector from "../../shared/day-selector";
 import SelectFilter from "../../shared/select-filter";
 import { Text } from "@/modules/common/ui/text";

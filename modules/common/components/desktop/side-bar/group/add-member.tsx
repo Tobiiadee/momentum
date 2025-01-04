@@ -4,9 +4,10 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import useGroupStore from "@/modules/store/group-store";
-import { members } from "@/modules/assets/DUMMY";
 import { Button } from "@/modules/common/ui/button";
-import { X } from "lucide-react";
+import { Loader, X } from "lucide-react";
+import useSearchUsers from "@/hooks/use-search-users";
+import useUserStore from "@/modules/store/user-store";
 
 const memberVariants: Variants = {
   hidden: { y: 20, opacity: 0 },
@@ -45,15 +46,17 @@ const inputVariants: Variants = {
 };
 
 export default function AddMember() {
+  const user_id = useUserStore((state) => state.user?.id);
   const [searchMember, setSearchMember] = useState<string>("");
 
   const membersList = useGroupStore((state) => state.members);
 
-  const searchedMembers = searchMember
-    ? members.filter((member) =>
-        member.email.toLowerCase().includes(searchMember.toLowerCase())
-      )
-    : [];
+  const {
+    data: searchedMembers,
+    isLoading,
+    isError,
+    error,
+  } = useSearchUsers(user_id as string, searchMember);
 
   return (
     <div className='relative flex flex-col space-y-2 h-48 max-h-48 '>
@@ -63,7 +66,9 @@ export default function AddMember() {
         animate='visible'
         className='flex items-center space-x-3'>
         <Input
-          onChange={(e) => setSearchMember(e.target.value)}
+          onChange={(e) => {
+            setSearchMember(e.target.value);
+          }}
           placeholder='Search member by email...'
           className='placeholder:text-xs'
         />
@@ -75,13 +80,32 @@ export default function AddMember() {
           initial='hidden'
           animate='visible'
           className='absolute top-10 z-30 w-full h-max max-h-[9rem] overflow-y-auto flex flex-col space-y-1 bg-background rounded-b-md shadow-lg pb-2'>
+          {isError && (
+            <div className='w-full grid place-items-center min-h-8'>
+              <Text
+                variant={"p"}
+                className='text-center italic text-foreground/60'>
+                {error?.message}
+              </Text>
+            </div>
+          )}
+          {isLoading && (
+            <div className='w-full grid place-items-center min-h-8'>
+              <Loader
+                size={20}
+                strokeWidth={1.5}
+                className='animate-spin text-foreground/60'
+              />
+            </div>
+          )}
+
           {searchedMembers?.map((member) => (
             <MemberItem
               key={member.id + member.email}
               setSearchedMembers={setSearchMember}
-              name={member.name}
+              name={member.username}
               email={member.email}
-              image={member.image}
+              image={member.avatar}
               id={member.id}
             />
           ))}

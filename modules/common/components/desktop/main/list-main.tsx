@@ -7,7 +7,7 @@ import { useParams } from "next/navigation";
 import useUserStore from "@/modules/store/user-store";
 import useSortArrayStore from "@/modules/store/sort-array-store";
 import { useNewTask } from "@/hooks/use-new-task";
-import ListIdtask from "../../shared/list-id-task";
+import ListIdtask from "../../task/list-id-task";
 
 export default function ListMain() {
   const { listId } = useParams();

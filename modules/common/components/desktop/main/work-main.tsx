@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import DaySelector from "../../shared/day-selector";
 import SelectFilter from "../../shared/select-filter";
-import WorkTask from "../../shared/work-task";
+import WorkTask from "../../task/work-task";
 import useUserStore from "@/modules/store/user-store";
 import { useNewTask } from "@/hooks/use-new-task";
 import useSortArrayStore from "@/modules/store/sort-array-store";

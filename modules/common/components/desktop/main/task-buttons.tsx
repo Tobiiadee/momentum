@@ -2,7 +2,7 @@
 
 import React from "react";
 import CreateNewTask from "./create-new-task";
-import PreviewTaskButton from "../../shared/new-task/preview-task-button";
+import PreviewTaskButton from "../../shared/task-main/preview-task-button";
 // import useNewTaskStore from "@/modules/store/new-task.store";
 import { usePathname } from "next/navigation";
 

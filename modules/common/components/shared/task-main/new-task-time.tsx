@@ -4,7 +4,6 @@ import { Text } from "@/modules/common/ui/text";
 import useNewTaskStore from "@/modules/store/new-task.store";
 import { formatTimeIntl } from "@/lib/helpers/format";
 import { motion, Variants } from "framer-motion";
-import { Button } from "@/modules/common/ui/button";
 import { ArrowBigLeft } from "lucide-react";
 
 export const taskTimeVariant: Variants = {
@@ -33,16 +32,17 @@ export default function NewTaskTime() {
         </Text>
         <div className='flex space-x-2'>
           {!!taskTimeUntil && (
-            <Button onClick={() => setTaskTimeFrom("")} variant={"ghost"} size={"icon"} className=''>
+            <div onClick={() => setTaskTimeFrom("")} className='py-0 px-0  cursor-pointer'>
               <ArrowBigLeft strokeWidth={1.5} size={16} />
-            </Button>
+            </div>
           )}
+
           {!!taskTimeFrom && !!taskTimeUntil && (
             <motion.div
               variants={taskTimeVariant}
               initial='hidden'
               animate='visible'
-              className='bg-background px-2 py-1 grid place-items-center rounded-md'>
+              className='bg-background px-2 grid place-items-center rounded-md '>
               <Text variant={"p"} className='text-foreground/60 text-xs'>
                 {formatTaskTime()}
               </Text>

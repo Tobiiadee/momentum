@@ -105,7 +105,7 @@ body {
     animation: left-swing 0.5s ease-in alternate infinite;
   }
 
-  .balls div:nth-of-type(5) {
+  .balls div:nth-of-type(3) {
     transform: translateX(-95%);
     animation: right-swing 0.5s ease-out alternate infinite;
   }

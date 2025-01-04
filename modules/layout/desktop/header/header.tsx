@@ -1,7 +1,7 @@
 import React from "react";
 import HeaderNav from "./header-nav";
 import SignInBtn from "./sign-in-btn";
-import Logo from "@/modules/common/components/shared/logo";
+import Logo from "@/modules/common/components/shared/logo/logo";
 
 export default function IntroHeader() {
   return (

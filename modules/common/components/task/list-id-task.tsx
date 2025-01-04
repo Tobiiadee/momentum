@@ -1,9 +1,9 @@
 "use client";
 
 import { Accordion } from "../../ui/accordion";
-import TaskItem from "./tast-item";
+import TaskItem from "../shared/task-main/task-item";
 import TaskSkeleton from "../../ui/skeleton/task-skeleton";
-import EmptyTaskModule from "./empty-state/empty-task-module";
+import EmptyTaskModule from "../shared/empty-state/empty-task-module";
 import { ComponentTaskProps } from "./work-task";
 import { useParams } from "next/navigation";
 

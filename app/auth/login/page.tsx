@@ -1,7 +1,7 @@
 
 
 import ForgotPasswordClient from "@/modules/auth/forgot-password/forgot-passowrd-client";
-import SignInMain from "@/modules/common/components/shared/sign-in-main";
+import SignInMain from "@/modules/common/components/shared/auth/sign-in-main";
 import React from "react";
 
 export default function Index() {

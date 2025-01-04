@@ -1,16 +1,19 @@
+import useGroupAction from "@/hooks/use-group-action";
 import { Button } from "@/modules/common/ui/button";
 import { Text } from "@/modules/common/ui/text";
-import { useGroupStore } from "@/modules/store/group-store";
+import useUserStore from "@/modules/store/user-store";
+import { fetchUser } from "@/modules/supabase/utils/actions";
+import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import { X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, {  useState } from "react";
 
 interface GroupItemProps {
   id: string;
   name: string;
-  members: MemberType[];
+  members: string[];
 }
 
 const groupItemVariants: Variants = {
@@ -34,15 +37,25 @@ const deleteListVariants: Variants = {
 export default function GroupItem({ id, name, members }: GroupItemProps) {
   const router = useRouter();
   const [deleteGroup, setDeleteGroup] = useState(false);
-  const deleteItem = useGroupStore((state) => state.deleteGroup);
+  const user = useUserStore((state) => state.user);
+  const { deleteGroupMutate } = useGroupAction(user?.id as string);
 
   const handleDeleteGroup = () => {
-    deleteItem(id);
-    router.back();
+    deleteGroupMutate(id);
+    router.push("/dashboard");
   };
 
   const sliceMembers = members.slice(0, 5);
   const remaininMembers = members.length - 5;
+
+  //fetch members by id
+  const { data: memberData } = useQuery({
+    queryKey: ["members", members],
+    queryFn: async () => {
+      if (!members) throw new Error("Members is required");
+      return fetchUser(id);
+    },
+  });
 
   return (
     <motion.div
@@ -56,10 +69,12 @@ export default function GroupItem({ id, name, members }: GroupItemProps) {
       className='relative flex flex-col space-y-2 cursor-pointer group'>
       <div className='w-full aspect-square rounded bg-foreground/10 group-hover:bg-foreground/15 group-active:scale-95 transition-all duration-300 grid place-content-center'>
         <div className='relative grid grid-cols-3 grid-flow-dense'>
-          {sliceMembers.map((member) => (
-            <GroupItemImage key={member.id} image={member.image} />
+          {sliceMembers.map((id) => (
+            <GroupItemImage key={id} image={memberData?.avatar as string} />
           ))}
-          {members.length > 5 && <GroupRemainingMembers remainingMembers={remaininMembers} />}
+          {members.length > 5 && (
+            <GroupRemainingMembers remainingMembers={remaininMembers} />
+          )}
         </div>
       </div>
 
@@ -104,11 +119,15 @@ export function GroupItemImage({ image }: { image: string }) {
   );
 }
 
-export function GroupRemainingMembers({ remainingMembers: remainingMembers }: { remainingMembers: number }) {
+export function GroupRemainingMembers({
+  remainingMembers: remainingMembers,
+}: {
+  remainingMembers: number;
+}) {
   return (
     <div className='w-7 z-10 aspect-square rounded-full border border-foreground/30 bg-background grid place-items-center -ml-2'>
       <Text variant={"p"} className='font-semibold'>
-        {"+"+ remainingMembers}
+        {"+" + remainingMembers}
       </Text>
     </div>
   );

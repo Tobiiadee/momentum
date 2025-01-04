@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Text } from "../../ui/text";
-import TaskNumber from "./task-number";
+import TaskNumber from "../task/task-number";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import { Button } from "../../ui/button";
 import { X } from "lucide-react";

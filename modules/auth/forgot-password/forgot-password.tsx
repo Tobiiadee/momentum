@@ -9,7 +9,7 @@ import useUserStore from "@/modules/store/user-store";
 import { X } from "lucide-react";
 import React from "react";
 import { motion } from "framer-motion";
-import { previewVariant } from "@/modules/common/components/shared/new-task/preview-task";
+import { previewVariant } from "@/modules/common/components/shared/task-main/preview-task";
 
 export default function ForgotPassword() {
   const setIsForgotPassword = useUserStore(

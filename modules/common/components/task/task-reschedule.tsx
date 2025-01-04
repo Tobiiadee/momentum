@@ -4,8 +4,7 @@ import React from "react";
 import Modal from "../../ui/modal";
 import useNewTaskStore from "@/modules/store/new-task.store";
 import TaskRescheduleCalendar from "./task-reschedule-calendar";
-import TaskRescheduleInputs from "./task-reschedule-inputs";
-import { previewVariant } from "./new-task/preview-task";
+import TaskRescheduleInputs from "../shared/task-reschedule-inputs";
 import { motion } from "framer-motion";
 import { Button } from "../../ui/button";
 import { Text } from "../../ui/text";
@@ -14,6 +13,7 @@ import { UpdateTaskType, useNewTask } from "@/hooks/use-new-task";
 import useUserStore from "@/modules/store/user-store";
 import { formatTimeIntl } from "@/lib/helpers/format";
 import { toast } from "sonner";
+import { previewVariant } from "../shared/task-main/preview-task";
 
 export default function TaskReschedule() {
   const setIsReschedule = useNewTaskStore((state) => state.setIsReschedule);

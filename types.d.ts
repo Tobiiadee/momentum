@@ -49,8 +49,10 @@ type TaskItem = {
 type ListType = {
   list_id: string;
   label: string;
-  icon: string;
+  icon: string | React.ReactNode;
   type?: "list";
+  numberOfTask?: number;
+  default?: boolean;
 };
 
 type ListArrayType = ListType[];
@@ -65,8 +67,9 @@ type MemberType = {
 type GroupType = {
   list_id: string;
   label: string;
-  members: MemberType[];
-  type?: "group";
+  members: string[];
+  creator_id: string;
+  type: "group";
 };
 
 type GroupArrayType = GroupType[];
@@ -79,3 +82,12 @@ type TaskType = {
   default: boolean;
   type?: "task";
 };
+
+type TaskFileType = {
+  created_at: string;
+  file_name: string;
+  file_url: string;
+  id: number;
+  task_id: string;
+  uploaded_at: string;
+}

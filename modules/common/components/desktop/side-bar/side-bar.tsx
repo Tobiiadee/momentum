@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Logo from "../../shared/logo";
+import Logo from "../../shared/logo/logo";
 import SideBarLinks from "./side-bar-links";
 import CreateNewList from "./new list/create-new-list";
 import Group from "./group/group";
@@ -16,7 +16,7 @@ import { list } from "@/modules/assets/list";
 import CreateNewTask from "./create-new-task";
 import useUserStore from "@/modules/store/user-store";
 import { useNewTask } from "@/hooks/use-new-task";
-import { today } from "../../shared/todays-task";
+import { today } from "../../task/todays-task";
 import { formatDate } from "@/lib/helpers/format";
 import CreateNewGroup from "./group/create-new-group";
 import useListAction from "@/hooks/use-list-action";
@@ -138,14 +138,14 @@ export default function SideBar() {
 
       <AnimatePresence mode='wait'>
         {isList && (
-          <Modal onClick={() => resetList()}>
+          <Modal className='bg-foreground/20' onClick={() => resetList()}>
             <NewList />
           </Modal>
         )}
       </AnimatePresence>
       <AnimatePresence mode='wait'>
         {isGroup && (
-          <Modal onClick={() => resetGroup()}>
+          <Modal className='bg-foreground/20' onClick={() => resetGroup()}>
             <NewGroup />
           </Modal>
         )}

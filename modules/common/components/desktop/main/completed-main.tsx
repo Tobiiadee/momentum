@@ -1,7 +1,7 @@
 import React from "react";
 import DaySelector from "../../shared/day-selector";
 import SelectFilter from "../../shared/select-filter";
-import CompletedTask from "../../shared/completed-task";
+import CompletedTask from "../../task/completed-task";
 
 export default function CompletedMain() {
   return (

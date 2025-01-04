@@ -4,11 +4,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { motion, Variants } from "framer-motion";
 import { Input } from "@/modules/common/ui/input";
 import { Button } from "@/modules/common/ui/button";
-import { ArrowUpFromLine, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { useGroupStore } from "@/modules/store/group-store";
 import { Text } from "@/modules/common/ui/text";
 import AddMember from "./add-member";
-import useAllListStore from "@/modules/store/all-list-store";
+import { v4 as uuidv4 } from "uuid";
+import useUserStore from "@/modules/store/user-store";
+import useGroupAction from "@/hooks/use-group-action";
+import { toast } from "sonner";
 
 export const FadeInOutvariants: Variants = {
   hidden: { y: 0, opacity: 0 },
@@ -32,16 +35,19 @@ export const SlideInNameVariants: Variants = {
 export default function NewGroup() {
   const [groupName, setGroupName] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const user = useUserStore((state) => state.user);
+  const { addGroupMutate, isAddingGroup, isAddGroupError, addGroupError, isAddGroupSuccess } =
+    useGroupAction(user?.id as string);
 
   const setIsGroup = useGroupStore((state) => state.setIsGroup);
-  const setGroups = useGroupStore((state) => state.setGroups);
+  // const setGroups = useGroupStore((state) => state.setGroups);
   const isGroup = useGroupStore((state) => state.isGroup);
   const setIsGroupMember = useGroupStore((state) => state.setIsGroupMember);
   const setIsGroupName = useGroupStore((state) => state.setIsGroupName);
   const isGroupName = useGroupStore((state) => state.isGroupName);
   const isGroupMember = useGroupStore((state) => state.isGroupMember);
   const members = useGroupStore((state) => state.members);
-  const addToList = useAllListStore((state) => state.addToList);
+  // const addToList = useAllListStore((state) => state.addToList);
   const reset = useGroupStore((state) => state.reset);
 
   useEffect(() => {
@@ -57,21 +63,33 @@ export default function NewGroup() {
     setIsGroupName(groupName);
   };
 
+//get members id
+const membersId = members.map(member => member.id);
+
   const groupHandler = () => {
     const group: GroupType = {
-      id: crypto.randomUUID(),
+      list_id: uuidv4(),
       label: groupName.trim(),
-      members: members,
-      numberOfTask: 0,
-      default: false,
+      members: membersId,
+      creator_id: user?.id as string,
+      type: "group",
     };
 
     if (!!groupName) {
-      setGroups(group);
-      addToList(group);
+      addGroupMutate(group);
+      // setGroups(group);
+      // addToList(group);
       reset();
     }
   };
+
+  if (isAddGroupError) {
+    toast.error(addGroupError?.message);
+  }
+
+  if (isAddGroupSuccess) {
+    toast.success("Group created successfully");
+  }
 
   return (
     <motion.div
@@ -105,8 +123,13 @@ export default function NewGroup() {
               className='placeholder:text-xs'
             />
 
-            <Button type='submit' variant={"ghost"} disabled={!groupName} className=''>
-              <ArrowUpFromLine strokeWidth={1.5} size={18} />
+            <Button
+              type='submit'
+              variant={"ghost"}
+              size={"sm"}
+              disabled={!groupName}
+              className=''>
+              <Plus strokeWidth={1.5} size={18} />
             </Button>
           </form>
         ) : (
@@ -114,7 +137,11 @@ export default function NewGroup() {
         )}
       </div>
 
-      <Button onClick={groupHandler} variant={"default"} className=''>
+      <Button
+        isLoading={isAddingGroup}
+        onClick={groupHandler}
+        variant={"default"}
+        className=''>
         Add
       </Button>
 

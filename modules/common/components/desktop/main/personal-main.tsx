@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import DaySelector from "../../shared/day-selector";
 import SelectFilter from "../../shared/select-filter";
-import PersonalTask from "../../shared/personal-task";
+import PersonalTask from "../../task/personal-task";
 import useUserStore from "@/modules/store/user-store";
 import { useNewTask } from "@/hooks/use-new-task";
 import useSortArrayStore from "@/modules/store/sort-array-store";
@@ -34,7 +34,7 @@ export default function PersonalMain() {
       <div className='flex justify-end'>
         <div className='flex space-x-2 items-center'>
           <DaySelector />
-          <SelectFilter />
+          <SelectFilter sortData={personalTask} />
         </div>
       </div>
 

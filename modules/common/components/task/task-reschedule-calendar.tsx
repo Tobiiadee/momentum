@@ -3,8 +3,8 @@
 import React from "react";
 import { Calendar } from "../../ui/calendar";
 import useNewTaskStore from "@/modules/store/new-task.store";
-import { months } from "../shared/task-main/new-task-calendar";
-import { taskTimeVariant } from "../shared/task-main/new-task-time";
+import { months } from "../shared/new-task/new-task-calendar";
+import { taskTimeVariant } from "../shared/new-task/new-task-time";
 import { Text } from "../../ui/text";
 import { motion } from "framer-motion";
 

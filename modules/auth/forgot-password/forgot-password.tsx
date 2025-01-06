@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/modules/common/ui/button";
-import { FormLabel } from "@/modules/common/ui/form";
 import { Input } from "@/modules/common/ui/input";
 import Modal from "@/modules/common/ui/modal";
 import { Text } from "@/modules/common/ui/text";
@@ -9,7 +8,7 @@ import useUserStore from "@/modules/store/user-store";
 import { X } from "lucide-react";
 import React from "react";
 import { motion } from "framer-motion";
-import { previewVariant } from "@/modules/common/components/shared/task-main/preview-task";
+import { previewVariant } from "@/modules/common/components/shared/new-task/preview-task";
 
 export default function ForgotPassword() {
   const setIsForgotPassword = useUserStore(

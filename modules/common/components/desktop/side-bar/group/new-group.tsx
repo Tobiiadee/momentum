@@ -36,8 +36,13 @@ export default function NewGroup() {
   const [groupName, setGroupName] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const user = useUserStore((state) => state.user);
-  const { addGroupMutate, isAddingGroup, isAddGroupError, addGroupError, isAddGroupSuccess } =
-    useGroupAction(user?.id as string);
+  const {
+    addGroupMutate,
+    isAddingGroup,
+    isAddGroupError,
+    addGroupError,
+    isAddGroupSuccess,
+  } = useGroupAction(user?.id as string);
 
   const setIsGroup = useGroupStore((state) => state.setIsGroup);
   // const setGroups = useGroupStore((state) => state.setGroups);
@@ -63,14 +68,22 @@ export default function NewGroup() {
     setIsGroupName(groupName);
   };
 
-//get members id
-const membersId = members.map(member => member.id);
+  //get members id
+  const membersId = members.map((member) => ({
+    member_id: member.id,
+    created_at: member.created_at,
+  }));
+
+  const allMembers = [
+    { member_id: user?.id as string, created_at: new Date().toISOString() },
+    ...membersId,
+  ];
 
   const groupHandler = () => {
     const group: GroupType = {
       list_id: uuidv4(),
       label: groupName.trim(),
-      members: membersId,
+      members: allMembers,
       creator_id: user?.id as string,
       type: "group",
     };

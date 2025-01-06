@@ -74,7 +74,6 @@ export async function uploadFile(userId: string, file: File) {
   const { error } = await supabase.storage
     .from("user_data")
     .upload(filePath, file, {
-      cacheControl: "3600", // 1 hour cache
       upsert: true, // If file already exists, overwrite it
     });
 
@@ -171,11 +170,26 @@ export async function fetchGroups(userId: string): Promise<GroupType[]> {
   return data || [];
 }
 
+export async function fetchGroup(group_id: string): Promise<GroupType | null> {
+  // console.log("calling fetch group function");
+  
+  const { data, error } = await supabase
+    .from("groups")
+    .select("*")
+    .eq("list_id", group_id)
+    .single();
+
+  if (error) throw error;
+// console.log("data from server:", data);
+
+  return data || null;
+}
+
 export async function deleteGroup(group_id: string) {
   const { error } = await supabase
     .from("groups")
     .delete()
-    .eq("group_id", group_id);
+    .eq("list_id", group_id);
 
   if (error) throw error;
 }

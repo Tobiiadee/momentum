@@ -1,5 +1,10 @@
 import { create } from "zustand";
 
+type GroupTitleMembersType = {
+  group_title: string;
+  members: AddMemberType[];
+};
+
 interface GroupStoreType {
   isGroup: boolean;
   setIsGroup: (isGroup: boolean) => void;
@@ -14,6 +19,10 @@ interface GroupStoreType {
   setIsGroupName: (isGroupName: string) => void;
   members: MemberType[];
   setMembers: (members: MemberType) => void;
+  listIdFromDatabase: string;
+  setListIdFromDatabase: (listId: string) => void;
+  groupTitleMembers: GroupTitleMembersType;
+  setGroupTitleMembers: (groupTitleMembers: GroupTitleMembersType) => void;
   deleteMember: (memberId: string) => void;
   reset: () => void;
 }
@@ -40,7 +49,8 @@ export const useGroupStore = create<GroupStoreType>((set) => ({
 
   deleteGroup: (groupId) =>
     set((state) => ({
-      groups: state.groups?.filter((group) => group.id !== groupId) || null,
+      groups:
+        state.groups?.filter((group) => group.list_id !== groupId) || null,
     })),
 
   isGroupMember: false,
@@ -55,6 +65,13 @@ export const useGroupStore = create<GroupStoreType>((set) => ({
     set((state) => ({
       members: state.members?.filter((member) => member.id !== groupId) || null,
     })),
+  listIdFromDatabase: "",
+  setListIdFromDatabase: (listId) => set({ listIdFromDatabase: listId }),
+  groupTitleMembers: {
+    group_title: "",
+    members: [],
+  },
+  setGroupTitleMembers: (groupTitleMembers) => set({ groupTitleMembers }),
   reset: () =>
     set({
       isGroup: false,

@@ -58,6 +58,11 @@ export default function AddMember() {
     error,
   } = useSearchUsers(user_id as string, searchMember);
 
+  //filter out the creator
+  const filteredMembers = searchedMembers?.filter(
+    (member) => member.id !== user_id
+  );
+
   return (
     <div className='relative flex flex-col space-y-2 h-48 max-h-48 '>
       <motion.div
@@ -99,7 +104,7 @@ export default function AddMember() {
             </div>
           )}
 
-          {searchedMembers?.map((member) => (
+          {filteredMembers?.map((member) => (
             <MemberItem
               key={member.id + member.email}
               setSearchedMembers={setSearchMember}
@@ -110,7 +115,7 @@ export default function AddMember() {
             />
           ))}
 
-          {searchMember !== "" && searchedMembers?.length === 0 && (
+          {searchMember !== "" && filteredMembers?.length === 0 && (
             <div className='w-full grid place-items-center min-h-8'>
               <Text
                 variant={"p"}
@@ -166,7 +171,13 @@ function MemberItem({
   const handleSelect = () => {
     if (members.find((member) => member.id === id)) return;
     setSearchedMembers("");
-    setMembers({ name, email, image, id });
+    setMembers({
+      name,
+      email,
+      image,
+      id,
+      created_at: new Date().toISOString(),
+    });
   };
 
   return (
@@ -176,7 +187,7 @@ function MemberItem({
       className='flex items-center space-x-2 hover:bg-foreground/10 active:bg-foreground/15 transition-all duration-300 py-1 px-2 cursor-pointer'>
       <div className='relative w-6 aspect-square rounded-full overflow-hidden flex items-center justify-center'>
         <Image
-          src={`/images/${image}`}
+          src={image}
           alt={"profile" + name}
           fill
           className='object-cover'

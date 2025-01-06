@@ -41,6 +41,9 @@ const accordionVariants: Variants = {
 interface TaskItemProps extends TaskItem {
   index: number;
   list?: string;
+  group_members?: MemberType[];
+  group_title?: string;
+  isLoadingGroup?: boolean;
 }
 
 export default function TaskItem({
@@ -56,6 +59,8 @@ export default function TaskItem({
   due_date,
   callLink,
   list_icon,
+
+  isLoadingGroup,
 }: TaskItemProps) {
   // making the task item draggable
   const [{ isDragging }] = useDrag(() => ({
@@ -77,7 +82,6 @@ export default function TaskItem({
   useEffect(() => {
     refetchTaskFiles();
   }, [refetchTaskFiles]);
-
 
   // removed ref={dragRef as ConnectDragSource}
   return (
@@ -107,6 +111,7 @@ export default function TaskItem({
               list_icon={list_icon}
               dueDate={due_date}
               file_url={taskFiles?.map((file) => file.file_url) as string[]}
+              isLoadingGroup={isLoadingGroup}
             />
           </AccordionTrigger>
           <AccordionContent className='px-4 bg-background rounded-b-md'>
@@ -184,6 +189,8 @@ interface CollapsibleTriggerProps {
   dueDate: string;
   type?: "list" | "group";
   file_url: string[];
+
+  isLoadingGroup?: boolean;
 }
 
 function CollapsibleTrigger({
@@ -196,13 +203,16 @@ function CollapsibleTrigger({
   list_icon,
   dueDate,
   list_label,
-  file_url
+  file_url,
+  isLoadingGroup,
 }: CollapsibleTriggerProps) {
   // if (type === "group") fetch group members
 
   const itemOptionHandler = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
+
+  // console.log(group_members);
 
   function convertStringToHTML({ list_icon }: { list_icon: string }) {
     const htmlRegex = /<\/?[a-z][\s\S]*>/i; // Matches strings with HTML-like tags
@@ -226,11 +236,15 @@ function CollapsibleTrigger({
         <div className='w-max aspect-square p-[2px] grid place-items-center border bg-foreground/10 rounded'>
           {convertStringToHTML({ list_icon })}
         </div>
-        {type === "group" && <TaskGroupTitle groupTitle='Test' />}
+        {type === "group" && (
+          <TaskGroupTitle  />
+        )}
       </div>
 
       <div className='flex space-x-2 items-center'>
-        {type === "group" && <TaskGroupImg members={[]} />}
+        {type === "group" && !isLoadingGroup && (
+          <TaskGroupImg  />
+        )}
         <div className='flex space-x-1 items-center bg-foreground/10 px-2 py-1 rounded-md'>
           <Clock strokeWidth={1.5} size={18} className='text-foreground/60' />
           <Text variant={"p"} className='text-foreground/60 text-xs'>
@@ -261,7 +275,7 @@ function CollapsibleTrigger({
 function MoreOptionsDropdown({
   itemOptionHandler,
   taskId,
-  file_urls
+  file_urls,
 }: {
   itemOptionHandler: (e: React.MouseEvent) => void;
   taskId: string;
@@ -270,7 +284,8 @@ function MoreOptionsDropdown({
   const setIsReschedule = useNewTaskStore((state) => state.setIsReschedule);
   const setTaskId = useNewTaskStore((state) => state.setTaskId);
   const user = useUserStore((state) => state.user);
-  const { deleteTaskMutate, deleteTaskError, deleteTaskFileMutate } = useNewTask(user?.id as string);
+  const { deleteTaskMutate, deleteTaskError, deleteTaskFileMutate } =
+    useNewTask(user?.id as string);
 
   if (deleteTaskError) {
     toast.error(deleteTaskError.message);
@@ -306,7 +321,7 @@ function MoreOptionsDropdown({
           onClick={(e) => {
             e.stopPropagation();
             deleteTaskMutate(taskId);
-            deleteTaskFileMutate({taskId, fileUrls: file_urls});
+            deleteTaskFileMutate({ taskId, fileUrls: file_urls });
           }}>
           Delete
         </DropdownMenuItem>

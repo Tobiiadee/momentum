@@ -7,7 +7,7 @@ import {
 } from "@/modules/common/ui/tabs";
 import { Text } from "@/modules/common/ui/text";
 import { Blocks,  Files,  ListTodo, Users } from "lucide-react";
-import GroupTasks from "./navigation pages/group-tasks";
+import TasksGroup from "./navigation pages/tasks-group";
 import Members from "./navigation pages/members";
 import Integrations from "./navigation pages/integrations";
 import GroupFiles from "./navigation pages/group-files";
@@ -18,7 +18,7 @@ const tabs = [
     name: "Tasks",
     value: "tasks",
     icon: <ListTodo size={18} strokeWidth={1.5} />,
-    content: <GroupTasks />,
+    content: <TasksGroup />,
   },
   {
     name: "Members",

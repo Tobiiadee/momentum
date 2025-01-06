@@ -3,22 +3,40 @@ import {
   GroupItemImage,
   GroupRemainingMembers,
 } from "../desktop/side-bar/group/group-item";
+import { useQuery } from "@tanstack/react-query";
+import { fetchUser } from "@/modules/supabase/utils/actions";
+import useGroupStore from "@/modules/store/group-store";
 
-interface TaskGroupImgProps {
-  members: MemberType[];
-}
+export default function TaskGroupImg() {
+  const groupTitleMembers = useGroupStore((state) => state.groupTitleMembers);
 
-export default function TaskGroupImg({ members }: TaskGroupImgProps) {
-  const slicedMembers = members.slice(0, 3);
-  const remainingMembers = members.length - 3;
+  const slicedMembers = groupTitleMembers.members.slice(0, 3);
+  const remainingMembers = groupTitleMembers.members.length - 3;
+
+  const { data: membersData } = useQuery({
+    queryKey: ["members", groupTitleMembers.members],
+    queryFn: async () => {
+      const fetchedMembers = await Promise.all(
+        slicedMembers.map((member) => fetchUser(member.member_id))
+      );
+
+      return fetchedMembers;
+    },
+  });
+
+  // console.log(membersData);
 
   return (
     <div className='flex items-center'>
-      {slicedMembers.map((members) => (
-        <GroupItemImage key={members.id + members.email} image='img3.jpg' />
+      {membersData?.map((members) => (
+        <GroupItemImage
+          key={members.id + members.email}
+          alt={members.username + "avatar"}
+          image={members?.avatar as string}
+        />
       ))}
 
-      {members.length > 3 && !!remainingMembers && (
+      {groupTitleMembers.members.length > 3 && !!remainingMembers && (
         <GroupRemainingMembers remainingMembers={remainingMembers} />
       )}
     </div>

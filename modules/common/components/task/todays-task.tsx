@@ -4,7 +4,7 @@ import React, { useCallback } from "react";
 // import TaskitemDragPreview from "./task-item-drag-preview";
 // import { tasks } from "@/modules/assets/DUMMY_TASK";
 import { Accordion } from "../../ui/accordion";
-import TaskItem from "../shared/task-main/task-item";
+import TaskItem from "../shared/new-task/task-item";
 import useUserStore from "@/modules/store/user-store";
 import TaskSkeleton from "../../ui/skeleton/task-skeleton";
 import { useNewTask } from "@/hooks/use-new-task";

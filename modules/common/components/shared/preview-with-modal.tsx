@@ -1,7 +1,7 @@
 import React from "react";
 import Modal from "../../ui/modal";
 import { motion } from "framer-motion";
-import { previewVariant } from "./task-main/preview-task";
+import { previewVariant } from "./new-task/preview-task";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
 import { Button } from "../../ui/button";

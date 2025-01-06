@@ -97,3 +97,14 @@ export function sortArray<T extends Record<string, any>>(
   });
 }
 
+export function formatDateString(dateString: string): string {
+  const date = new Date(dateString);
+  
+  // Extract day, month, and year
+  const day = date.getDate().toString().padStart(2, '0'); // Add leading zero if necessary
+  const month = date.toLocaleString('default', { month: 'short' }); // Get short month name
+  const year = date.getFullYear();
+
+  return `${day} ${month}, ${year}`;
+}
+

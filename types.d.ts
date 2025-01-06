@@ -62,12 +62,26 @@ type MemberType = {
   name: string;
   email: string;
   image: string;
+  created_at?: string;
+};
+
+type AddMemberType = {
+  member_id: string;
+  created_at?: string;
+};
+
+type GroupReturnType = {
+  list_id: string;
+  label: string;
+  members: MemberType[];
+  creator_id: string;
+  type: "group";
 };
 
 type GroupType = {
   list_id: string;
   label: string;
-  members: string[];
+  members: AddMemberType[];
   creator_id: string;
   type: "group";
 };
@@ -90,4 +104,4 @@ type TaskFileType = {
   id: number;
   task_id: string;
   uploaded_at: string;
-}
+};

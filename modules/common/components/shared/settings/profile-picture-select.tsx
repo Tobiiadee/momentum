@@ -28,7 +28,7 @@ export default function ProfilePictureSelect() {
     }
   };
 
-  // console.log(user?.avatar);
+  console.log(user?.avatar);
 
   return (
     <div className=''>

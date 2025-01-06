@@ -13,7 +13,7 @@ import { UpdateTaskType, useNewTask } from "@/hooks/use-new-task";
 import useUserStore from "@/modules/store/user-store";
 import { formatTimeIntl } from "@/lib/helpers/format";
 import { toast } from "sonner";
-import { previewVariant } from "../shared/task-main/preview-task";
+import { previewVariant } from "../shared/new-task/preview-task";
 
 export default function TaskReschedule() {
   const setIsReschedule = useNewTaskStore((state) => state.setIsReschedule);

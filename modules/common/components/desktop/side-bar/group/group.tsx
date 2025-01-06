@@ -7,6 +7,7 @@ import useUserStore from "@/modules/store/user-store";
 import useGroupAction from "@/hooks/use-group-action";
 import { Skeleton } from "@/modules/common/ui/skeleton";
 import { toast } from "sonner";
+import { Button } from "@/modules/common/ui/button";
 
 export default function Group() {
   // const groups = useGroupStore((state) => state.groups);
@@ -42,17 +43,25 @@ export default function Group() {
             Group
           </Text>
           <div className='grid grid-cols-2 gap-2 w-full'>
-            {allGroups?.map((group) => (
+            {allGroups.slice(0, 2)?.map((group) => (
               <GroupItem
                 key={group.list_id}
                 id={group.list_id}
                 name={group.label}
-                members={group.members}
+                members={group.members.map((member) => member.member_id)}
               />
             ))}
+            {isLoadingAllGroups && <GroupItemSkeleton />}
           </div>
 
           {/* <CreateNewGroup /> */}
+          {allGroups.length > 2 && (
+            <div className='flex justify-end'>
+              <Button variant={"link"}>
+                <Text variant={"p"}>View All Groups</Text>
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </>

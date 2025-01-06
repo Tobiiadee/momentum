@@ -36,7 +36,7 @@ export default function useGroupAction(userId: string) {
   } = useMutation({
     mutationFn: (group: GroupType) => createGroup(userId, group),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["all-group", userId] });
+      queryClient.invalidateQueries({ queryKey: ["all-groups", userId] });
 
       router.push("/dashboard");
     },
@@ -51,7 +51,7 @@ export default function useGroupAction(userId: string) {
   } = useMutation({
     mutationFn: (group_id: string) => deleteGroup(group_id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["all-group", userId] });
+      queryClient.invalidateQueries({ queryKey: ["all-groups", userId] });
     },
   });
 

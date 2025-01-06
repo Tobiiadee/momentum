@@ -4,9 +4,10 @@ import NewTaskClient from "@/modules/common/components/task/new-task-client";
 import Wrapper from "@/modules/common/components/shared/wrapper";
 import React from "react";
 // import TaskButtons from "@/modules/common/components/desktop/main/task-buttons";
-import PreviewTaskClient from "@/modules/common/components/shared/task-main/preview-task-client";
+import PreviewTaskClient from "@/modules/common/components/shared/new-task/preview-task-client";
 import TaskRescheduleClient from "@/modules/common/components/task/task-reschedule-client";
 import EditClient from "@/modules/common/components/shared/settings/edit-client";
+
 
 export default function MainLayout({
   children,

@@ -15,13 +15,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
-
   const user = await getUserData();
 
   return (
     <html lang='en' suppressHydrationWarning>
       <body>
+       
         <div id='overlay'></div>
         <ClientProvider user={user}>{children}</ClientProvider>
         <Toaster />

@@ -1,29 +1,21 @@
 "use client";
 
-import React from "react";
-// import TaskitemDragPreview from "./task-item-drag-preview";
 import { Accordion } from "../../ui/accordion";
 import TaskItem from "../shared/new-task/task-item";
-
 import TaskSkeleton from "../../ui/skeleton/task-skeleton";
 import EmptyTaskModule from "../shared/empty-state/empty-task-module";
+import { ComponentTaskProps } from "./work-task";
+import { useParams } from "next/navigation";
 
-export interface ComponentTaskProps {
-  task: Task[] | undefined;
-  isError: boolean;
-  isLoading: boolean;
-  error: Error | null;
-  group_members?: MemberType[];
-  group_title?: string;
-  isGroupLoading?: boolean;
-}
-
-export default function WorkTask({
+export default function GroupTask({
   task,
   isError,
   isLoading,
   error,
+  isGroupLoading,
 }: ComponentTaskProps) {
+  const { groupId } = useParams();
+
   if (isLoading) {
     return (
       <div className='flex flex-col space-y-4'>
@@ -46,12 +38,13 @@ export default function WorkTask({
             key={task.task_id}
             index={index}
             callLink={task.call_link}
+            isLoadingGroup={isGroupLoading}
             {...task}
           />
         ))}
       </div>
 
-      {task?.length === 0 && <EmptyTaskModule module='work' />}
+      {task?.length === 0 && <EmptyTaskModule module={groupId as string} />}
     </Accordion>
   );
 }

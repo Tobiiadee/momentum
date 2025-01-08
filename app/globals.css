@@ -65,13 +65,11 @@ body {
 }
 
 @layer base {
-  
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
-    
   }
 
   #hide-scrollbar {
@@ -83,46 +81,24 @@ body {
     display: none; /* Safari and Chrome */
   }
 
-  .balls {
-    width: max-content;
-    /* border: 2px solid red; */
-    display: flex;
-    gap: 1px;
-    flex-flow: row nowrap;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .balls div {
-    width: 0.8em;
-    height: 0.8em;
+  .spinner {
+    width: 2.5em;
+    height: 3em;
+    border: 3px solid transparent;
+    border-top-color: hsl(var(--foreground));
+    border-bottom-color: hsl(var(--foreground));
     border-radius: 50%;
-    background-color: hsl(var(--foreground));
+    animation: spin-stretch 2s ease infinite;
   }
 
-  .balls div:nth-of-type(1) {
-    transform: translateX(-100%);
-    animation: left-swing 0.5s ease-in alternate infinite;
-  }
-
-  .balls div:nth-of-type(3) {
-    transform: translateX(-95%);
-    animation: right-swing 0.5s ease-out alternate infinite;
-  }
-
-  @keyframes left-swing {
-    50%,
-    100% {
-      transform: translateX(95%);
-    }
-  }
-
-  @keyframes right-swing {
+  @keyframes spin-stretch {
     50% {
-      transform: translateX(-95%);
+      transform: rotate(360deg) scale(0.4, 0.33);
+      border-width: 8px;
     }
     100% {
-      transform: translateX(100%);
+      transform: rotate(720deg) scale(1, 1);
+      border-width: 3px;
     }
   }
 }

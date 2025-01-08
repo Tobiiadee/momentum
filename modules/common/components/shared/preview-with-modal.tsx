@@ -15,6 +15,7 @@ interface PreviewWithModalProps {
   title: string;
   ariaLabel: string;
   className?: string;
+  position?: string;
   modalBackground?: string;
 }
 
@@ -26,6 +27,7 @@ export default function PreviewWithModal({
   modalBackground = "bg-foreground/30 backdrop-blur-sm",
   title,
   ariaLabel,
+  position = "left-1/3 -translate-x-1/3 top-[5rem]",
   className,
 }: PreviewWithModalProps) {
   return (
@@ -39,7 +41,8 @@ export default function PreviewWithModal({
           width,
           background,
           className,
-          "flex flex-col space-y-4 shadow-md absolute left-1/4 -translate-x-1/4 top-[5rem] z-50 h-max pt-0 pb-5 rounded-lg"
+          position,
+          "flex flex-col space-y-4 shadow-md absolute z-50 h-max pt-0 pb-5 rounded-lg"
         )}>
         <div className='w-full flex justify-between items-center border-b py-1 pr-2 pl-4'>
           <Text variant={"p"} className='font-semibold capitalize'>

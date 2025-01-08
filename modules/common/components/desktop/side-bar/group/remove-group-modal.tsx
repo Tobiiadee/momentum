@@ -2,79 +2,77 @@
 
 import React from "react";
 import PreviewWithModal from "../../../shared/preview-with-modal";
-import useListStore from "@/modules/store/list-store";
-import { Text } from "@/modules/common/ui/text";
+import useGroupStore from "@/modules/store/group-store";
 import { Trash2 } from "lucide-react";
+import { Text } from "@/modules/common/ui/text";
 import { Button } from "@/modules/common/ui/button";
 import useUserStore from "@/modules/store/user-store";
-import useListAction from "@/hooks/use-list-action";
-import { useRouter } from "next/navigation";
+import useGroupAction from "@/hooks/use-group-action";
 import { useNewTask } from "@/hooks/use-new-task";
+import { useRouter } from "next/navigation";
 
-export default function RemoveListModal() {
-  const setIsDeleteList = useListStore((state) => state.setIsDeleteList);
-  const deleteObject = useListStore((state) => state.deleteObject);
+export default function RemoveGroupModal() {
   const router = useRouter();
+  const setIsDeleteGroup = useGroupStore((state) => state.setIsDeleteGroup);
+  const deleteGroupObject = useGroupStore((state) => state.deleteGroupObject);
 
-  //get user's id
-  const userId = useUserStore((state) => state.user?.id);
-
-  //fetch user's list
-  const { deleteListMutate, isDeletingList } = useListAction(userId as string);
+  const user = useUserStore((state) => state.user);
+  const { deleteGroupMutate, isDeletingGroup } = useGroupAction(
+    user?.id as string
+  );
 
   //fetch tasks in the list
   const { deleteTaskMutate, isDeletingTask, allTasks } = useNewTask(
-    userId as string
+    user?.id as string
   );
 
   //filter tasks in the list and get ids
   const filteredTaskIds = allTasks
-    ?.filter((task) => task.list_id === deleteObject?.list_Id)
+    ?.filter((task) => task.list_id === deleteGroupObject?.list_Id)
     .map((task) => task.task_id);
 
   // handle delete
   const handleDeleteList = () => {
-    if (deleteObject === null) return;
-    deleteListMutate(deleteObject?.list_Id);
+    if (deleteGroupObject === null) return;
+    deleteGroupMutate(deleteGroupObject?.list_Id);
     deleteTaskMutate(filteredTaskIds as []);
-    if (!isDeletingList && !isDeletingTask) {
-      setIsDeleteList(false);
+    if (!isDeletingGroup && !isDeletingTask) {
+      setIsDeleteGroup(false);
       router.push("/dashboard");
     }
   };
 
   return (
     <PreviewWithModal
-      title='delete list'
-      ariaLabel='delete list'
+      title='delete group'
+      ariaLabel='delete group'
       width='w-[22rem]'
       modalBackground='bg-foreground/20'
-      closeModal={() => setIsDeleteList(false)}>
+      closeModal={() => setIsDeleteGroup(false)}>
       <div className='flex flex-col space-y-4'>
         <div className='w-full grid place-items-center'>
           <Trash2 strokeWidth={1.5} size={50} />
         </div>
         <div className='flex flex-col space-y-2 justify-center w-full'>
           <Text variant={"h3"} className='text-center'>
-            Are you sure you want to delete this list?
+            Are you sure you want to delete this group?
           </Text>
           <Text
             variant={"p"}
             className='text-center font-medium text-foreground/60'>
             This action will also delete all tasks in the &quot;
-            {deleteObject?.list_label}&quot; list.
+            {deleteGroupObject?.group_label}&quot; group.
           </Text>
         </div>
 
         <div className='flex justify-between items-center w-full'>
-          <Button variant={"outline"} onClick={() => setIsDeleteList(false)}>
+          <Button variant={"outline"} onClick={() => setIsDeleteGroup(false)}>
             Close
           </Button>
           <Button
-          variant={"destructive"}
-            isLoading={isDeletingList && isDeletingTask}
-            onClick={handleDeleteList}
-            >
+            variant={"destructive"}
+            isLoading={isDeletingGroup && isDeletingTask}
+            onClick={handleDeleteList}>
             Delete
           </Button>
         </div>

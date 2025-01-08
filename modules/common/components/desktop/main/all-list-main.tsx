@@ -23,38 +23,40 @@ export default function AllListMain() {
   });
 
   return (
-    <div className='flex flex-col space-y-6 w-full'>
-      <Text variant={"h4"} className='font-medium'>
-        Your custom lists and groups
-      </Text>
+    <>
+      <div className='flex flex-col space-y-6 w-full'>
+        {updatedList?.length === 0 && (
+          <div className='w-full '>
+            <EmptyTaskModule text="Your haven't created any lists yet" />
+          </div>
+        )}
+        <div className='flex flex-col space-y-4'>
+          {updatedList?.length !== 0 && (
+            <Text variant={"h3"} className=''>
+              List
+            </Text>
+          )}
+          <div className='grid grid-cols-3 gap-4 mt-4 w-full'>
+            {isLoadingAllLists &&
+              isLoadingAllTasks &&
+              Array.from({ length: 6 }).map((_, index) => (
+                <AllListItemSkeleton key={index} />
+              ))}
 
-      {updatedList?.length === 0 && (
-        <div className='w-full '>
-          <EmptyTaskModule text="Your haven't created any lists yet" />
-        </div>
-      )}
-      <div className='flex flex-col space-y-4'>
-        {updatedList?.length !== 0 && <Text variant={"h5"}>Lists</Text>}
-        <div className='grid grid-cols-3 gap-4 mt-4 w-full'>
-          {isLoadingAllLists &&
-            isLoadingAllTasks &&
-            Array.from({ length: 6 }).map((_, index) => (
-              <AllListItemSkeleton key={index} />
+            {updatedList?.map((list, index) => (
+              <AllListItem
+                key={list.list_id}
+                id={list.list_id}
+                name={list.label}
+                svgImage={list.icon as string}
+                numberOfTask={list.numberOfTask as number}
+                index={index}
+              />
             ))}
-
-          {updatedList?.map((list, index) => (
-            <AllListItem
-              key={list.list_id}
-              id={list.list_id}
-              name={list.label}
-              svgImage={list.icon as string}
-              numberOfTask={list.numberOfTask as number}
-              index={index}
-            />
-          ))}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

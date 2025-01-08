@@ -5,6 +5,11 @@ type GroupTitleMembersType = {
   members: AddMemberType[];
 };
 
+type deleteGroupObj = {
+  list_Id: string;
+  group_label: string;
+};
+
 interface GroupStoreType {
   isGroup: boolean;
   setIsGroup: (isGroup: boolean) => void;
@@ -17,12 +22,20 @@ interface GroupStoreType {
   isGroupName: string;
   setIsGroupMember: (isGroupMember: boolean) => void;
   setIsGroupName: (isGroupName: string) => void;
-  members: MemberType[];
+  members: MemberType[] | [];
   setMembers: (members: MemberType) => void;
   listIdFromDatabase: string;
   setListIdFromDatabase: (listId: string) => void;
   groupTitleMembers: GroupTitleMembersType;
   setGroupTitleMembers: (groupTitleMembers: GroupTitleMembersType) => void;
+  isDeleteGroup: boolean;
+  setIsDeleteGroup: (isDeleteGroup: boolean) => void;
+  deleteGroupObject: deleteGroupObj | null;
+  setDeleteGroupObject: (deleteGroupObj: deleteGroupObj) => void;
+  isAddMember: boolean;
+  setIsAddMember: (isAddMember: boolean) => void;
+  addMemberArray: AddMemberType[];
+  setAddMemberArray: (addMemberArray: AddMemberType[]) => void;
   deleteMember: (memberId: string) => void;
   reset: () => void;
 }
@@ -71,7 +84,18 @@ export const useGroupStore = create<GroupStoreType>((set) => ({
     group_title: "",
     members: [],
   },
+  isAddMember: false,
+  setIsAddMember: (isAddMember) => set({ isAddMember }),
+  addMemberArray: [],
+  setAddMemberArray: (addMemberArray) => set({ addMemberArray }),
   setGroupTitleMembers: (groupTitleMembers) => set({ groupTitleMembers }),
+  isDeleteGroup: false,
+  setIsDeleteGroup: (isDeleteGroup) => set({ isDeleteGroup }),
+  deleteGroupObject: null,
+  setDeleteGroupObject: (deleteGroupObj) =>
+    set(() => ({
+      deleteGroupObject: deleteGroupObj,
+    })),
   reset: () =>
     set({
       isGroup: false,

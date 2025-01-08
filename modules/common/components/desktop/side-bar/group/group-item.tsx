@@ -15,6 +15,7 @@ interface GroupItemProps {
   id: string;
   name: string;
   members: string[];
+  index: number;
 }
 
 const groupItemVariants: Variants = {
@@ -29,27 +30,38 @@ const groupItemVariants: Variants = {
 
 const deleteListVariants: Variants = {
   hidden: { opacity: 0 },
-  visible: {
+  visible: (index: number) => ({
     opacity: 1,
-    transition: { duration: 0.7 },
-  },
+    transition: { duration: 0.7, delay: index * 0.1 },
+  }),
 };
 
-export default function GroupItem({ id, name, members }: GroupItemProps) {
+export default function GroupItem({
+  id,
+  name,
+  members,
+  index,
+}: GroupItemProps) {
   const router = useRouter();
   const [deleteGroup, setDeleteGroup] = useState(false);
-  const user = useUserStore((state) => state.user);
-  const { deleteGroupMutate, isDeletingGroup } = useGroupAction(
-    user?.id as string
+  const setDeleteGroupObject = useGroupStore(
+    (state) => state.setDeleteGroupObject
   );
+
+  const user = useUserStore((state) => state.user);
+  const setIsDeleteGroup = useGroupStore((state) => state.setIsDeleteGroup);
+
   const setListIdFromDatabase = useGroupStore(
     (state) => state.setListIdFromDatabase
   );
 
+  //get the deleting state
+  const { isDeletingGroup } = useGroupAction(user?.id as string);
+
   const handleDeleteGroup = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    deleteGroupMutate(id);
-    router.push("/dashboard");
+    setDeleteGroupObject({ group_label: name, list_Id: id });
+    setIsDeleteGroup(true);
   };
 
   const sliceMembers = members.slice(0, 5);
@@ -73,8 +85,10 @@ export default function GroupItem({ id, name, members }: GroupItemProps) {
       onClick={() => {
         router.push(`/dashboard/group/${name.toLowerCase()}`);
         setListIdFromDatabase(id);
+        setDeleteGroupObject({ group_label: name, list_Id: id });
       }}
       variants={groupItemVariants}
+      custom={index}
       initial='hidden'
       animate='visible'
       id={id}
@@ -109,7 +123,7 @@ export default function GroupItem({ id, name, members }: GroupItemProps) {
           {name}
         </Text>
         <Text variant={"p"} className='text-foreground/60 text-xs'>
-          {members.length} {members.length > 1 ? "Persons" : "Person"}
+          {members.length} {members.length > 1 ? "Members" : "Member"}
         </Text>
       </div>
       {!isDeletingGroup && (

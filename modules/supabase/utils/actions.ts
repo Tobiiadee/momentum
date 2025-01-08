@@ -159,6 +159,31 @@ export async function createGroup(userId: string, group: GroupType) {
   return error;
 }
 
+export async function updateGroup(
+  userId: string,
+  groupId: string,
+  updatedData: Partial<GroupType>
+) {
+  if (!userId) {
+    throw new Error("No user ID found");
+  }
+  if (!groupId) {
+    throw new Error("No group ID provided");
+  }
+
+  const { data, error } = await supabase
+    .from("groups")
+    .update(updatedData)
+    .eq("list_id", groupId) // Assuming "id" is the unique identifier for groups
+    .eq("creator_id", userId); // Optional: Ensure the group belongs to the user
+
+  if (error) {
+    throw new Error(`Error updating group: ${error.message}`);
+  }
+
+  return data;
+}
+
 export async function fetchGroups(userId: string): Promise<GroupType[]> {
   const { data, error } = await supabase
     .from("groups")
@@ -170,9 +195,17 @@ export async function fetchGroups(userId: string): Promise<GroupType[]> {
   return data || [];
 }
 
+export async function fetchAllGroups(): Promise<GroupType[] | null> {
+  const { data, error } = await supabase.from("groups").select("*");
+
+  if (error) throw error;
+
+  return data || [];
+}
+
 export async function fetchGroup(group_id: string): Promise<GroupType | null> {
   // console.log("calling fetch group function");
-  
+
   const { data, error } = await supabase
     .from("groups")
     .select("*")
@@ -180,9 +213,177 @@ export async function fetchGroup(group_id: string): Promise<GroupType | null> {
     .single();
 
   if (error) throw error;
-// console.log("data from server:", data);
+  // console.log("data from server:", data);
 
   return data || null;
+}
+
+//add members to group
+export async function addMembersToGroup(
+  groupId: string,
+  newMembers: AddMemberType[]
+): Promise<string> {
+  if (newMembers.length === 0) {
+    throw new Error("No members provided to add to the group.");
+  }
+
+  // Fetch the existing group
+  const { data: group, error: fetchError } = await supabase
+    .from("groups")
+    .select("members")
+    .eq("list_id", groupId)
+    .single();
+
+  if (fetchError) {
+    throw new Error(`Error fetching group: ${fetchError.message}`);
+  }
+
+  if (!group) {
+    throw new Error(`Group with ID ${groupId} not found.`);
+  }
+
+  const existingMembers: AddMemberType[] = group.members || [];
+
+  // Filter out members that are already in the group
+  const membersToAdd = newMembers.filter(
+    (newMember) =>
+      !existingMembers.some(
+        (member) => member.member_id === newMember.member_id
+      )
+  );
+
+  if (membersToAdd.length === 0) {
+    return "All provided members are already in the group.";
+  }
+
+  // Update the group's members array with new members
+  const updatedMembers = [...existingMembers, ...membersToAdd];
+
+  const { error: updateError } = await supabase
+    .from("groups")
+    .update({ members: updatedMembers })
+    .eq("list_id", groupId);
+
+  if (updateError) {
+    throw new Error(`Error updating group members: ${updateError.message}`);
+  }
+
+  return `Successfully added ${membersToAdd.length} members to the group.`;
+}
+
+//Delete member from group
+export async function deleteMemberFromGroup(
+  groupId: string,
+  memberId: string
+): Promise<string> {
+  // Fetch the existing group
+  const { data: group, error: fetchError } = await supabase
+    .from("groups")
+    .select("members")
+    .eq("list_id", groupId)
+    .single();
+
+  if (fetchError) {
+    throw new Error(`Error fetching group: ${fetchError.message}`);
+  }
+
+  if (!group) {
+    throw new Error(`Group with ID ${groupId} not found.`);
+  }
+
+  const existingMembers: AddMemberType[] = group.members || [];
+
+  // Check if the member exists in the group
+  const memberExists = existingMembers.some(
+    (member) => member.member_id === memberId
+  );
+
+  if (!memberExists) {
+    throw new Error(`Member with ID ${memberId} not found in the group.`);
+  }
+
+  // Filter out the member to delete
+  const updatedMembers = existingMembers.filter(
+    (member) => member.member_id !== memberId
+  );
+
+  // Update the group's members array
+  const { error: updateError } = await supabase
+    .from("groups")
+    .update({ members: updatedMembers })
+    .eq("list_id", groupId);
+
+  if (updateError) {
+    throw new Error(`Error updating group members: ${updateError.message}`);
+  }
+
+  return `Member with ID ${memberId} removed successfully from group ${groupId}.`;
+}
+
+export interface UpdateRoleType {
+  groupId: string;
+  memberId: string;
+  newRole: "Admin" | "Member" | "Guest";
+  userId: string; // The ID of the user making the request
+}
+
+//update member role
+
+export async function updateMemberRole({
+  groupId,
+  memberId,
+  newRole,
+  userId,
+}: UpdateRoleType): Promise<{ success: boolean; message: string }> {
+  try {
+    // Fetch the group data to check permissions
+    const { data: groupData, error: groupError } = await supabase
+      .from("groups")
+      .select("creator_id, members")
+      .eq("list_id", groupId)
+      .single();
+
+    if (groupError) {
+      throw new Error("Failed to fetch group data.");
+    }
+
+    const { creator_id, members } = groupData;
+
+    // Check if the user is either the creator or an admin
+    const isAuthorized =
+      userId === creator_id ||
+      members.some(
+        (member: { member_id: string; role: string }) =>
+          member.member_id === userId && member.role === "Admin"
+      );
+
+    if (!isAuthorized) {
+      return {
+        success: false,
+        message: "You are not authorized to update roles.",
+      };
+    }
+
+    // Update the member's role in the members array
+    const updatedMembers = members.map(
+      (member: { member_id: string; role: string }) =>
+        member.member_id === memberId ? { ...member, role: newRole } : member
+    );
+
+    // Update the group in the database
+    const { error: updateError } = await supabase
+      .from("groups")
+      .update({ members: updatedMembers })
+      .eq("list_id", groupId);
+
+    if (updateError) {
+      throw new Error("Failed to update member role.");
+    }
+
+    return { success: true, message: "Member role updated successfully." };
+  } catch (error) {
+    return { success: false, message: (error as Error).message };
+  }
 }
 
 export async function deleteGroup(group_id: string) {

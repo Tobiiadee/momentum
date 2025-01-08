@@ -23,6 +23,7 @@ interface ListStoreType {
   isDeleteList: boolean;
   deleteList: (listId: string) => void;
   setIsDeleteList: (isDeleteList: boolean) => void;
+
   deleteObject: deleteObj | null;
   setDeleteObject: (listObj: deleteObj) => void;
   reset: () => void;
@@ -52,9 +53,10 @@ export const useListStore = create<ListStoreType>((set) => ({
     })),
   deleteObject: null,
   setDeleteObject: (listObj) =>
-    set((state) => ({
+    set(() => ({
       deleteObject: listObj,
     })),
+
   reset: () =>
     set({
       isList: false,

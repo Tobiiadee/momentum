@@ -8,57 +8,65 @@ import useGroupAction from "@/hooks/use-group-action";
 import { Skeleton } from "@/modules/common/ui/skeleton";
 import { toast } from "sonner";
 import { Button } from "@/modules/common/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function Group() {
-  // const groups = useGroupStore((state) => state.groups);
+  const router = useRouter();
   const user = useUserStore((state) => state.user);
 
   const {
-    allGroups,
-    isLoadingAllGroups,
-    isAllGroupsError,
-    allGroupsError,
-    refetchGroups,
+    allGroupsInTable,
+    isLoadingAllGroupsInTable,
+    isAllGroupsInTableError,
+    allGroupsInTableError,
+    refetchAllGroupsInTable,
   } = useGroupAction(user?.id as string);
 
-  useEffect(() => {
-    refetchGroups();
-  }, [refetchGroups]);
+// Filter groups where the user is a member
+const userGroups = allGroupsInTable?.filter((group) =>
+  group.members.some((member) => member.member_id === user?.id)
+);
 
-  if (isAllGroupsError) {
-    toast.error(allGroupsError?.message);
+
+  useEffect(() => {
+    refetchAllGroupsInTable();
+  }, [refetchAllGroupsInTable]);
+
+  if (isAllGroupsInTableError) {
+    toast.error(allGroupsInTableError?.message);
   }
 
   return (
     <>
       <div className='grid grid-cols-2 gap-2 w-full'>
-        {isLoadingAllGroups &&
+        {isLoadingAllGroupsInTable &&
           Array.from({ length: 2 }).map((_, index) => (
             <GroupItemSkeleton key={index} />
           ))}
       </div>
-      {allGroups && allGroups?.length > 0 && (
+      {userGroups && (
         <div className='flex flex-col space-y-4 w-full'>
           <Text variant={"h3"} className=''>
             Group
           </Text>
           <div className='grid grid-cols-2 gap-2 w-full'>
-            {allGroups.slice(0, 2)?.map((group) => (
+            {userGroups.slice(0, 2)?.map((group, index) => (
               <GroupItem
                 key={group.list_id}
+                index={index}
                 id={group.list_id}
                 name={group.label}
                 members={group.members.map((member) => member.member_id)}
               />
             ))}
-            {isLoadingAllGroups && <GroupItemSkeleton />}
+            {isLoadingAllGroupsInTable && <GroupItemSkeleton />}
           </div>
 
           {/* <CreateNewGroup /> */}
-          {allGroups.length > 2 && (
+          {userGroups.length > 2 && (
             <div className='flex justify-end'>
-              <Button variant={"link"}>
-                <Text variant={"p"}>View All Groups</Text>
+              <Button variant={"link"} onClick={() => router.push("/dashboard/all-list-group")}>
+                <Text variant={"p"} className="text-xs">View All Groups</Text>
               </Button>
             </div>
           )}
@@ -68,6 +76,6 @@ export default function Group() {
   );
 }
 
-function GroupItemSkeleton() {
+export function GroupItemSkeleton() {
   return <Skeleton className='w-full aspect-square rounded' />;
 }

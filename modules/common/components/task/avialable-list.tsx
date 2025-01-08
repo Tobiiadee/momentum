@@ -23,7 +23,7 @@ export default function AvailableList() {
   const { allTasks, isLoadingAllTasks } = useNewTask(user?.id as string);
   const { allLists } = useListAction(user?.id as string);
   const { allGroups } = useGroupAction(user?.id as string);
-
+  
   // Combine and calculate task counts for default and custom lists
   const combinedList = [
     ...defaultList.filter(
@@ -35,12 +35,21 @@ export default function AvailableList() {
       list.type === "list"
         ? allTasks?.filter((task) => task.list_label === list.label).length || 0
         : allTasks?.filter((task) => task.list_id === list.list_id).length || 0;
-
+  
     return { ...list, numberOfTask: taskCount };
   });
-
-  // Merge groups into the combined list
-  const allUsersList = [...combinedList, ...(allGroups ?? [])];
+  
+  // Calculate task counts for groups
+  const groupsWithTaskCounts = allGroups?.map((group) => {
+    const taskCount =
+      allTasks?.filter((task) => task.type === "group" && task.list_id === group.list_id).length || 0;
+  
+    return { ...group, numberOfTask: taskCount };
+  });
+  
+  // Merge lists and groups into the final array
+  const allUsersList = [...combinedList, ...(groupsWithTaskCounts ?? [])];
+  
 
   return (
     <motion.div

@@ -65,9 +65,12 @@ type MemberType = {
   created_at?: string;
 };
 
+type GroupRoleType = "Admin" | "Member" | "Guest";
+
 type AddMemberType = {
   member_id: string;
   created_at?: string;
+  role: GroupRoleType;
 };
 
 type GroupReturnType = {

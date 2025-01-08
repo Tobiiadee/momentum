@@ -45,7 +45,11 @@ const inputVariants: Variants = {
   exit: { y: 70, opacity: 0 },
 };
 
-export default function AddMember() {
+interface UpdateMembersProps {
+  oldMembers: AddMemberType[];
+}
+
+export default function UpdateMembers({ oldMembers }: UpdateMembersProps) {
   const user_id = useUserStore((state) => state.user?.id);
   const [searchMember, setSearchMember] = useState<string>("");
 
@@ -58,11 +62,13 @@ export default function AddMember() {
     error,
   } = useSearchUsers(user_id as string, searchMember);
 
-  //filter out the creator
   const filteredMembers = searchedMembers?.filter(
-    (member) => member.id !== user_id
+    (member) =>
+      member.id !== user_id &&
+      !oldMembers.some((oldMember) => oldMember.member_id === member.id)
   );
-
+  
+  
   return (
     <div className='relative flex flex-col space-y-2 h-48 max-h-48 '>
       <motion.div
@@ -106,6 +112,7 @@ export default function AddMember() {
 
           {filteredMembers?.map((member) => (
             <MemberItem
+              oldMembers={oldMembers}
               key={member.id + member.email}
               setSearchedMembers={setSearchMember}
               name={member.username}
@@ -156,6 +163,7 @@ export default function AddMember() {
 
 interface MemberItemProps extends MemberType {
   setSearchedMembers: (members: string) => void;
+  oldMembers: AddMemberType[];
 }
 
 function MemberItem({

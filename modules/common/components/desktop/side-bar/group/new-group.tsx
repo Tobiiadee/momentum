@@ -72,10 +72,15 @@ export default function NewGroup() {
   const membersId = members.map((member) => ({
     member_id: member.id,
     created_at: member.created_at,
+    role: "Member" as GroupRoleType,
   }));
 
   const allMembers = [
-    { member_id: user?.id as string, created_at: new Date().toISOString() },
+    {
+      member_id: user?.id as string,
+      created_at: new Date().toISOString(),
+      role: "Admin" as GroupRoleType,
+    },
     ...membersId,
   ];
 
@@ -90,8 +95,6 @@ export default function NewGroup() {
 
     if (!!groupName) {
       addGroupMutate(group);
-      // setGroups(group);
-      // addToList(group);
       reset();
     }
   };

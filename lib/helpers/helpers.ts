@@ -37,3 +37,8 @@ export const truncateFileName = (name: string, MAX_NAME_LENGTH?: number) => {
   }
   return name;
 };
+
+export function capitalize(str: string) {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}

@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/modules/common/ui/select";
 import { Button } from "@/modules/common/ui/button";
-import { Trash2 } from "lucide-react";
+import { LogOut, Trash2 } from "lucide-react";
 import useGroupAction from "@/hooks/use-group-action";
 import useUserStore from "@/modules/store/user-store";
 import { fetchUser } from "@/modules/supabase/utils/actions";
@@ -42,28 +42,38 @@ export default function MembersItems() {
   const permission = creator_id !== user?.id;
 
   return (
-    <div className='col-span-2 w-full flex flex-col bg-foreground/10 p-4'>
-      <div className='grid grid-cols-5 gap-4'>
-        <Text variant={"p"} className='col-span-2 font-semibold'>
-          Name
-        </Text>
-        <Text variant={"p"} className='font-semibold'>
-          Date Added
-        </Text>
-        <Text
-          variant={"p"}
-          className='uppercase col-span-2 font-semibold'></Text>
+    <div className='flex flex-col space-y-4'>
+      <div className='flex justify-end'>
+        <Button variant={"ghost"} className='text-xs'>
+          <LogOut size={20} strokeWidth={1.5} />
+          <Text variant={"p"} className='text-xs'>
+            Exit group
+          </Text>
+        </Button>
       </div>
-      <div className='divide-y divide-foreground/10 flex flex-col space-y-4'>
-        {members?.map((member) => (
-          <MembersItem
-            key={member.member_id}
-            creator_id={creator_id}
-            group_id={group_id}
-            permission={permission}
-            {...member}
-          />
-        ))}
+      <div className='w-full flex flex-col bg-foreground/10 p-4'>
+        <div className='grid grid-cols-5 gap-4'>
+          <Text variant={"p"} className='col-span-2 font-semibold'>
+            Name
+          </Text>
+          <Text variant={"p"} className='font-semibold'>
+            Date Added
+          </Text>
+          <Text
+            variant={"p"}
+            className='uppercase col-span-2 font-semibold'></Text>
+        </div>
+        <div className='divide-y divide-foreground/10 flex flex-col space-y-4'>
+          {members?.map((member) => (
+            <MembersItem
+              key={member.member_id}
+              creator_id={creator_id}
+              group_id={group_id}
+              permission={permission}
+              {...member}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -130,10 +140,10 @@ function MembersItem({
         </Text>
       )}
 
-      {isPending ? (
-        <Skeleton className='w-[10rem] h-4 rounded-sm' />
-      ) : (
-        <div className='flex justify-end w-full col-span-2'>
+      <div className='flex justify-end w-full col-span-2'>
+        {isPending ? (
+          <Skeleton className='w-[150px] h-4 rounded-sm' />
+        ) : (
           <MembersRole
             memberRole={role}
             group_id={group_id as string}
@@ -141,8 +151,8 @@ function MembersItem({
             creator_id={creator_id as string}
             permission={permission}
           />
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
@@ -171,7 +181,8 @@ function MembersRole({
   const isAdmin =
     user?.id === creator_id ||
     fetchedGroup?.members.some(
-      (member) => member.member_id === user?.id && capitalize(member.role) === "Admin"
+      (member) =>
+        member.member_id === user?.id && capitalize(member.role) === "Admin"
     );
 
   const handleDeleteMember = () => {

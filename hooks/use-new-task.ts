@@ -7,6 +7,7 @@ import {
   uploadTaskFiles,
   deleteTaskFiles,
   fetchTaskFiles,
+  fetchTasksByListId,
 } from "@/modules/supabase/utils/actions";
 import { useRouter } from "next/navigation";
 
@@ -15,7 +16,7 @@ export interface UpdateTaskType {
   task_id: string;
 }
 
-export function useNewTask(user_id: string, task_id?: string) {
+export function useNewTask(user_id: string, task_id?: string, listId?: string) {
   const queryClient = useQueryClient();
   const router = useRouter();
   // Fetch all tasks
@@ -116,6 +117,21 @@ export function useNewTask(user_id: string, task_id?: string) {
     enabled: !!user_id && !!task_id,
   });
 
+  //fetch task by list_id
+  const {
+    data: fetchedTasksByListId,
+    isLoading: isLoadingFetchedTasksByListId,
+    isError: isFetchedTasksErrorByListId,
+    error: fetchedTasksErrorByListId,
+  } = useQuery({
+    queryKey: ["tasks-by-list-id", listId],
+    queryFn: async () => {
+      if (!listId) throw new Error("List ID is required");
+      return fetchTasksByListId(listId as string);
+    },
+    enabled: !!listId,
+  });
+
   // Delete a task file
   type DeleteTaskFileType = {
     fileUrls: string[];
@@ -181,5 +197,11 @@ export function useNewTask(user_id: string, task_id?: string) {
     isFetchTaskFilesError,
     fetchTaskFilesError,
     taskFiles,
+
+    // Fetch task by list_id
+    isLoadingFetchedTasksByListId,
+    isFetchedTasksErrorByListId,
+    fetchedTasksErrorByListId,
+    fetchedTasksByListId,
   };
 }

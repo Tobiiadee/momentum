@@ -22,11 +22,10 @@ export default function Group() {
     refetchAllGroupsInTable,
   } = useGroupAction(user?.id as string);
 
-// Filter groups where the user is a member
-const userGroups = allGroupsInTable?.filter((group) =>
-  group.members.some((member) => member.member_id === user?.id)
-);
-
+  // Filter groups where the user is a member
+  const userGroups = allGroupsInTable?.filter((group) =>
+    group.members.some((member) => member.member_id === user?.id)
+  );
 
   useEffect(() => {
     refetchAllGroupsInTable();
@@ -44,7 +43,7 @@ const userGroups = allGroupsInTable?.filter((group) =>
             <GroupItemSkeleton key={index} />
           ))}
       </div>
-      {userGroups && (
+      {userGroups && userGroups.length > 0 && (
         <div className='flex flex-col space-y-4 w-full'>
           <Text variant={"h3"} className=''>
             Group
@@ -65,8 +64,12 @@ const userGroups = allGroupsInTable?.filter((group) =>
           {/* <CreateNewGroup /> */}
           {userGroups.length > 2 && (
             <div className='flex justify-end'>
-              <Button variant={"link"} onClick={() => router.push("/dashboard/all-list-group")}>
-                <Text variant={"p"} className="text-xs">View All Groups</Text>
+              <Button
+                variant={"link"}
+                onClick={() => router.push("/dashboard/all-list-group")}>
+                <Text variant={"p"} className='text-xs'>
+                  View All Groups
+                </Text>
               </Button>
             </div>
           )}

@@ -36,6 +36,22 @@ export const updateTask = async (taskId: string, updates: Partial<Task>) => {
   if (error) throw error;
 };
 
+//fetch task by list_id
+export const fetchTasksByListId = async (listId: string): Promise<Task[]> => {
+  if (!listId) throw new Error("List ID is required to fetch tasks.");
+
+  const { data, error } = await supabase
+    .from("tasks")
+    .select("*")
+    .eq("list_id", listId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
+
 //soft delete task
 export const deleteTask = async (task_id: string | string[]) => {
   // Ensure `task_id` is always an array

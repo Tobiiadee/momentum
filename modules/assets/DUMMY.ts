@@ -1,4 +1,3 @@
-import { MemberType } from "../store/group-store";
 
 export const members: MemberType[] = [
   {

@@ -1,5 +1,8 @@
-import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+
+import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -8,18 +11,17 @@ const supabaseAdmin = createClient(
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const email = searchParams.get('email');
+  const email = searchParams.get("email");
 
   if (!email) {
     return NextResponse.json(
-      { error: 'Email query parameter is required' },
+      { error: "Email query parameter is required" },
       { status: 400 }
     );
   }
 
   try {
     const { data, error } = await supabaseAdmin.auth.admin.listUsers();
-    
 
     if (error) {
       throw error;
@@ -33,7 +35,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ users: filteredUsers });
   } catch (error: any) {
     return NextResponse.json(
-      { error: 'Failed to fetch users', details: error.message },
+      { error: "Failed to fetch users", details: error.message },
       { status: 500 }
     );
   }

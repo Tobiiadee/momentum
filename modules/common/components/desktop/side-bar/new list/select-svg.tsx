@@ -1,23 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 
 import Image from "next/image";
-import React, { useRef } from "react";
-import { createAvatar } from "@dicebear/core";
+import React from "react";
+import { createAvatar, Style } from "@dicebear/core";
 import {
   lorelei,
   adventurer,
   avataaars,
   bigEars,
   bigSmile,
-  bottts,
-  croodles,
-  notionists,
-  micah,
-  openPeeps,
-  personas,
-  pixelArt,
-  icons,
-  funEmoji,
 } from "@dicebear/collection";
 import useListStore from "@/modules/store/list-store";
 import { Button } from "@/modules/common/ui/button";
@@ -28,39 +21,53 @@ interface SelectSvgProps {
   seed: string;
 }
 
-const styles = [
+// const styles = [
+//   // lorelei,
+//   adventurer,
+//   avataaars,
+//   bigEars,
+//   bigSmile,
+//   bottts,
+//   croodles,
+//   notionists,
+//   micah,
+//   openPeeps,
+//   personas,
+//   pixelArt,
+//   icons,
+//   funEmoji,
+// ] as const;
+
+type CompatibleStyle = Style<any>;
+
+const compatibleStyles: CompatibleStyle[] = [
   lorelei,
   adventurer,
   avataaars,
   bigEars,
   bigSmile,
-  bottts,
-  croodles,
-  notionists,
-  micah,
-  openPeeps,
-  personas,
-  pixelArt,
-  icons,
-  funEmoji,
 ];
 
 export default function SelectSvg({ seed }: SelectSvgProps) {
   const { showLeft, showRight, scrollLeft, scrollRight, scrollRef } =
     useCustomScroll();
 
-  const avatars = styles.map((style) =>
-    createAvatar(style, { seed, scale: 80 })
+  const avatars = compatibleStyles.map((style) =>
+    createAvatar(style, { seed, scale: 80 }).toString()
   );
 
   return (
     <div
       ref={scrollRef}
-      id="hide-scrollbar"
+      id='hide-scrollbar'
       className='flex items-center space-x-2 h-max w-full overflow-x-auto'>
       {showLeft && (
         <div className='absolute -left-5 top-1/3 -translate-y-1/3 z-40 flex items-center justify-center w-8 aspect-square shadow-md bg-background rounded-full overflow-hidden'>
-          <Button type="button" onClick={scrollLeft} variant={"ghost"} className=''>
+          <Button
+            type='button'
+            onClick={scrollLeft}
+            variant={"ghost"}
+            className=''>
             <ChevronLeft strokeWidth={1.5} size={20} />
           </Button>
         </div>
@@ -70,7 +77,11 @@ export default function SelectSvg({ seed }: SelectSvgProps) {
       ))}
       {showRight && (
         <div className='absolute -right-6 top-1/3 -translate-y-1/3 z-40 flex items-center justify-center w-8 aspect-square shadow-md bg-background rounded-full overflow-hidden'>
-          <Button type="button" onClick={scrollRight} variant={"ghost"} className=''>
+          <Button
+            type='button'
+            onClick={scrollRight}
+            variant={"ghost"}
+            className=''>
             <ChevronRight strokeWidth={1.5} size={20} />
           </Button>
         </div>

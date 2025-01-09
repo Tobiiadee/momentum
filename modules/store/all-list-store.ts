@@ -18,7 +18,7 @@ const useAllListStore = create<AllListStore>((set) => ({
     set((state) => ({ allLists: [...state.allLists, item] })),
   removeFromList: (id) =>
     set((state) => ({
-      allLists: state.allLists.filter((list) => list.id !== id),
+      allLists: state.allLists.filter((list) => list.list_id !== id),
     })),
 }));
 

@@ -1,3 +1,5 @@
+/*eslint-disable @typescript-eslint/no-explicit-any */
+
 import {
   AccordionContent,
   AccordionItem,
@@ -23,9 +25,10 @@ import { useNewTask } from "@/hooks/use-new-task";
 import useUserStore from "@/modules/store/user-store";
 import { toast } from "sonner";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Skeleton } from "../../../ui/skeleton";
 import TaskFileItem from "./task-file-item";
+import { fetchGroup } from "@/modules/supabase/utils/actions";
 // import { mergeRefs } from "react-merge-refs";
 
 const accordionVariants: Variants = {
@@ -59,9 +62,13 @@ export default function TaskItem({
   due_date,
   callLink,
   list_icon,
-
+  list_id,
   isLoadingGroup,
 }: TaskItemProps) {
+  //state for managing group details
+  const [group, setGroup] = useState<GroupType>();
+  const [isLoading, setIsLoading] = useState(false);
+
   // making the task item draggable
   const [{ isDragging }] = useDrag(() => ({
     type: "task",
@@ -82,6 +89,27 @@ export default function TaskItem({
   useEffect(() => {
     refetchTaskFiles();
   }, [refetchTaskFiles]);
+
+  const fetchTaskGroup = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const groupData = await fetchGroup(list_id);
+
+      if (!groupData) throw new Error("Group not found");
+
+      setGroup(groupData);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to fetch group");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [list_id]);
+
+  useEffect(() => {
+    if (type === "group" && list_id) {
+      fetchTaskGroup();
+    }
+  }, [type, list_id, fetchTaskGroup]);
 
   // removed ref={dragRef as ConnectDragSource}
   return (
@@ -110,8 +138,11 @@ export default function TaskItem({
               list_label={list as string}
               list_icon={list_icon}
               dueDate={due_date}
+              group_title={group?.label}
+              group_members={group?.members as AddMemberType[]}
               file_url={taskFiles?.map((file) => file.file_url) as string[]}
               isLoadingGroup={isLoadingGroup}
+              isLoadingGroupDetails={isLoading}
             />
           </AccordionTrigger>
           <AccordionContent className='px-4 bg-background rounded-b-md'>
@@ -179,8 +210,10 @@ interface CollapsibleTriggerProps {
   dueDate: string;
   type?: "list" | "group";
   file_url: string[];
-
+  group_title?: string;
+  group_members?: AddMemberType[];
   isLoadingGroup?: boolean;
+  isLoadingGroupDetails?: boolean;
 }
 
 function CollapsibleTrigger({
@@ -195,6 +228,9 @@ function CollapsibleTrigger({
   list_label,
   file_url,
   isLoadingGroup,
+  group_title,
+  group_members,
+  isLoadingGroupDetails,
 }: CollapsibleTriggerProps) {
   // if (type === "group") fetch group members
 
@@ -226,11 +262,18 @@ function CollapsibleTrigger({
         <div className='w-max aspect-square p-[2px] grid place-items-center border bg-foreground/10 rounded'>
           {convertStringToHTML({ list_icon })}
         </div>
-        {type === "group" && <TaskGroupTitle />}
+        {type === "group" && group_title && (
+          <TaskGroupTitle group_title={group_title as string} />
+        )}
       </div>
 
       <div className='flex space-x-2 items-center'>
-        {type === "group" && !isLoadingGroup && <TaskGroupImg />}
+        {type === "group" && !isLoadingGroup && group_members && (
+          <TaskGroupImg
+            group_members={group_members as AddMemberType[]}
+            isLoading={isLoadingGroupDetails}
+          />
+        )}
         <div className='flex space-x-1 items-center bg-foreground/10 px-2 py-1 rounded-md'>
           <Clock strokeWidth={1.5} size={18} className='text-foreground/60' />
           <Text variant={"p"} className='text-foreground/60 text-xs'>

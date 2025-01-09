@@ -59,13 +59,10 @@ export default function GroupFiles() {
   const taskIds = fetchedTasksByListId?.map((task) => task.task_id);
 
   // Fetch task files
-  const {
-    refetchTaskFiles,
-    isFetchingTaskFiles,
-    isFetchTaskFilesError,
-    fetchTaskFilesError,
-    taskFiles,
-  } = useNewTask(user?.id as string, taskIds);
+  const { isFetchingTaskFiles, isFetchTaskFilesError, taskFiles } = useNewTask(
+    user?.id as string,
+    taskIds
+  );
 
   // Refetch tasks when the component mounts or `listId` changes
   useEffect(() => {
@@ -80,13 +77,23 @@ export default function GroupFiles() {
       <Text variant={"h3"} className='font-medium'>
         Files
       </Text>
+      {isLoadingAllGroupsInTable &&
+        isFetchedTasksErrorByListId &&
+        fetchedTasksErrorByListId &&
+        isFetchTaskFilesError && (
+          <div className='w-full '>
+            <EmptyTaskModule height='h-[40vh]' text='An error occured' />
+          </div>
+        )}
+
       {!isFetchingTaskFiles && !taskFiles && (
         <div className='w-full '>
           <EmptyTaskModule height='h-[40vh]' text='No files uploaded yet' />
         </div>
       )}
       <div className='grid grid-cols-4 gap-4'>
-        {isFetchingTaskFiles &&
+        {isLoadingFetchedTasksByListId &&
+          isFetchingTaskFiles &&
           Array.from({ length: 4 }).map((_, i) => (
             <GroupFilesSkeleton key={i} />
           ))}

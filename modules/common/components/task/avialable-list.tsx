@@ -22,8 +22,16 @@ export default function AvailableList() {
   const user = useUserStore((state) => state.user);
   const { allTasks, isLoadingAllTasks } = useNewTask(user?.id as string);
   const { allLists } = useListAction(user?.id as string);
-  const { allGroups } = useGroupAction(user?.id as string);
+
+  const { allGroupsInTable } = useGroupAction(user?.id as string);
   
+  // Filter groups where the user is a member and also an Admin
+  const userGroups = allGroupsInTable?.filter((group) =>
+    group.members.some(
+      (member) => member.member_id === user?.id && member.role === "Admin"
+    )
+  );
+
   // Combine and calculate task counts for default and custom lists
   const combinedList = [
     ...defaultList.filter(
@@ -35,30 +43,31 @@ export default function AvailableList() {
       list.type === "list"
         ? allTasks?.filter((task) => task.list_label === list.label).length || 0
         : allTasks?.filter((task) => task.list_id === list.list_id).length || 0;
-  
+
     return { ...list, numberOfTask: taskCount };
   });
-  
+
   // Calculate task counts for groups
-  const groupsWithTaskCounts = allGroups?.map((group) => {
+  const groupsWithTaskCounts = userGroups?.map((group) => {
     const taskCount =
-      allTasks?.filter((task) => task.type === "group" && task.list_id === group.list_id).length || 0;
-  
+      allTasks?.filter(
+        (task) => task.type === "group" && task.list_id === group.list_id
+      ).length || 0;
+
     return { ...group, numberOfTask: taskCount };
   });
-  
+
+
   // Merge lists and groups into the final array
   const allUsersList = [...combinedList, ...(groupsWithTaskCounts ?? [])];
-  
 
   return (
     <motion.div
       variants={listVariant}
-      initial="hidden"
-      animate="visible"
-      className="flex flex-col space-y-2"
-    >
-      <div className="flex flex-col space-y-2 pb-4 pr-2 overflow-y-auto">
+      initial='hidden'
+      animate='visible'
+      className='flex flex-col space-y-2'>
+      <div className='flex flex-col space-y-2 pb-4 pr-2 overflow-y-auto'>
         {allUsersList.map((list, index) => (
           <ListItem
             key={`${index}-${list.list_id}`}
@@ -109,28 +118,27 @@ function ListItem({
       className={cn(
         isActive && "bg-foreground/10",
         "w-full flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-foreground/10 active:bg-foreground/15 transition-all duration-300 cursor-pointer"
-      )}
-    >
-      <div className="flex space-x-4 items-center">
+      )}>
+      <div className='flex space-x-4 items-center'>
         {type === "group" && (
-          <div className="w-5 aspect-square rounded bg-foreground/10"></div>
+          <div className='w-5 aspect-square rounded bg-foreground/10'></div>
         )}
 
         {type === "list" && (
-          <div className="flex space-x-4 items-center w-max">
+          <div className='flex space-x-4 items-center w-max'>
             {typeof icon === "string" ? (
-              <div className="relative w-6 aspect-square grid place-items-center">
+              <div className='relative w-6 aspect-square grid place-items-center'>
                 <Image src={icon} alt={label} fill priority />
               </div>
             ) : (
-              <div className="w-6 aspect-square grid place-items-center">
+              <div className='w-6 aspect-square grid place-items-center'>
                 {icon}
               </div>
             )}
           </div>
         )}
 
-        <Text variant="p" className="text-sm capitalize w-max">
+        <Text variant='p' className='text-sm capitalize w-max'>
           {label}
         </Text>
       </div>

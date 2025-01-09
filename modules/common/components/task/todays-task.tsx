@@ -54,6 +54,7 @@ export default function TodaysTask() {
             key={task.task_id}
             index={index}
             callLink={task.call_link}
+            
             {...task}
           />
         ))}

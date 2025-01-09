@@ -1,3 +1,5 @@
+/*eslint-disable @typescript-eslint/no-explicit-any */
+
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -402,13 +404,98 @@ export async function updateMemberRole({
   }
 }
 
-export async function deleteGroup(group_id: string) {
-  const { error } = await supabase
-    .from("groups")
-    .delete()
-    .eq("list_id", group_id);
+//user exit from group
+export const exitGroup = async (userId: string, groupId: string) => {
+  if (!userId || !groupId) {
+    throw new Error("User ID and Group ID are required.");
+  }
 
-  if (error) throw error;
+  // Fetch the group to ensure the user is a member
+  const { data: group, error: fetchError } = await supabase
+    .from("groups")
+    .select("members")
+    .eq("list_id", groupId)
+    .single();
+
+  if (fetchError) {
+    throw new Error("Error fetching the group: " + fetchError.message);
+  }
+
+  const members = group?.members || [];
+
+  // Check if the user is a member of the group
+  const isMember = members.some(
+    (member: AddMemberType) => member.member_id === userId
+  );
+
+  if (!isMember) {
+    throw new Error("You are not a member of this group.");
+  }
+
+  // Remove the user from the group members
+  const updatedMembers = members.filter(
+    (member: AddMemberType) => member.member_id !== userId
+  );
+
+  // Update the group in the database
+  const { error: updateError } = await supabase
+    .from("groups")
+    .update({ members: updatedMembers })
+    .eq("list_id", groupId);
+
+  if (updateError) {
+    throw new Error("Error exiting the group: " + updateError.message);
+  }
+
+  return { success: true, message: "You have successfully exited the group." };
+};
+
+//delete group
+
+export async function deleteGroup(group_id: string) {
+  try {
+    // Fetch tasks associated with the group
+    const { data: tasksInGroup, error: fetchError } = await supabase
+      .from("tasks")
+      .select("task_id")
+      .eq("list_id", group_id)
+      .eq("is_deleted", false); // Exclude soft-deleted tasks
+
+    if (fetchError)
+      throw new Error(`Failed to fetch tasks: ${fetchError.message}`);
+
+    const taskIds = tasksInGroup?.map((task) => task.task_id) || [];
+
+    // Soft-delete associated tasks
+    if (taskIds.length > 0) {
+      const { error: updateError } = await supabase
+        .from("tasks")
+        .update({ is_deleted: true })
+        .in("task_id", taskIds);
+
+      if (updateError)
+        throw new Error(`Failed to update tasks: ${updateError.message}`);
+    }
+
+    // Delete the group
+    const { error: deleteError } = await supabase
+      .from("groups")
+      .delete()
+      .eq("list_id", group_id);
+
+    if (deleteError)
+      throw new Error(`Failed to delete group: ${deleteError.message}`);
+
+    return {
+      success: true,
+      message: "Group and its tasks were successfully deleted.",
+    };
+  } catch (error: any) {
+    console.error("Error in deleteGroup:", error);
+    throw new Error(
+      error.message || "An error occurred while deleting the group."
+    );
+  }
 }
 
 //fetch all users
@@ -514,16 +601,26 @@ export async function uploadTaskFiles(task_id: string, files: File[]) {
   return results;
 }
 
-export async function fetchTaskFiles(task_id: string): Promise<TaskFileType[]> {
+export async function fetchTaskFiles(
+  taskIds: string | string[]
+): Promise<TaskFileType[]> {
+  // Ensure taskIds is always an array for consistent handling
+  const ids = Array.isArray(taskIds) ? taskIds : [taskIds];
+
+  if (ids.length === 0) {
+    throw new Error("Task IDs array is empty or invalid.");
+  }
+
   const { data, error } = await supabase
     .from("task_files")
     .select("*")
-    .eq("task_id", task_id);
+    .in("task_id", ids);
 
   if (error) throw error;
 
   return data || [];
 }
+
 
 export async function deleteTaskFiles(fileUrls: string[], taskId: string) {
   const bucketName = "task_files";

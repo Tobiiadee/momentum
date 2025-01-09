@@ -107,4 +107,5 @@ type TaskFileType = {
   id: number;
   task_id: string;
   uploaded_at: string;
+  index?: number;
 };

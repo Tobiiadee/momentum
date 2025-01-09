@@ -6,7 +6,7 @@ import React from "react";
 
 export default function Page() {
   return (
-    <div className='flex flex-col space-y-10 w-full h-[80vh] overflow-y-auto'> 
+    <div className='flex flex-col space-y-10 w-full h-[80vh] overflow-y-auto pb-6'> 
       <Text variant={"h4"} className='font-medium'>
         Your custom lists and groups
       </Text>

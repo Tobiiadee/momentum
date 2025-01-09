@@ -29,7 +29,7 @@ export default function Group() {
 
   useEffect(() => {
     refetchAllGroupsInTable();
-  }, [refetchAllGroupsInTable]);
+  }, [refetchAllGroupsInTable, userGroups]);
 
   if (isAllGroupsInTableError) {
     toast.error(allGroupsInTableError?.message);
@@ -56,6 +56,7 @@ export default function Group() {
                 id={group.list_id}
                 name={group.label}
                 members={group.members.map((member) => member.member_id)}
+                isAdmin={group.creator_id === user?.id || group?.members.some((member) => member.role === "Admin")}
               />
             ))}
             {isLoadingAllGroupsInTable && <GroupItemSkeleton />}

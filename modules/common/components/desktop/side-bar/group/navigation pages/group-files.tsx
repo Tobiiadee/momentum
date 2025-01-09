@@ -1,9 +1,112 @@
-import React from 'react'
+"use client";
+
+import useGroupAction from "@/hooks/use-group-action";
+import { useNewTask } from "@/hooks/use-new-task";
+import { Skeleton } from "@/modules/common/ui/skeleton";
+import { Text } from "@/modules/common/ui/text";
+import useUserStore from "@/modules/store/user-store";
+import { fetchTasksByListId } from "@/modules/supabase/utils/actions";
+import { useQuery } from "@tanstack/react-query";
+import { useParams, useRouter } from "next/navigation";
+import React, { useEffect } from "react";
+import GroupAllFilesItem from "./components/group-all-files-item";
+import EmptyTaskModule from "@/modules/common/components/shared/empty-state/empty-task-module";
 
 export default function GroupFiles() {
+  const user = useUserStore((state) => state.user);
+  const { groupId } = useParams();
+  const router = useRouter();
+
+  // Fetch all groups and find the current group
+  const { allGroupsInTable, isLoadingAllGroupsInTable } = useGroupAction(
+    user?.id as string
+  );
+  const userGroup = allGroupsInTable?.find(
+    (group) =>
+      group.label.toLowerCase() === (groupId as string).toLocaleLowerCase()
+  );
+
+  const listId = userGroup?.list_id;
+
+  // Check if the user is a member of the group
+  const isUserMember = userGroup?.members.some(
+    (member) => member.member_id === user?.id
+  );
+
+  // Redirect if the user is not a member
+  useEffect(() => {
+    if (!isLoadingAllGroupsInTable && !isUserMember) {
+      router.replace("/dashboard");
+    }
+  }, [isLoadingAllGroupsInTable, isUserMember, router]);
+
+  // Fetch tasks by list_id
+  const {
+    data: fetchedTasksByListId,
+    isLoading: isLoadingFetchedTasksByListId,
+    isError: isFetchedTasksErrorByListId,
+    error: fetchedTasksErrorByListId,
+    refetch: refetchFetchedTasksByListId,
+  } = useQuery({
+    queryKey: ["tasks-by-list-id", listId],
+    queryFn: async () => {
+      if (!listId) throw new Error("List ID is required");
+      return fetchTasksByListId(listId as string);
+    },
+    enabled: !!listId && isUserMember,
+  });
+
+  const taskIds = fetchedTasksByListId?.map((task) => task.task_id);
+
+  // Fetch task files
+  const {
+    refetchTaskFiles,
+    isFetchingTaskFiles,
+    isFetchTaskFilesError,
+    fetchTaskFilesError,
+    taskFiles,
+  } = useNewTask(user?.id as string, taskIds);
+
+  // Refetch tasks when the component mounts or `listId` changes
+  useEffect(() => {
+    if (listId) refetchFetchedTasksByListId();
+  }, [listId, refetchFetchedTasksByListId]);
+
+  if (!isUserMember) return null;
+
+  // Render content
   return (
-    <div>
-      
+    <div className='flex flex-col space-y-4'>
+      <Text variant={"h3"} className='font-medium'>
+        Files
+      </Text>
+      {!isFetchingTaskFiles && !taskFiles && (
+        <div className='w-full '>
+          <EmptyTaskModule height='h-[40vh]' text='No files uploaded yet' />
+        </div>
+      )}
+      <div className='grid grid-cols-4 gap-4'>
+        {isFetchingTaskFiles &&
+          Array.from({ length: 4 }).map((_, i) => (
+            <GroupFilesSkeleton key={i} />
+          ))}
+        {taskFiles?.map((file, index) => (
+          <GroupAllFilesItem
+            key={file.id}
+            file_name={file.file_name}
+            file_url={file.file_url}
+            index={index}
+            created_at={file.created_at}
+            task_id={file.task_id}
+            uploaded_at={file.uploaded_at}
+            id={file.id}
+          />
+        ))}
+      </div>
     </div>
-  )
+  );
+}
+
+function GroupFilesSkeleton() {
+  return <Skeleton className='w-full h-full rounded-md' />;
 }

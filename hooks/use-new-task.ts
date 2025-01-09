@@ -16,7 +16,11 @@ export interface UpdateTaskType {
   task_id: string;
 }
 
-export function useNewTask(user_id: string, task_id?: string, listId?: string) {
+export function useNewTask(
+  user_id: string,
+  task_id?: string | string[],
+  listId?: string
+) {
   const queryClient = useQueryClient();
   const router = useRouter();
   // Fetch all tasks
@@ -100,7 +104,6 @@ export function useNewTask(user_id: string, task_id?: string, listId?: string) {
   });
 
   //fetch task files
-
   const {
     isLoading: isFetchingTaskFiles,
     isError: isFetchTaskFilesError,

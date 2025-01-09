@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 
 import React from "react";
@@ -10,6 +12,8 @@ import useUserStore from "@/modules/store/user-store";
 import useGroupAction from "@/hooks/use-group-action";
 import { useNewTask } from "@/hooks/use-new-task";
 import { useRouter } from "next/navigation";
+import { exitGroup } from "@/modules/supabase/utils/actions";
+import { toast } from "sonner";
 
 export default function RemoveGroupModal() {
   const router = useRouter();
@@ -31,17 +35,50 @@ export default function RemoveGroupModal() {
     ?.filter((task) => task.list_id === deleteGroupObject?.list_Id)
     .map((task) => task.task_id);
 
-  // handle delete
-  const handleDeleteList = () => {
-    if (deleteGroupObject === null) return;
-    deleteGroupMutate(deleteGroupObject?.list_Id);
-    deleteTaskMutate(filteredTaskIds as []);
-    if (!isDeletingGroup && !isDeletingTask) {
-      setIsDeleteGroup(false);
-      router.push("/dashboard");
+  const { fetchedGroup } = useGroupAction(
+    user?.id as string,
+    deleteGroupObject?.list_Id
+  );
+
+  
+  const handleDeleteList = async () => {
+    if (!deleteGroupObject || !user) {
+      toast.error("Invalid operation. Group or user information is missing.");
+      return;
+    }
+  
+    const otherAdmins = fetchedGroup?.members.filter(
+      (member) => member.role === "Admin" && member.member_id !== user.id
+    );
+  
+    if (otherAdmins?.length === 0) {
+      toast.error("You cannot delete the group as there are no other admins.");
+      return;
+    }
+  
+    try {
+      // Exit group logic
+      await exitGroup(user.id, deleteGroupObject.list_Id);
+      toast.success("You have successfully exited the group.");
+  
+      // Delete group
+      deleteGroupMutate(deleteGroupObject.list_Id);
+  
+      // Delete associated tasks
+      if (filteredTaskIds?.length) {
+        deleteTaskMutate(filteredTaskIds);
+      }
+  
+      // Navigation and cleanup
+      if (!isDeletingGroup && !isDeletingTask) {
+        setIsDeleteGroup(false);
+        router.push("/dashboard");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "An error occurred while exiting the group.");
     }
   };
-
+  
   return (
     <PreviewWithModal
       title='delete group'

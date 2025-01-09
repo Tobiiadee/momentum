@@ -1,5 +1,6 @@
-"use client"
+"use client";
 
+import { cn } from "@/lib/utils";
 import { Button } from "@/modules/common/ui/button";
 import { Text } from "@/modules/common/ui/text";
 import { useRouter } from "next/navigation";
@@ -8,17 +9,18 @@ import React from "react";
 interface EmptyTaskModuleProps {
   module?: string;
   text?: string;
+  height?: string;
 }
 
 export default function EmptyTaskModule({
   module,
   text: state,
+  height = "h-[60vh]",
 }: EmptyTaskModuleProps) {
-
   const router = useRouter();
 
   return (
-    <div className='grid place-items-center h-[60vh]'>
+    <div className={cn(height, "grid place-items-center")}>
       {!!state ? (
         <Text variant={"h4"}>{state}</Text>
       ) : (
@@ -32,7 +34,10 @@ export default function EmptyTaskModule({
             </Text>
           </div>
           <div className='w-full grid place-items-center'>
-            <Button onClick={() => router.push("/dashboard/create-new-task")} variant={"default"} className='w-[40%]'>
+            <Button
+              onClick={() => router.push("/dashboard/create-new-task")}
+              variant={"default"}
+              className='w-[40%]'>
               Add Task
             </Button>
           </div>

@@ -8,6 +8,7 @@ import { Skeleton } from "@/modules/common/ui/skeleton";
 import { toast } from "sonner";
 
 import GroupItem from "../side-bar/group/group-item";
+import EmptyTaskModule from "../../shared/empty-state/empty-task-module";
 
 export default function AllGroupsMain() {
   const user = useUserStore((state) => state.user);
@@ -38,6 +39,15 @@ export default function AllGroupsMain() {
       <Text variant={"h3"} className=''>
         Group
       </Text>
+      {userGroups?.length === 0 && (
+        <div className='w-full '>
+          <EmptyTaskModule
+            height='h-full'
+            text="Your haven't created any group yet"
+          />
+        </div>
+      )}
+
       <div className='grid grid-cols-5 gap-2 w-full'>
         {isLoadingAllGroupsInTable &&
           Array.from({ length: 3 }).map((_, index) => (
@@ -53,6 +63,10 @@ export default function AllGroupsMain() {
             id={group.list_id}
             name={group.label}
             members={group.members.map((member) => member.member_id)}
+            isAdmin={
+              group.creator_id === user?.id ||
+              group?.members.some((member) => member.role === "Admin")
+            }
           />
         ))}
         {isLoadingAllGroupsInTable && <GroupItemSkeleton />}

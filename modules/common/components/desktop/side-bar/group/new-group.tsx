@@ -97,15 +97,17 @@ export default function NewGroup() {
       addGroupMutate(group);
       reset();
     }
+
+    if (isAddGroupError) {
+      toast.error(addGroupError?.message);
+    }
+
+    if (isAddGroupSuccess) {
+      toast.success("Group created successfully");
+    }
   };
 
-  if (isAddGroupError) {
-    toast.error(addGroupError?.message);
-  }
-
-  if (isAddGroupSuccess) {
-    toast.success("Group created successfully");
-  }
+  const isValid = members.length > 0 && groupName !== "";
 
   return (
     <motion.div
@@ -157,8 +159,9 @@ export default function NewGroup() {
         isLoading={isAddingGroup}
         onClick={groupHandler}
         variant={"default"}
+        disabled={!isValid}
         className=''>
-        Add
+        Create
       </Button>
 
       <div className='absolute -top-[1.3rem] -right-4 w-8 aspect-square shadow-md bg-background flex justify-center items-center rounded-full overflow-hidden'>

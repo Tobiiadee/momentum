@@ -1,38 +1,46 @@
 "use client";
 
 import useGroupAction from "@/hooks/use-group-action";
+import { cn } from "@/lib/utils";
 import DaySelector from "@/modules/common/components/shared/day-selector";
 import SelectFilter from "@/modules/common/components/shared/select-filter";
 import GroupTask from "@/modules/common/components/task/group-task";
+import { Button } from "@/modules/common/ui/button";
 import useGroupStore from "@/modules/store/group-store";
 import useSortArrayStore from "@/modules/store/sort-array-store";
 import useUserStore from "@/modules/store/user-store";
 import { fetchTasksByListId } from "@/modules/supabase/utils/actions";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
+import { RotateCw } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
 export default function TasksGroup() {
   const user = useUserStore((state) => state.user);
-
+  const router = useRouter();
   const { groupId } = useParams();
-  const { allGroupsInTable, isLoadingAllGroupsInTable } = useGroupAction(
-    user?.id as string
-  );
 
+  // Fetch all groups and find the current group
+  const { allGroupsInTable, isLoadingAllGroupsInTable } = useGroupAction(user?.id as string);
   const userGroup = allGroupsInTable?.find(
-    (group) =>
-      group.label.toLowerCase() === (groupId as string).toLocaleLowerCase()
+    (group) => group.label.toLowerCase() === (groupId as string).toLowerCase()
   );
 
   const listId = userGroup?.list_id;
 
-  //Check if user is a member of the group
+  // Check if the user is a member of the group
   const isUserMember = userGroup?.members.some(
     (member) => member.member_id === user?.id
   );
 
-  //fetch task by list_id
+  // Redirect if the user is not a member
+  useEffect(() => {
+    if (!isLoadingAllGroupsInTable && !isUserMember) {
+      router.replace("/dashboard");
+    }
+  }, [isLoadingAllGroupsInTable, isUserMember, router]);
+
+  // Fetch tasks by list_id
   const {
     data: fetchedTasksByListId,
     isLoading: isLoadingFetchedTasksByListId,
@@ -42,61 +50,62 @@ export default function TasksGroup() {
   } = useQuery({
     queryKey: ["tasks-by-list-id", listId],
     queryFn: async () => {
-      if (!isUserMember) {
-        window.location.replace("/dashboard");
-        throw new Error("User is not a member of the group");
-      }
       if (!listId) throw new Error("List ID is required");
       return fetchTasksByListId(listId as string);
     },
-    enabled: !!listId,
+    enabled: !!listId && isUserMember,
   });
 
   const setDataOnLoad = useSortArrayStore((state) => state.setSortData);
-
-  const setGroupTitleMembers = useGroupStore(
-    (state) => state.setGroupTitleMembers
-  );
-
+  const setGroupTitleMembers = useGroupStore((state) => state.setGroupTitleMembers);
   const sortedTasks = useSortArrayStore((state) => state.sortData);
 
+  // Set group title and members in the store
   useEffect(() => {
-    if (!isLoadingAllGroupsInTable && allGroupsInTable) {
+    if (!isLoadingAllGroupsInTable && userGroup) {
       setGroupTitleMembers({
-        group_title: userGroup?.label as string,
-        members: userGroup?.members as [],
+        group_title: userGroup.label,
+        members: userGroup.members,
       });
     }
-  }, [
-    allGroupsInTable,
-    isLoadingAllGroupsInTable,
-    setGroupTitleMembers,
-    userGroup,
-  ]);
+  }, [isLoadingAllGroupsInTable, userGroup, setGroupTitleMembers]);
 
-  // const group_title = group?.label;
-  // const group_members = group?.members;
-
+  // Update tasks in the store when tasks are fetched
   useEffect(() => {
-    refetchFetchedTasksByListId();
-    if (!isLoadingFetchedTasksByListId) {
-      setDataOnLoad(fetchedTasksByListId as []);
+    if (!isLoadingFetchedTasksByListId && fetchedTasksByListId) {
+      setDataOnLoad(fetchedTasksByListId);
     }
-  }, [isLoadingFetchedTasksByListId, refetchFetchedTasksByListId]);
+  }, [isLoadingFetchedTasksByListId, fetchedTasksByListId, setDataOnLoad]);
 
   return (
-    <div className='flex flex-col space-y-4'>
-      <div className='flex justify-end'>
-        <div className='flex space-x-2 items-center'>
+    <div className="flex flex-col space-y-4">
+      {/* Top controls */}
+      <div className="flex justify-end">
+        <div className="flex space-x-2 items-center">
+          <Button
+            variant="ghost"
+            onClick={() => refetchFetchedTasksByListId()}
+            size="sm"
+            className="bg-background hover:bg-background group"
+          >
+            <RotateCw
+              strokeWidth={1.5}
+              size={18}
+              className={cn(
+                isLoadingFetchedTasksByListId && "animate-spin",
+                "text-foreground/60 group-hover:text-foreground"
+              )}
+            />
+          </Button>
           <DaySelector />
           <SelectFilter />
         </div>
       </div>
 
-      {/* TODO: Add group tasks */}
-      <div className='flex flex-col space-y-2'>
+      {/* Group tasks */}
+      <div className="flex flex-col space-y-2">
         <GroupTask
-          task={sortedTasks ? sortedTasks : fetchedTasksByListId}
+          task={sortedTasks || fetchedTasksByListId || []}
           isError={isFetchedTasksErrorByListId}
           isLoading={isLoadingFetchedTasksByListId}
           error={fetchedTasksErrorByListId}

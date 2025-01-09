@@ -161,6 +161,7 @@ export default function useGroupAction(userId: string, group_id?: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["all-groups", userId] });
       toast.success("Group deleted successfully");
+      router.push("/dashboard");
     },
     onError: (error) => {
       toast.error(error.message);

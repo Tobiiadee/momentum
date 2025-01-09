@@ -27,7 +27,10 @@ export default function AllListMain() {
       <div className='flex flex-col space-y-6 w-full'>
         {updatedList?.length === 0 && (
           <div className='w-full '>
-            <EmptyTaskModule text="Your haven't created any lists yet" />
+            <EmptyTaskModule
+              height='h-full'
+              text="Your haven't created any lists yet"
+            />
           </div>
         )}
         <div className='flex flex-col space-y-4'>

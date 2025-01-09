@@ -7,7 +7,7 @@ import { useDrag } from "react-dnd";
 import { motion, Variants } from "framer-motion";
 import { Checkbox } from "../../../ui/checkbox";
 import { Text } from "../../../ui/text";
-import { CalendarDays, Clock, EllipsisVertical } from "lucide-react";
+import { CalendarDays, Clock, EllipsisVertical, Link } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -124,22 +124,12 @@ export default function TaskItem({
                   <Text variant={"p"}>{description}</Text>
                 </div>
               )}
-              {!!callLink && (
-                <Text variant={"p"} className='underline'>
-                  <a
-                    title='tasks call link'
-                    href={callLink}
-                    target='_blank'
-                    rel='noreferrer'>
-                    {callLink}
-                  </a>
-                </Text>
-              )}
+              {!!callLink && <CallLink callLink={callLink} />}
             </div>
             {taskFiles && taskFiles?.length > 0 && (
               <div className='flex flex-col space-y-2 mt-4'>
                 <Text variant={"p"} className='font-semibold'>
-                  Task Files
+                  Attached Files
                 </Text>
                 <div className='grid grid-cols-3 gap-2 w-[50%]'>
                   {isFetchingTaskFiles &&
@@ -236,15 +226,11 @@ function CollapsibleTrigger({
         <div className='w-max aspect-square p-[2px] grid place-items-center border bg-foreground/10 rounded'>
           {convertStringToHTML({ list_icon })}
         </div>
-        {type === "group" && (
-          <TaskGroupTitle  />
-        )}
+        {type === "group" && <TaskGroupTitle />}
       </div>
 
       <div className='flex space-x-2 items-center'>
-        {type === "group" && !isLoadingGroup && (
-          <TaskGroupImg  />
-        )}
+        {type === "group" && !isLoadingGroup && <TaskGroupImg />}
         <div className='flex space-x-1 items-center bg-foreground/10 px-2 py-1 rounded-md'>
           <Clock strokeWidth={1.5} size={18} className='text-foreground/60' />
           <Text variant={"p"} className='text-foreground/60 text-xs'>
@@ -327,5 +313,18 @@ function MoreOptionsDropdown({
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+function CallLink({ callLink }: { callLink: string }) {
+  return (
+    <a
+      className='grid place-items-center bg-transparent hover:bg-foreground/10 w-10 aspect-square rounded-full'
+      title='tasks call link'
+      href={callLink}
+      target='_blank'
+      rel='noreferrer'>
+      <Link size={16} strokeWidth={1.5} />
+    </a>
   );
 }

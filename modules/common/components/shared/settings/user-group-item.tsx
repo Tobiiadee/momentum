@@ -4,16 +4,15 @@ import { Text } from "@/modules/common/ui/text";
 import { fetchUser } from "@/modules/supabase/utils/actions";
 import { useQuery } from "@tanstack/react-query";
 import { Variants, motion } from "framer-motion";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
+import {
+  GroupItemImage,
+  GroupItemProps,
+  GroupRemainingMembers,
+} from "../../desktop/side-bar/group/group-item";
+import { cn } from "@/lib/utils";
 
-interface GroupItemProps {
-  id: string;
-  name: string;
-  members: string[];
-  index: number;
-}
 
 const groupItemVariants: Variants = {
   hidden: { x: 70, opacity: 0 },
@@ -25,7 +24,13 @@ const groupItemVariants: Variants = {
   exit: { x: -70, opacity: 0 },
 };
 
-export default function UserGroupItem({ id, name, members, index }: GroupItemProps) {
+export default function UserGroupItem({
+  id,
+  name,
+  members,
+  index,
+  isAdmin,
+}: GroupItemProps) {
   const router = useRouter();
 
   const sliceMembers = members.slice(0, 3);
@@ -54,7 +59,11 @@ export default function UserGroupItem({ id, name, members, index }: GroupItemPro
       <div className='w-full aspect-square rounded bg-foreground/10 group-hover:bg-foreground/15 group-active:scale-95 transition-all duration-300 grid place-content-center'>
         <div className='relative grid grid-cols-4 place-items-center grid-flow-dense'>
           {memberData?.map((member) => (
-            <GroupItemImage key={member.id} image={member.avatar} />
+            <GroupItemImage
+              key={member.id}
+              alt={member.username + "profile picture"}
+              image={member.avatar}
+            />
           ))}
           {memberData && memberData?.length > 3 && (
             <GroupRemainingMembers remainingMembers={remaininMembers} />
@@ -70,30 +79,12 @@ export default function UserGroupItem({ id, name, members, index }: GroupItemPro
           {members.length} {members.length > 1 ? "Persons" : "Person"}
         </Text>
       </div>
+
+      <div
+        className={cn(
+          isAdmin ? "bg-green-600" : "bg-foreground/60",
+          "absolute left-2 w-2 aspect-square rounded-full shadow-md"
+        )}></div>
     </motion.div>
-  );
-}
-
-export function GroupItemImage({ image }: { image: string }) {
-  return (
-    <div className='w-8 z-0 relative aspect-square -ml-2 rounded-full bg-yellow-300 border-2 border-background'>
-      <div className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 aspect-square rounded-full flex items-center justify-center overflow-hidden'>
-        <Image src={image} alt='profile' fill className='object-cover' />
-      </div>
-    </div>
-  );
-}
-
-export function GroupRemainingMembers({
-  remainingMembers: remainingMembers,
-}: {
-  remainingMembers: number;
-}) {
-  return (
-    <div className='w-8 z-10 aspect-square rounded-full border border-foreground/30 bg-background grid place-items-center -ml-2'>
-      <Text variant={"p"} className='font-semibold'>
-        {"+" + remainingMembers}
-      </Text>
-    </div>
   );
 }

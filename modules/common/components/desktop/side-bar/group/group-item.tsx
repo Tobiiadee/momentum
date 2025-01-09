@@ -8,7 +8,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useMemo } from "react";
 
-interface GroupItemProps {
+export interface GroupItemProps {
   id: string;
   name: string;
   members: string[];
@@ -125,7 +125,7 @@ export function GroupItemImage({ image, alt }: { image: string; alt: string }) {
       <div className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 aspect-square rounded-full flex items-center justify-center overflow-hidden'>
         <Image
           src={image}
-          alt={`${alt} profile`}
+          alt={`${alt} profile picture`}
           fill
           className='object-cover'
           priority

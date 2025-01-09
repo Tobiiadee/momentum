@@ -21,9 +21,12 @@ export default function ExitGroupBtn({ group_id }: ExitGroupButtonProps) {
 
   const { fetchedGroup } = useGroupAction(user?.id as string, group_id);
 
+  //make sure the user is not the only admin
   const otherAdmins = fetchedGroup?.members.filter(
     (member) => member.role === "Admin" && member.member_id !== user?.id
   );
+
+  
 
   const handleExitGroup = async () => {
     if (otherAdmins?.length === 0) {

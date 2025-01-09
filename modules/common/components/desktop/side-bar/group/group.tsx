@@ -9,6 +9,7 @@ import { Skeleton } from "@/modules/common/ui/skeleton";
 import { toast } from "sonner";
 import { Button } from "@/modules/common/ui/button";
 import { useRouter } from "next/navigation";
+import { capitalize } from "@/lib/helpers/helpers";
 
 export default function Group() {
   const router = useRouter();
@@ -56,7 +57,14 @@ export default function Group() {
                 id={group.list_id}
                 name={group.label}
                 members={group.members.map((member) => member.member_id)}
-                isAdmin={group.creator_id === user?.id || group?.members.some((member) => member.role === "Admin")}
+                isAdmin={
+                  user?.id === group.creator_id ||
+                  group?.members.some(
+                    (member) =>
+                      member.member_id === user?.id &&
+                      capitalize(member.role) === "Admin"
+                  )
+                }
               />
             ))}
             {isLoadingAllGroupsInTable && <GroupItemSkeleton />}

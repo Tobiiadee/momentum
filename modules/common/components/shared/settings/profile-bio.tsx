@@ -8,23 +8,17 @@ import useUserStore from "@/modules/store/user-store";
 export default function ProfileBio() {
   const user = useUserStore((state) => state.user);
 
-
   return (
     <div className='flex items-center justify-between w-full border-b border-foreground/10 pb-4'>
-      <div className='flex space-x-4'>
+      <div className='flex space-x-4 items-center'>
         <ProfilePictureSelect />
 
         <div className='flex flex-col'>
           <Text variant={"h3"} className='capitalize'>
             {user?.username}
           </Text>
-          <Text variant={"p"}>Software Engineer</Text>
         </div>
       </div>
-
-      {/* <div className='flex justify-between'>
-        <EditButton editFn={() => setEditMyProfile(true)} />
-      </div> */}
     </div>
   );
 }

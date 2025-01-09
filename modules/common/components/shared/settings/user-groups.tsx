@@ -10,6 +10,7 @@ import useUserStore from "@/modules/store/user-store";
 import useGroupAction from "@/hooks/use-group-action";
 import { toast } from "sonner";
 import { GroupItemSkeleton } from "../../desktop/side-bar/group/group";
+import { capitalize } from "@/lib/helpers/helpers";
 
 export default function UserGroups() {
   const { scrollLeft, scrollRight, scrollRef, showLeft, showRight } =
@@ -73,6 +74,14 @@ export default function UserGroups() {
               id={group.list_id}
               name={group.label}
               members={group.members.map((member) => member.member_id)}
+              isAdmin={
+                user?.id === group.creator_id ||
+                group?.members.some(
+                  (member) =>
+                    member.member_id === user?.id &&
+                    capitalize(member.role) === "Admin"
+                )
+              }
             />
           ))}
 

@@ -14,13 +14,15 @@ export default function TaskSaveBtn() {
       task_id: crypto.randomUUID(),
       title: useNewTaskStore.getState().title,
       description: useNewTaskStore.getState().description,
-      timeRange: `${useNewTaskStore.getState().taskTimeFrom} - ${
+      time_range: `${useNewTaskStore.getState().taskTimeFrom} - ${
         useNewTaskStore.getState().taskTimeUntil
       }`,
-      dueDate: useNewTaskStore.getState().taskDate,
+      due_date: useNewTaskStore.getState().taskDate,
       category: useNewTaskStore.getState().selectedCategory!,
       completed: false,
       type: useNewTaskStore.getState().type,
+      list_icon: "",
+      list_id: "",
     };
 
     setTask(task);

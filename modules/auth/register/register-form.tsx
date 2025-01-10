@@ -16,10 +16,11 @@ import {
 import { Input } from "@/modules/common/ui/input";
 import { Text } from "../../common/ui/text";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/hooks/use-auth";
 import InputPassword from "../../common/ui/input-password";
 import GoogleSignIn from "../google-sign-in/google-sign-in";
 import useUserStore from "@/modules/store/user-store";
+import { useState } from "react";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -35,10 +36,16 @@ const formSchema = z.object({
 
 export default function RegisterForm() {
   const router = useRouter();
-  const { signUpWithUsername, loading, error } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+
   const setUserConfirmation = useUserStore(
     (state) => state.setUserConfirmation
   );
+  const setSignInData = useUserStore((state) => state.setSignInData);
+
+  const date = new Date(Date.now() + 5 * 60 * 1000);
+  console.log(date);
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -50,17 +57,43 @@ export default function RegisterForm() {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    signUpWithUsername({
-      email: values.email,
-      password: values.password,
-      username: values.username,
-    });
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
+    try {
+      // Send OTP request
+      const res = await fetch("/api/generate-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: values.email,
+          recipientName: values.username,
+        }),
+      });
 
-    if (!loading && !error) {
+      if (!res.ok) {
+        toast.error(`Error: ${res.status} - ${res.statusText}`);
+        setIsLoading(false);
+        return;
+      }
+
+      const data = await res.json();
+      setIsLoading(false);
+
+      // Set confirmation state
       setUserConfirmation(true);
+      setSignInData({
+        username: values.username,
+        email: values.email,
+        password: values.password,
+      });
+
+      console.log("OTP sent successfully:", data);
+    } catch (error) {
+      console.error("Failed to send OTP:", error);
+      // Optionally, you can show an error message to the user here
     }
-    // router.push("/dashboard");
   }
 
   return (
@@ -97,7 +130,7 @@ export default function RegisterForm() {
         />
         <InputPassword control={form.control} />
 
-        <Button isLoading={loading} type='submit' className='w-full'>
+        <Button isLoading={isLoading} type='submit' className='w-full'>
           Create account
         </Button>
         <GoogleSignIn className='border border-foreground' />

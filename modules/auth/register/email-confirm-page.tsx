@@ -6,14 +6,21 @@ import { MoveLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { VerifyEmail } from "./verify-email";
+import useUserStore from "@/modules/store/user-store";
 
 export default function EmailConfirmPage() {
   const router = useRouter();
+  const setUserConfirmation = useUserStore(
+    (state) => state.setUserConfirmation
+  );
 
   return (
     <div className='h-full w-full flex flex-col pt-2'>
       <Button
-        onClick={() => router.back()}
+        onClick={() => {
+          setUserConfirmation(false);
+          router.back();
+        }}
         variant={"ghost"}
         className='self-end mr-4 flex items-center space-x-2 w-max border border-transparent hover:bg-transparent hover:border-foreground'>
         <MoveLeft size={20} strokeWidth={1.5} />
@@ -30,7 +37,7 @@ export default function EmailConfirmPage() {
             Please enter the 6-digit code we sent to your email address.
           </Text>
         </div>
-        
+
         <VerifyEmail />
       </div>
     </div>

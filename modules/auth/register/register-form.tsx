@@ -19,8 +19,10 @@ import { useRouter } from "next/navigation";
 import InputPassword from "../../common/ui/input-password";
 import GoogleSignIn from "../google-sign-in/google-sign-in";
 import useUserStore from "@/modules/store/user-store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { fetchAllUsers } from "@/modules/supabase/utils/actions";
+import ErrorTemp from "@/modules/common/components/shared/error-temp";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -37,14 +39,25 @@ const formSchema = z.object({
 export default function RegisterForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [users, setUsers] = useState<UserDataType[]>([]);
+  const [emailExists, setEmailExists] = useState(false);
 
   const setUserConfirmation = useUserStore(
     (state) => state.setUserConfirmation
   );
   const setSignInData = useUserStore((state) => state.setSignInData);
 
-  const date = new Date(Date.now() + 5 * 60 * 1000);
-  console.log(date);
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const users = await fetchAllUsers();
+        setUsers(users);
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      }
+    };
+    fetchUsers();
+  }, []);
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -59,9 +72,18 @@ export default function RegisterForm() {
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
+
+    // Check if the email already exists in the users list
+    const emailExists = users.some((user) => user.email === values.email);
+    if (emailExists) {
+      setEmailExists(true);
+      setIsLoading(false);
+      return;
+    }
+
     try {
       // Send OTP request
-      const res = await fetch("/api/generate-otp", {
+      const res = await fetch("/api/auth/generate-otp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -129,6 +151,7 @@ export default function RegisterForm() {
           )}
         />
         <InputPassword control={form.control} />
+        {emailExists && <ErrorTemp error={"Email already exists"} />}
 
         <Button isLoading={isLoading} type='submit' className='w-full'>
           Create account

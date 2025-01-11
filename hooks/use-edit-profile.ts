@@ -56,8 +56,9 @@ export function useEditProfile(userId: string) {
       await storeImageUrlInDatabase(userId, imageUrl as string);
     },
     onSuccess: () => {
-      toast.success("File uploaded successfully!");
+      toast.success("Profile picture updated successfully!");
       // Optionally, you can also update your local state or refetch queries
+      window.location.reload();
     },
     onError: (error) => {
       toast.error(

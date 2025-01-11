@@ -34,6 +34,7 @@ export const SlideInNameVariants: Variants = {
 
 export default function NewGroup() {
   const [groupName, setGroupName] = useState("");
+  // const [inputError, setInputError] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const user = useUserStore((state) => state.user);
   const {
@@ -132,23 +133,34 @@ export default function NewGroup() {
         {!isGroupMember ? (
           <form
             onSubmit={groupNameHandler}
-            className='w-full flex items-center space-x-1'>
-            <Input
-              onChange={(e) => setGroupName(e.target.value)}
-              ref={inputRef}
-              value={groupName}
-              placeholder='Choose a group name...'
-              className='placeholder:text-xs'
-            />
+            className='w-full flex flex-col space-y-2'>
+            <div className='flex items-center space-x-1'>
+              <Input
+                onChange={(e) => {
+                  setGroupName(e.target.value);
+                }}
+                ref={inputRef}
+                value={groupName}
+                placeholder='Choose a group name...'
+                className='placeholder:text-xs'
+              />
 
-            <Button
-              type='submit'
-              variant={"ghost"}
-              size={"sm"}
-              disabled={!groupName}
-              className=''>
-              <Plus strokeWidth={1.5} size={18} />
-            </Button>
+              <Button
+                type='submit'
+                variant={"ghost"}
+                size={"sm"}
+                disabled={!groupName}
+                className=''>
+                <Plus strokeWidth={1.5} size={18} />
+              </Button>
+            </div>
+
+            {/* {inputError && (
+              <ErrorTemp
+                error={`Spaces are not allowed. Use an "_" instead.`}
+                className='text-xs'
+              />
+            )} */}
           </form>
         ) : (
           <AddMember />
@@ -166,7 +178,10 @@ export default function NewGroup() {
 
       <div className='absolute -top-[1.3rem] -right-4 w-8 aspect-square shadow-md bg-background flex justify-center items-center rounded-full overflow-hidden'>
         <Button
-          onClick={() => setIsGroup(false)}
+          onClick={() => {
+            setIsGroup(false);
+            reset();
+          }}
           variant={"ghost"}
           className=''>
           <X strokeWidth={1.5} size={20} />

@@ -14,10 +14,13 @@ export default function Members() {
   const user = useUserStore((state) => state.user);
   const { allGroups } = useGroupAction(user?.id as string);
 
+  const decodeGroupId = decodeURIComponent(groupId as string);
+
+
   // filter the group by id
   const group = allGroups?.find(
     (group) =>
-      group.label.toLowerCase() === (groupId as string).toLocaleLowerCase()
+      group.label.toLowerCase() === (decodeGroupId as string).toLocaleLowerCase()
   );
 
   const group_id = group?.list_id;

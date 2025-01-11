@@ -9,7 +9,7 @@ export default function ProfileBio() {
   const user = useUserStore((state) => state.user);
 
   return (
-    <div className='flex items-center justify-between w-full border-b border-foreground/10 pb-4'>
+    <div className='flex items-center justify-between w-full'>
       <div className='flex space-x-4 items-center'>
         <ProfilePictureSelect />
 

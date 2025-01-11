@@ -2,7 +2,7 @@
 
 import { useEditProfile } from "@/hooks/use-edit-profile";
 import useUserStore from "@/modules/store/user-store";
-import { LoaderCircle, Plus } from "lucide-react";
+import { Loader, Plus } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 
@@ -55,7 +55,7 @@ export default function ProfilePictureSelect() {
           )}
           {isUploadingFile && (
             <div className='absolute w-full h-full top-0 left-0 bg-foreground/10 backdrop-blur-md grid place-items-center'>
-              <LoaderCircle
+              <Loader
                 size={30}
                 strokeWidth={3}
                 className='animate-spin text-foreground/20'

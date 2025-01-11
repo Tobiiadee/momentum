@@ -12,11 +12,11 @@ import { Switch } from "@/modules/common/ui/switch";
 export default function GroupPermission() {
   return (
     <div className='flex flex-col space-y-4'>
-      <Text variant={"p"} className='font-medium'>
+      <Text variant={"h5"} className='font-medium'>
         Group Permission
       </Text>
       <div className='flex justify-between items-center w-[70%]'>
-        <Text variant={"p"} className=''>
+        <Text variant={"p"} className='font-medium'>
           Who can add you to groups?
         </Text>
         <Select>
@@ -31,14 +31,14 @@ export default function GroupPermission() {
       </div>
 
       <div className='flex justify-between items-center w-[70%]'>
-        <Text variant={"p"} className=''>
+        <Text variant={"p"} className='font-medium'>
           Get email notifications when someone adds you to a group?
         </Text>
         <Switch />
       </div>
 
       <div className='flex justify-between items-center w-[70%]'>
-        <Text variant={"p"} className=''>
+        <Text variant={"p"} className='font-medium'>
           Set group theme
         </Text>
         <div className=''></div>

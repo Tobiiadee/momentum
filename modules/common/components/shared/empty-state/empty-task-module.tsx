@@ -27,7 +27,7 @@ export default function EmptyTaskModule({
         <div className='flex flex-col space-y-4'>
           <div className='flex flex-col'>
             <Text variant={"h2"} className='font-normal'>
-              You have no task on {!!module && module} list.
+              You have no task on {!!module && decodeURIComponent(module)} list.
             </Text>
             <Text variant={"h5"} className='text-center'>
               Start by adding a task to this list.

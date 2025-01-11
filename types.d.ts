@@ -23,6 +23,7 @@ type Task = {
   due_date: string;
   time_range: string;
   type: "list" | "group";
+  is_deleted?: boolean;
 };
 
 type taskCategory = {

@@ -148,7 +148,7 @@ export default function TaskItem({
           <AccordionContent className='px-4 bg-background rounded-b-md'>
             <div className='w-full flex items-start justify-between'>
               {!!description && (
-                <div className='flex flex-col space-y-1 mt-2'>
+                <div className='flex flex-col space-y-1 mt-2 w-[60%]'>
                   <Text variant={"p"} className='font-medium'>
                     Note:
                   </Text>
@@ -256,11 +256,13 @@ function CollapsibleTrigger({
     <div className='w-full flex justify-between items-center'>
       <div className='flex items-center w-1/2 space-x-4 h-max'>
         <Checkbox onClick={(e) => e.stopPropagation()} />
-        <Text variant={"p"} className=''>
-          {title}
-        </Text>
-        <div className='w-max aspect-square p-[2px] grid place-items-center border bg-foreground/10 rounded'>
-          {convertStringToHTML({ list_icon })}
+        <div className='flex items-center space-x-2'>
+          <Text variant={"p"} className=''>
+            {title}
+          </Text>
+          <div className='w-max h-max grid place-items-center'>
+            {convertStringToHTML({ list_icon })}
+          </div>
         </div>
         {type === "group" && group_title && (
           <TaskGroupTitle group_title={group_title as string} />
@@ -350,7 +352,9 @@ function MoreOptionsDropdown({
           onClick={(e) => {
             e.stopPropagation();
             deleteTaskMutate(taskId);
-            deleteTaskFileMutate({ taskId, fileUrls: file_urls });
+            if (file_urls.length > 0) {
+              deleteTaskFileMutate({ taskId, fileUrls: file_urls });
+            }
           }}>
           Delete
         </DropdownMenuItem>

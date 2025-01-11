@@ -57,10 +57,14 @@ export default function GroupItem({
     },
   });
 
+  // console.log(memberData);  
+
+  const encodeGroupName = encodeURIComponent(name.toLowerCase())
+
   return (
     <motion.div
       onClick={() => {
-        router.push(`/dashboard/group/${name.toLowerCase()}`);
+        router.push(`/dashboard/group/${encodeGroupName}`);
         setListIdFromDatabase(id);
         setDeleteGroupObject({ group_label: name, list_Id: id });
       }}

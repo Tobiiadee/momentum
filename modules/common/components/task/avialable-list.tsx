@@ -12,6 +12,7 @@ import { useNewTask } from "@/hooks/use-new-task";
 import useListAction from "@/hooks/use-list-action";
 import Image from "next/image";
 import useGroupAction from "@/hooks/use-group-action";
+import { assignRandomColor } from "@/lib/helpers/helpers";
 
 const listVariant: Variants = {
   hidden: { opacity: 0, height: 100 },
@@ -24,7 +25,7 @@ export default function AvailableList() {
   const { allLists } = useListAction(user?.id as string);
 
   const { allGroupsInTable } = useGroupAction(user?.id as string);
-  
+
   // Filter groups where the user is a member and also an Admin
   const userGroups = allGroupsInTable?.filter((group) =>
     group.members.some(
@@ -56,7 +57,6 @@ export default function AvailableList() {
 
     return { ...group, numberOfTask: taskCount };
   });
-
 
   // Merge lists and groups into the final array
   const allUsersList = [...combinedList, ...(groupsWithTaskCounts ?? [])];
@@ -106,8 +106,17 @@ function ListItem({
 
   const isActive = selectedList?.id === id;
 
+  const groupIcon = (
+    <div
+      style={{ background: assignRandomColor(id) }}
+      className='w-4 aspect-square rounded ml-2'
+    />
+  );
+
+  const isIcon = type === "group" ? groupIcon : icon;
+
   const handleSelect = () => {
-    setSelectedList({ id, label, icon });
+    setSelectedList({ id, label, icon: isIcon });
     setType(type);
     setList(label);
   };
@@ -120,9 +129,7 @@ function ListItem({
         "w-full flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-foreground/10 active:bg-foreground/15 transition-all duration-300 cursor-pointer"
       )}>
       <div className='flex space-x-4 items-center'>
-        {type === "group" && (
-          <div className='w-5 aspect-square rounded bg-foreground/10'></div>
-        )}
+        {type === "group" && groupIcon}
 
         {type === "list" && (
           <div className='flex space-x-4 items-center w-max'>

@@ -17,13 +17,16 @@ export default function GroupFiles() {
   const { groupId } = useParams();
   const router = useRouter();
 
+  const decodeGroupId = decodeURIComponent(groupId as string);
+
+
   // Fetch all groups and find the current group
   const { allGroupsInTable, isLoadingAllGroupsInTable } = useGroupAction(
     user?.id as string
   );
   const userGroup = allGroupsInTable?.find(
     (group) =>
-      group.label.toLowerCase() === (groupId as string).toLocaleLowerCase()
+      group.label.toLowerCase() === (decodeGroupId as string).toLocaleLowerCase()
   );
 
   const listId = userGroup?.list_id;
@@ -64,6 +67,8 @@ export default function GroupFiles() {
     taskIds
   );
 
+  const numberOfFiles = taskFiles?.length;
+
   // Refetch tasks when the component mounts or `listId` changes
   useEffect(() => {
     if (listId) refetchFetchedTasksByListId();
@@ -75,7 +80,7 @@ export default function GroupFiles() {
   return (
     <div className='flex flex-col space-y-4'>
       <Text variant={"h3"} className='font-medium'>
-        Files
+        Files({numberOfFiles || 0})
       </Text>
       {isLoadingAllGroupsInTable &&
         isFetchedTasksErrorByListId &&

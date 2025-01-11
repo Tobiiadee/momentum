@@ -14,13 +14,16 @@ import DeleteGroupBtn from "./delete-group-btn";
 export default function MembersItems() {
   const { groupId } = useParams();
 
+  const decodeGroupId = decodeURIComponent(groupId as string);
+
+
   const user = useUserStore((state) => state.user);
   const { allGroupsInTable } = useGroupAction(user?.id as string);
 
   const selectedGroup = allGroupsInTable?.filter(
     (group) =>
       group.label.toLocaleLowerCase() ===
-      (groupId as string).toLocaleLowerCase()
+      (decodeGroupId as string).toLocaleLowerCase()
   );
 
   const group_id = selectedGroup?.map((group) => group.list_id)[0];

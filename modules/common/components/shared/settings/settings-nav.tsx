@@ -13,7 +13,7 @@ import {
   User,
   Users,
 } from "lucide-react";
-import Profile from "./profile";
+import General from "./general";
 import Account from "./account";
 import Help from "./help";
 import Notification from "./notification";
@@ -21,10 +21,10 @@ import Groups from "./groups";
 
 const tabs = [
   {
-    name: "Profile",
-    value: "profile",
+    name: "General",
+    value: "general",
     icon: <User size={18} strokeWidth={1.5} />,
-    content: <Profile />,
+    content: <General />,
   },
   {
     name: "Groups",
@@ -55,7 +55,7 @@ const tabs = [
 export default function SettingsNav() {
   return (
     <div>
-      <Tabs defaultValue='profile' className='w-full'>
+      <Tabs defaultValue='general' className='w-full'>
         <TabsList className='sticky top-0 left-0 z-40 justify-start w-full rounded-none p-0 bg-background shadow-none'>
           {tabs.map((tab) => (
             <TabsTrigger

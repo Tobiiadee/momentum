@@ -101,6 +101,7 @@ export default function LoginForm() {
             variant={"ghost"}
             onClick={() => setIsForgotPassword(true)}
             type='button'
+            disabled={loading}
             className='bg-transparent hover:bg-transparent'>
             <Text
               variant={"p"}

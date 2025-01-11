@@ -42,3 +42,26 @@ export function capitalize(str: string) {
   if (!str) return "";
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
+
+export const assignRandomColor = (id: string): string => {
+  // Predefined palette of colors
+  const colors = [
+    "#FF5733", // Vibrant Red
+    "#33FF57", // Vibrant Green
+    "#3357FF", // Vibrant Blue
+    "#F1C40F", // Yellow
+    "#9B59B6", // Purple
+    "#E67E22", // Orange
+    "#1ABC9C", // Teal
+    "#34495E", // Dark Blue
+  ];
+
+  // Hash the ID to create a consistent index
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = (hash * 31 + id.charCodeAt(i)) % colors.length;
+  }
+
+  // Return a color based on the hash
+  return colors[Math.abs(hash)];
+};

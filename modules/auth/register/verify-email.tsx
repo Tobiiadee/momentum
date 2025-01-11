@@ -19,14 +19,13 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/modules/common/ui/input-otp";
-import { Text } from "@/modules/common/ui/text";
 import { useAuth } from "@/hooks/use-auth";
 import useUserStore from "@/modules/store/user-store";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Loader } from "lucide-react";
 import CountdownTimer from "@/modules/common/components/shared/countdown-timer";
+import ResendOtp from "./resend-otp";
 
 const verifyEmailSchema = z.object({
   pin: z.string().min(6, {
@@ -37,7 +36,7 @@ const verifyEmailSchema = z.object({
 export function VerifyEmail() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [isSendingOTP, setIsSendingOTP] = useState(false);
+
   const [isTimerRunning, setIsTimerRunning] = useState(false);
 
   const { signUpWithUsername, loading, error } = useAuth();
@@ -59,7 +58,7 @@ export function VerifyEmail() {
 
     try {
       // Verify OTP
-      const res = await fetch("/api/verify-otp", {
+      const res = await fetch("/api/auth/verify-otp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -100,40 +99,6 @@ export function VerifyEmail() {
     }
   }
 
-  const resendOTP = async () => {
-    // TODO: Implement resend OTP functionality
-
-    setIsSendingOTP(true);
-
-    try {
-      // Send OTP request
-      const res = await fetch("/api/generate-otp", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: signInData?.email as string,
-          recipientName: signInData?.username as string,
-        }),
-      });
-
-      if (!res.ok) {
-        toast.error(`Error: ${res.status} - ${res.statusText}`);
-        setIsSendingOTP(false);
-        return;
-      }
-
-      const data = await res.json();
-      setIsSendingOTP(false);
-
-      console.log("OTP sent successfully:", data);
-    } catch (error) {
-      console.error("Failed to send OTP:", error);
-      // Optionally, you can show an error message to the user here
-    }
-  };
-
   return (
     <FormProvider {...form}>
       <form
@@ -148,44 +113,18 @@ export function VerifyEmail() {
               <FormControl>
                 <InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS} {...field}>
                   <InputOTPGroup className='flex items-center'>
-                    <InputOTPSlot index={0} />
-                    <InputOTPSlot index={1} />
-                    <InputOTPSlot index={2} />
-                    <InputOTPSlot index={3} />
-                    <InputOTPSlot index={4} />
-                    <InputOTPSlot index={5} />
+                    {Array.from({ length: 6 }).map((_, index) => (
+                      <InputOTPSlot key={index} index={index} />
+                    ))}
                   </InputOTPGroup>
                 </InputOTP>
               </FormControl>
-
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <div className='w-full flex justify-center items-center space-x-1'>
-          <Text variant={"p"} className='text-foreground/50 text-center'>
-            Didn&apos;t receive the code?
-          </Text>
-
-          <Button
-            onClick={resendOTP}
-            type='button'
-            disabled={isTimerRunning}
-            variant={"link"}
-            className='p-0 flex items-center space-x-2'>
-            <Text variant={"p"} className='font-semibold'>
-              Click to resend
-            </Text>
-            {isSendingOTP && (
-              <Loader
-                size={16}
-                strokeWidth={1.5}
-                className='text-foreground/60 animate-spin'
-              />
-            )}
-          </Button>
-        </div>
+        <ResendOtp isTimerRunning={isTimerRunning} />
 
         <div className='flex justify-end'>
           <CountdownTimer

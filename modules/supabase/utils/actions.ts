@@ -519,6 +519,12 @@ export async function searchUsers(searchTerm: string): Promise<UserDataType[]> {
   return data || [];
 }
 
+export async function fetchAllUsers(): Promise<UserDataType[]> {
+  const { data, error } = await supabase.from("users").select("*");
+  if (error) throw error;
+  return data || [];
+}
+
 // Fetch a single user by their ID
 export async function fetchUser(userId: string): Promise<UserDataType> {
   const { data, error } = await supabase
@@ -620,7 +626,6 @@ export async function fetchTaskFiles(
 
   return data || [];
 }
-
 
 export async function deleteTaskFiles(fileUrls: string[], taskId: string) {
   const bucketName = "task_files";

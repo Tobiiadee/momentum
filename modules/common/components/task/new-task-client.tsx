@@ -12,6 +12,8 @@ import useNotificationStore from "@/modules/store/notification-store";
 import useGroupStore from "@/modules/store/group-store";
 import RemoveGroupModal from "../desktop/side-bar/group/remove-group-modal";
 import AddMemberModal from "../desktop/side-bar/group/navigation pages/components/add-member-modal";
+import { useSearchStore } from "@/modules/store/search-store";
+import SearchModal from "../desktop/header/search-modal";
 
 export default function NewTaskClient() {
   const isNewTask = useNewTaskStore((state) => state.isNewTask);
@@ -19,10 +21,12 @@ export default function NewTaskClient() {
   const isDeteleList = useListStore((state) => state.isDeleteList);
   const isDeleteGroup = useGroupStore((state) => state.isDeleteGroup);
   const isAddMember = useGroupStore((state) => state.isAddMember);
+  const isSearch = useSearchStore((state) => state.isSearch);
 
   const isNotifications = useNotificationStore(
     (state) => state.isNotifications
   );
+  
 
   return (
     <>
@@ -43,6 +47,7 @@ export default function NewTaskClient() {
       <AnimatePresence mode='wait'>
         {isNotifications && <NotificationModal />}
         {isAddMember && <AddMemberModal />}
+        {isSearch && <SearchModal />}
       </AnimatePresence>
     </>
   );

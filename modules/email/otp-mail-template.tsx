@@ -71,7 +71,7 @@ export function OtpEmailTemplate({ otp, recipientName }: OtpMailProps) {
       <body>
         <div class="container">
           <div class="header">
-            <img src="https://via.placeholder.com/150?text=Momentum+Logo" alt="Momentum Logo" />
+            <img src="https://sszfkjhhhrlgppwepmlv.supabase.co/storage/v1/object/public/logo/momentum_logo.png" alt="Momentum Logo" />
             <h1>Momentum</h1>
           </div>
           <h2>Your OTP Code</h2>

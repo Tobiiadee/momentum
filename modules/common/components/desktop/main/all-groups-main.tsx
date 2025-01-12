@@ -9,6 +9,7 @@ import { toast } from "sonner";
 
 import GroupItem from "../side-bar/group/group-item";
 import EmptyTaskModule from "../../shared/empty-state/empty-task-module";
+import { capitalize } from "@/lib/helpers/helpers";
 
 export default function AllGroupsMain() {
   const user = useUserStore((state) => state.user);
@@ -64,8 +65,12 @@ export default function AllGroupsMain() {
             name={group.label}
             members={group.members.map((member) => member.member_id)}
             isAdmin={
-              group.creator_id === user?.id ||
-              group?.members.some((member) => member.role === "Admin")
+              user?.id === group.creator_id ||
+              group?.members.some(
+                (member) =>
+                  member.member_id === user?.id &&
+                  capitalize(member.role) === "Admin"
+              )
             }
           />
         ))}

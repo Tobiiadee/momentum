@@ -1,6 +1,7 @@
 /*eslint-disable @typescript-eslint/no-explicit-any */
 
 import { createClient } from "@supabase/supabase-js";
+import { deleteUserServer } from "./delete-user-server";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -666,6 +667,8 @@ export async function deleteTaskFiles(fileUrls: string[], taskId: string) {
   return true;
 }
 
+
+
 // Delete user
 export async function deleteUser(userId: string) {
   try {
@@ -675,10 +678,7 @@ export async function deleteUser(userId: string) {
       .select("task_id")
       .eq("user_id", userId);
 
-    if (fetchTaskError) {
-      console.error("Error fetching task IDs:", fetchTaskError.message);
-      throw new Error("Failed to fetch task IDs");
-    }
+    if (fetchTaskError) throw new Error("Failed to fetch task IDs");
 
     const taskFilePaths =
       taskData?.map((task) => `task-files/${task.task_id}`) || [];
@@ -689,69 +689,60 @@ export async function deleteUser(userId: string) {
         .from("task-files")
         .remove(taskFilePaths);
 
-      if (storageError) {
-        console.error("Error deleting task files:", storageError.message);
+      if (
+        storageError &&
+        storageError.message !== "Some paths were not found"
+      ) {
         throw new Error("Failed to delete task files");
       }
     }
 
-    // Delete user profile picture
+    // Step 3: Delete user profile picture
     const { error: profilePictureError } = await supabase.storage
       .from("user_data")
       .remove([`profile_picture/${userId}`]);
 
-    if (profilePictureError) {
-      console.error(
-        "Error deleting user profile picture:",
-        profilePictureError.message
-      );
-      throw new Error("Failed to delete user profile picture");
-    }
+    if (profilePictureError)
+      throw new Error("Failed to delete profile picture");
 
-    // Step 3: Delete tasks associated with the user
+    // Step 4: Delete tasks associated with the user
     const { error: deleteTasksError } = await supabase
       .from("tasks")
       .delete()
       .match({ user_id: userId });
 
-    if (deleteTasksError) {
-      console.error("Error deleting tasks:", deleteTasksError.message);
-      throw new Error("Failed to delete tasks");
-    }
+    if (deleteTasksError) throw new Error("Failed to delete tasks");
 
-    // Step 4: Delete groups created by the user
+    //delete user lists
+
+    const { error: deleteListsError } = await supabase
+      .from("lists")
+      .delete()
+      .match({ user_id: userId });
+
+    if (deleteListsError) throw new Error("Failed to delete lists");
+
+    // Step 5: Delete groups created by the user
     const { error: deleteGroupsError } = await supabase
       .from("groups")
       .delete()
-      .match({ owner_id: userId });
+      .match({ creator_id: userId });
 
-    if (deleteGroupsError) {
-      console.error("Error deleting groups:", deleteGroupsError.message);
-      throw new Error("Failed to delete groups");
-    }
+    if (deleteGroupsError) throw new Error("Failed to delete groups");
 
-    // Step 5: Delete the user's information from the database
+    // Step 6: Delete the user's information from the database
     const { error: deleteUserError } = await supabase
       .from("users")
       .delete()
       .match({ id: userId });
 
-    if (deleteUserError) {
-      console.error("Error deleting user data:", deleteUserError.message);
-      throw new Error("Failed to delete user data");
-    }
+    if (deleteUserError) throw new Error("Failed to delete user data");
 
-    // Step 6: Delete the user from Supabase Auth
-    const { error: authError } = await supabase.auth.admin.deleteUser(userId);
-
-    if (authError) {
-      console.error("Error deleting user from auth:", authError.message);
-      throw new Error("Failed to delete user from auth");
-    }
+    // Step 7: Delete the user from Supabase Auth
+    await deleteUserServer(userId);
 
     console.log("User and all associated data deleted successfully!");
   } catch (error: any) {
     console.error("Error deleting user:", error.message);
   }
 }
-

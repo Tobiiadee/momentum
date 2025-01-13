@@ -8,10 +8,13 @@ import { toast } from "sonner";
 import { CircleDot, TriangleAlert } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/modules/common/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function DeleteAccountModal() {
   const setIsDeleteAccount = useUserStore((state) => state.setIsDeleteAccount);
   const user = useUserStore((state) => state.user);
+
+  const router = useRouter();
 
   const { mutate: deleteAccount, isPending } = useMutation({
     mutationKey: ["delete-user"],
@@ -20,7 +23,7 @@ export default function DeleteAccountModal() {
     },
     onSuccess: () => {
       toast.success("Account deleted successfully!");
-      window.location.href = "/";
+      router.push("/");
     },
     onError: (error) => {
       toast.error(error.message);

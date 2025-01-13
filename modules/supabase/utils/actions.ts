@@ -665,3 +665,93 @@ export async function deleteTaskFiles(fileUrls: string[], taskId: string) {
 
   return true;
 }
+
+// Delete user
+export async function deleteUser(userId: string) {
+  try {
+    // Step 1: Fetch task IDs for storage cleanup
+    const { data: taskData, error: fetchTaskError } = await supabase
+      .from("tasks")
+      .select("task_id")
+      .eq("user_id", userId);
+
+    if (fetchTaskError) {
+      console.error("Error fetching task IDs:", fetchTaskError.message);
+      throw new Error("Failed to fetch task IDs");
+    }
+
+    const taskFilePaths =
+      taskData?.map((task) => `task-files/${task.task_id}`) || [];
+
+    // Step 2: Delete associated files in storage
+    if (taskFilePaths.length > 0) {
+      const { error: storageError } = await supabase.storage
+        .from("task-files")
+        .remove(taskFilePaths);
+
+      if (storageError) {
+        console.error("Error deleting task files:", storageError.message);
+        throw new Error("Failed to delete task files");
+      }
+    }
+
+    // Delete user profile picture
+    const { error: profilePictureError } = await supabase.storage
+      .from("user_data")
+      .remove([`profile_picture/${userId}`]);
+
+    if (profilePictureError) {
+      console.error(
+        "Error deleting user profile picture:",
+        profilePictureError.message
+      );
+      throw new Error("Failed to delete user profile picture");
+    }
+
+    // Step 3: Delete tasks associated with the user
+    const { error: deleteTasksError } = await supabase
+      .from("tasks")
+      .delete()
+      .match({ user_id: userId });
+
+    if (deleteTasksError) {
+      console.error("Error deleting tasks:", deleteTasksError.message);
+      throw new Error("Failed to delete tasks");
+    }
+
+    // Step 4: Delete groups created by the user
+    const { error: deleteGroupsError } = await supabase
+      .from("groups")
+      .delete()
+      .match({ owner_id: userId });
+
+    if (deleteGroupsError) {
+      console.error("Error deleting groups:", deleteGroupsError.message);
+      throw new Error("Failed to delete groups");
+    }
+
+    // Step 5: Delete the user's information from the database
+    const { error: deleteUserError } = await supabase
+      .from("users")
+      .delete()
+      .match({ id: userId });
+
+    if (deleteUserError) {
+      console.error("Error deleting user data:", deleteUserError.message);
+      throw new Error("Failed to delete user data");
+    }
+
+    // Step 6: Delete the user from Supabase Auth
+    const { error: authError } = await supabase.auth.admin.deleteUser(userId);
+
+    if (authError) {
+      console.error("Error deleting user from auth:", authError.message);
+      throw new Error("Failed to delete user from auth");
+    }
+
+    console.log("User and all associated data deleted successfully!");
+  } catch (error: any) {
+    console.error("Error deleting user:", error.message);
+  }
+}
+

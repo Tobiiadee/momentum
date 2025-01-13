@@ -15,6 +15,8 @@ interface UserStore {
   setUserConfirmation: (value: boolean) => void;
   signInData: SignInDataType | null;
   setSignInData: (value: SignInDataType) => void;
+  isDeleteAccount: boolean;
+  setIsDeleteAccount: (value: boolean) => void;
 }
 
 const useUserStore = create<UserStore>((set) => ({
@@ -26,6 +28,8 @@ const useUserStore = create<UserStore>((set) => ({
   setUserConfirmation: (userConfirmation) => set({ userConfirmation }),
   signInData: null,
   setSignInData: (signInData) => set({ signInData }),
+  isDeleteAccount: false,
+  setIsDeleteAccount: (isDeleteAccount) => set({ isDeleteAccount }),
 }));
 
 export default useUserStore;

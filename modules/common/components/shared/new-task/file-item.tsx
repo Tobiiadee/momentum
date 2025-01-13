@@ -16,6 +16,7 @@ import {
   TooltipTrigger,
 } from "@/modules/common/ui/tooltip";
 import { truncateFileName } from "@/lib/helpers/helpers";
+import { cn } from "@/lib/utils";
 
 interface FileItemProps extends TaskFileType {
   inTask?: boolean;
@@ -35,14 +36,22 @@ export default function FileItem({
 
   // Determine the file type icon
   const getFileIcon = () => {
+    if (file.type.startsWith("image/")) {
+      return <ImageItem imageSrc={URL.createObjectURL(file)} />;
+    }
+
+    if (file.type.startsWith("video/")) {
+      return <VideoItem videoSrc={URL.createObjectURL(file)} />;
+    }
+
     switch (file.type) {
       case "application/pdf":
         return (
           <Image
             src='/file-preview/pdf.png'
-            alt='Example Icon'
+            alt='PDF Icon'
             fill
-            className='object-cover '
+            className='object-cover'
             priority
           />
         );
@@ -50,7 +59,7 @@ export default function FileItem({
         return (
           <Image
             src='/file-preview/text.png'
-            alt='Example Icon'
+            alt='CSV Icon'
             fill
             className='object-cover'
             priority
@@ -60,7 +69,7 @@ export default function FileItem({
         return (
           <Image
             src='/file-preview/docx.png'
-            alt='Example Icon'
+            alt='Word Document Icon'
             fill
             className='object-cover'
             priority
@@ -69,8 +78,8 @@ export default function FileItem({
       default:
         return (
           <Image
-            src='/file-preview/text.png'
-            alt='Example Icon'
+            src='/file-preview/file.png'
+            alt='Default File Icon'
             fill
             className='object-cover'
             priority
@@ -79,18 +88,27 @@ export default function FileItem({
     }
   };
 
+  const isvidoeImage =
+    file.type.startsWith("image/") || file.type.startsWith("video/");
+
   return (
     <div
       onMouseEnter={() => setDeleteFile(true)}
       onMouseLeave={() => setDeleteFile(false)}
-      className='relative inline-flex flex-col items-center space-y-1 flex-shrink-0 border p-2 rounded-lg shadow-sm hover:shadow-md transition-shadow'>
+      className={cn(
+        "relative inline-flex flex-col items-center space-y-1 flex-shrink-0 border p-2 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+      )}>
       {/* File Icon */}
-      <div className='relative w-[2rem] min-w-[2rem] h-[3rem] p-0'>
+      <div
+        className={cn(
+          isvidoeImage ? "w-full" : "w-[2rem]",
+          "relative min-w-[2rem] h-[3rem] p-0"
+        )}>
         {getFileIcon()}
       </div>
 
       {/* File Name */}
-      <div className=''>
+      <div>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
@@ -104,6 +122,7 @@ export default function FileItem({
           </Tooltip>
         </TooltipProvider>
       </div>
+
       {!inTask && (
         <AnimatePresence mode='wait'>
           {deleteFile && (
@@ -111,9 +130,9 @@ export default function FileItem({
               variants={deleteListVariants}
               initial='hidden'
               animate='visible'
-              exit={"hidden"}
+              exit='hidden'
               className='absolute z-40 -top-[1.5rem] -right-3 w-8 aspect-square shadow-md bg-background flex justify-center items-center rounded-full overflow-hidden'>
-              <Button onClick={handleDeleteFile} variant={"ghost"} className=''>
+              <Button onClick={handleDeleteFile} variant='ghost'>
                 <X strokeWidth={1.5} size={20} />
               </Button>
             </motion.div>
@@ -121,5 +140,29 @@ export default function FileItem({
         </AnimatePresence>
       )}
     </div>
+  );
+}
+
+function ImageItem({ imageSrc }: { imageSrc: string }) {
+  return (
+    <div className='relative w-full min-w-[2rem] h-full p-0 '>
+      <Image
+        src={imageSrc}
+        alt='Image Preview'
+        fill
+        className='object-cover rounded-md'
+        priority
+      />
+    </div>
+  );
+}
+
+function VideoItem({ videoSrc }: { videoSrc: string }) {
+  return (
+    <video
+      src={videoSrc}
+      controls
+      className='w-full h-full object-cover rounded-md'
+    />
   );
 }

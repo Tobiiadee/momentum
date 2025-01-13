@@ -18,7 +18,7 @@ export default function SearchModal() {
         animate='visible'
         initial='hidden'
         exit='exit'
-        className='w-[45rem] flex flex-col space-y-4 absolute left-1/4 -translate-x-1/4 top-28 bg-background p-4 rounded-lg z-50'>
+        className='w-[45rem] flex flex-col space-y-4 absolute left-1/4 -translate-x-1/4 top-16 bg-background p-4 rounded-lg z-50'>
         <SearchInput />
         <SearchResult />
       </motion.div>

@@ -41,7 +41,7 @@ export default function AddFile() {
         title='Upload a file'
         className='hidden'
         onChange={handleFileChange}
-        accept='.pdf,.csv,.docx,.xlsx,.txt' // Optional: Restrict file types
+        accept="image/*,video/*,.pdf,.csv,.docx,.xlsx,.txt" // Optional: Restrict file types
       />
     </div>
   );

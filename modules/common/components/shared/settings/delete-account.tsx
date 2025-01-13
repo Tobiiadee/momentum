@@ -1,8 +1,15 @@
+"use client";
+
 import { Button } from "@/modules/common/ui/button";
 import { Text } from "@/modules/common/ui/text";
+import useUserStore from "@/modules/store/user-store";
 import React from "react";
 
 export default function DeleteAccount() {
+  const setIsDeleteAccount = useUserStore((state) => state.setIsDeleteAccount);
+
+ 
+
   return (
     <div className='flex items-center justify-between border border-red-500 rounded-lg p-4 w-[80%] shadow'>
       <div className='flex flex-col'>
@@ -15,6 +22,8 @@ export default function DeleteAccount() {
         </Text>
       </div>
       <Button
+        onClick={() => setIsDeleteAccount(true)}
+        aria-label='Delete Account'
         variant={"ghost"}
         className='flex items-center  shadow hover:bg-transparent border border-red-600 text-red-600 hover:text-red-600'>
         <Text variant={"p"} className='font-medium'>

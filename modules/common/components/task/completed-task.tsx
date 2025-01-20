@@ -26,13 +26,7 @@ export default function CompletedTask() {
   }, []);
 
   if (isLoadingAllTasks) {
-    return (
-      <div className='flex flex-col space-y-4'>
-        {Array.from({ length: 8 }).map((_, i) => (
-          <TaskSkeleton key={i} />
-        ))}
-      </div>
-    );
+    return <TaskSkeleton />;
   }
 
   if (isAllTasksError) {

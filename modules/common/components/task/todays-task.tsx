@@ -33,13 +33,7 @@ export default function TodaysTask() {
   );
 
   if (isLoadingAllTasks) {
-    return (
-      <div className='flex flex-col space-y-4'>
-        {Array.from({ length: 5 }).map((_, i) => (
-          <TaskSkeleton key={i} />
-        ))}
-      </div>
-    );
+    return <TaskSkeleton />;
   }
 
   if (isAllTasksError) {
@@ -54,7 +48,6 @@ export default function TodaysTask() {
             key={task.task_id}
             index={index}
             callLink={task.call_link}
-            
             {...task}
           />
         ))}

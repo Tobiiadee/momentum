@@ -173,6 +173,7 @@ export default function TaskItem({
                   )}
                   {taskFiles?.map((file) => (
                     <TaskFileItem
+                      file={file.file}
                       key={file.id}
                       file_name={file.file_name}
                       file_url={file.file_url}

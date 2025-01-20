@@ -25,13 +25,7 @@ export default function WorkTask({
   error,
 }: ComponentTaskProps) {
   if (isLoading) {
-    return (
-      <div className='flex flex-col space-y-4'>
-        {Array.from({ length: 5 }).map((_, i) => (
-          <TaskSkeleton key={i} />
-        ))}
-      </div>
-    );
+    return <TaskSkeleton />;
   }
 
   if (isError) {

@@ -1,26 +1,21 @@
 import React from "react";
-import ResultFile from "../components/result-file";
+import ResultTasks from "../components/result-tasks";
 import { Separator } from "@/modules/common/ui/separator";
 import { useSearchStore } from "@/modules/store/search-store";
 import NoResults from "../components/no-results";
 
-// interface FilesProps {
-//   files: TaskFileType[];
-// }
-
-export default function Files() {
+export default function SearchTasks() {
   const searchResults = useSearchStore((state) => state.searchResults);
 
-  
-    if (!searchResults?.files || searchResults?.files.length === 0) {
-      return <NoResults />;
-    }
+  if (!searchResults?.tasks || searchResults?.tasks.length === 0) {
+    return <NoResults />;
+  }
 
   return (
     <div className='flex flex-col space-y-1'>
-      {searchResults?.files.map((file) => (
-        <div key={file.file_name} className='flex flex-col space-y-1'>
-          <ResultFile file={file} />
+      {searchResults?.tasks.map((task) => (
+        <div key={task.task_id} className='flex flex-col space-y-1'>
+          <ResultTasks task={task} />
           <Separator className='w-full' />
         </div>
       ))}

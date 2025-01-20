@@ -8,54 +8,74 @@ import {
 import { Text } from "@/modules/common/ui/text";
 import AllResults from "./search-tabs-pages/all-results";
 import People from "./search-tabs-pages/people";
-import Groups from "./search-tabs-pages/groups";
-import Lists from "./lists";
-import { Cog, FilesIcon, GroupIcon, ListIcon, Users } from "lucide-react";
+import { ClipboardCheck, FilesIcon, Users } from "lucide-react";
 import Files from "./search-tabs-pages/files";
-
-const SearchResultNavTabs = [
-  { nav_id: 1, nav_name: "All", nav_value: "all", nav_page: <AllResults /> },
-  {
-    nav_id: 2,
-    nav_name: "People",
-    nav_value: "people",
-    nav_page: <People />,
-    icon: <Users size={16} strokeWidth={1.5} />,
-  },
-  {
-    nav_id: 3,
-    nav_name: "Files",
-    nav_value: "files",
-    nav_page: <Files />,
-    icon: <FilesIcon size={16} strokeWidth={1.5} />,
-  },
-  {
-    nav_id: 5,
-    nav_name: "Group",
-    nav_value: "group",
-    nav_page: <Groups />,
-    icon: <GroupIcon size={16} strokeWidth={1.5} />,
-  },
-  {
-    nav_id: 5,
-    nav_name: "List",
-    nav_value: "list",
-    nav_page: <Lists />,
-    icon: <ListIcon size={16} strokeWidth={1.5} />,
-  },
-];
+import SearchFilter from "./search-filter";
+import SearchTasks from "./search-tabs-pages/search-tasks";
+import { useSearchStore } from "@/modules/store/search-store";
 
 export default function SearchResult() {
   return (
-    <div>
+    <div className="min-h-[25rem] overflow-y-auto">
       <SearchResultNav />
     </div>
   );
 }
 
 function SearchResultNav() {
+  const searchResults = useSearchStore((state) => state.searchResults);
+
+  const searchResultsPeople = searchResults?.people || [];
+  const searchResultsFiles = searchResults?.files || [];
+  const searchResultsTasks = searchResults?.tasks || [];
+
+  //Calculate total number of results
+  const totalResults =
+    searchResultsPeople.length +
+    searchResultsFiles.length +
+    searchResultsTasks.length;
+
+  //number of results for each tab
+  const peopleResults = searchResultsPeople.length;
+  const filesResults = searchResultsFiles.length;
+  const tasksResults = searchResultsTasks.length;
+
+  const SearchResultNavTabs = [
+    {
+      nav_id: 1,
+      nav_name: "All",
+      nav_value: "all",
+      nav_page: <AllResults />,
+      noOfResults: totalResults || 0,
+    },
+    {
+      nav_id: 2,
+      nav_name: "People",
+      nav_value: "people",
+      nav_page: <People />,
+      icon: <Users size={16} strokeWidth={1.5} />,
+      noOfResults: peopleResults || 0,
+    },
+    {
+      nav_id: 3,
+      nav_name: "Files",
+      nav_value: "files",
+      nav_page: <Files />,
+      icon: <FilesIcon size={16} strokeWidth={1.5} />,
+      noOfResults: filesResults || 0,
+    },
+    {
+      nav_id: 4,
+      nav_name: "Tasks",
+      nav_value: "tasks",
+      nav_page: <SearchTasks />,
+      icon: <ClipboardCheck size={16} strokeWidth={1.5} />,
+      noOfResults: tasksResults || 0,
+    },
+  ];
+
   return (
-    <div className='overflow-hidden w-full h-full'>
+    <div className='overflow-hidden w-full h-full overflow-y-auto bg-background py-2 px-4 rounded-b-lg'>
       <Tabs defaultValue='all' className='w-full '>
         <TabsList className='relative justify-start border-b-2 border-foreground/10 rounded-none p-0 bg-background shadow-none w-full'>
           {SearchResultNavTabs.map((nav) => (
@@ -68,21 +88,20 @@ function SearchResultNav() {
                   {nav.icon}
                   <Text variant='p'>{nav.nav_name}</Text>
                 </div>
-                <SearchResultNumber number={0} />
+                <SearchResultNumber number={nav.noOfResults} />
               </div>
               <div className='absolute -left-[1.5rem] bottom-[-1.5px] w-full h-[1.5px] bg-foreground hidden group-data-[state=active]:block'></div>
             </TabsTrigger>
           ))}
-          <div
-            role='button'
-            title='search trigger'
-            className='absolute top-1/2 -translate-y-1/2 right-2 grid place-items-center rounded-md hover:bg-foreground/10 p-1'>
-            <Cog strokeWidth={1.5} size={16} className='text-foreground/60' />
-          </div>
+
+          <SearchFilter />
         </TabsList>
         <div className='w-full h-max pl-2 pr-4 pb-6 overflow-y-auto'>
           {SearchResultNavTabs.map((nav) => (
-            <TabsContent key={nav.nav_id} value={nav.nav_value} className='mt-4'>
+            <TabsContent
+              key={nav.nav_id}
+              value={nav.nav_value}
+              className='mt-4'>
               {nav.nav_page}
             </TabsContent>
           ))}

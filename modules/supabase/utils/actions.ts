@@ -39,6 +39,18 @@ export const updateTask = async (taskId: string, updates: Partial<Task>) => {
   if (error) throw error;
 };
 
+export const fetchTaskById = async (taskId: string): Promise<Task> => {
+  const { data, error } = await supabase
+    .from("tasks")
+    .select("*")
+    .eq("task_id", taskId)
+    .single();
+
+  if (error) throw error;
+
+  return data || null;
+};
+
 //fetch task by list_id
 export const fetchTasksByListId = async (listId: string): Promise<Task[]> => {
   if (!listId) throw new Error("List ID is required to fetch tasks.");
@@ -667,8 +679,6 @@ export async function deleteTaskFiles(fileUrls: string[], taskId: string) {
   return true;
 }
 
-
-
 // Delete user
 export async function deleteUser(userId: string) {
   try {
@@ -746,3 +756,124 @@ export async function deleteUser(userId: string) {
     console.error("Error deleting user:", error.message);
   }
 }
+
+// Search for entities (tasks, files, people) by searchTerm
+export async function searchEntities(
+  searchTerm: string,
+  userId: string
+): Promise<SearchReturnType> {
+  if (!searchTerm.trim()) {
+    throw new Error("Search term cannot be empty.");
+  }
+
+  try {
+    // Fetch user's tasks (tasks created by the user) with searchTerm
+    const { data: userTasks, error: userTaskError } = await supabase
+      .from("tasks")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("is_deleted", false)
+      .ilike("title", `%${searchTerm}%`);
+
+    if (userTaskError) {
+      throw new Error(`Error fetching user's tasks: ${userTaskError.message}`);
+    }
+
+    // Fetch groups where the user is a member
+    const { data: allGroups, error: groupError } = await supabase
+      .from("groups")
+      .select("list_id, members");
+
+    if (groupError) {
+      throw new Error(`Error fetching groups: ${groupError.message}`);
+    }
+
+    // Filter groups where the user is a member
+    const userGroupIds = allGroups
+      ?.filter((group) =>
+        group.members.some((member: any) => member.member_id === userId)
+      )
+      .map((group) => group.list_id);
+
+    // Fetch tasks from the user's groups with searchTerm
+    const { data: groupTasks, error: groupTaskError } = await supabase
+      .from("tasks")
+      .select("*")
+      .in("list_id", userGroupIds)
+      .eq("is_deleted", false)
+      .ilike("title", `%${searchTerm}%`);
+
+    if (groupTaskError) {
+      throw new Error(`Error fetching group tasks: ${groupTaskError.message}`);
+    }
+
+    // Combine tasks (user's tasks + group tasks) and remove duplicates by task_id
+    const allTasks = Array.from(
+      new Map(
+        [...(userTasks || []), ...(groupTasks || [])].map((task) => [
+          task.task_id,
+          task,
+        ])
+      ).values()
+    );
+
+    // Fetch files linked to the user's tasks with searchTerm
+    const userTaskIds = (userTasks || []).map((task) => task.task_id);
+    const { data: userTaskFiles, error: userFilesError } = await supabase
+      .from("task_files")
+      .select("*")
+      .in("task_id", userTaskIds)
+      .ilike("file_name", `%${searchTerm}%`);
+
+    if (userFilesError) {
+      throw new Error(
+        `Error fetching user task files: ${userFilesError.message}`
+      );
+    }
+
+    // Fetch files linked to group tasks with searchTerm
+    const groupTaskIds = (groupTasks || []).map((task) => task.task_id);
+    
+    const { data: groupTaskFiles, error: groupFilesError } = await supabase
+      .from("task_files")
+      .select("*")
+      .in("task_id", groupTaskIds)
+      .ilike("file_name", `%${searchTerm}%`);
+
+    if (groupFilesError) {
+      throw new Error(
+        `Error fetching group task files: ${groupFilesError.message}`
+      );
+    }
+
+    // Combine files (user's files + group files) and remove duplicates by task_id
+    const allFiles = Array.from(
+      new Map(
+        [...(userTaskFiles || []), ...(groupTaskFiles || [])].map((file) => [
+          file.task_id,
+          file,
+        ])
+      ).values()
+    );
+
+    // Search for people by username or full_name
+    const { data: people, error: peopleError } = await supabase
+      .from("users")
+      .select("*")
+      .or(`username.ilike.%${searchTerm}%,full_name.ilike.%${searchTerm}%`);
+
+    if (peopleError) {
+      throw new Error(`Error searching people: ${peopleError.message}`);
+    }
+
+    return {
+      tasks: allTasks,
+      files: allFiles,
+      people: people || [],
+    };
+  } catch (error: any) {
+    console.error("Error searching entities:", error.message);
+    throw new Error(error.message || "An unexpected error occurred.");
+  }
+}
+

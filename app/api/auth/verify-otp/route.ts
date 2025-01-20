@@ -1,5 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
-import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from "@supabase/supabase-js";
+import { NextRequest, NextResponse } from "next/server";
 
 // Initialize Supabase client
 const supabaseAdmin = createClient(
@@ -14,37 +14,53 @@ export async function POST(request: NextRequest) {
     const { email, otp } = await request.json(); // Parse request body
 
     if (!email || !otp) {
-      return NextResponse.json({ error: 'Email and OTP are required' }, { status: 400 });
+      return NextResponse.json(
+        { error: "Email and OTP are required" },
+        { status: 400 }
+      );
     }
 
     // Check OTP in the database
     const { data, error } = await supabaseAdmin
-      .from('otp_codes')
-      .select('*')
-      .eq('email', email)
-      .eq('otp', otp)
+      .from("otp_codes")
+      .select("*")
+      .eq("email", email)
+      .eq("otp", otp)
       .single();
 
 
-    // // Ensure expires_at is in ISO format and compare it correctly
-    // const expiresAt = new Date(data.expires_at); // This will be in UTC if stored correctly
-    // const currentTime = new Date(); // Current time in UTC
-
-
     if (error || !data) {
-      return NextResponse.json({ error: 'Invalid OTP' }, { status: 400 });
+      return NextResponse.json({ error: "Invalid OTP" }, { status: 400 });
     }
 
     // Check if OTP has expired
     if (new Date(data.expires_at) < new Date()) {
-      return NextResponse.json({ error: 'OTP expired' }, { status: 400 });
+      return NextResponse.json({ error: "OTP expired" }, { status: 400 });
+    }
+
+    // Delete OTP from the database after verification
+    const { error: deleteOtpError } = await supabaseAdmin
+      .from("otp_codes")
+      .delete()
+      .eq("email", email).single();
+
+    if (deleteOtpError) {
+      return NextResponse.json(
+        { error: "Failed to delete OTP" },
+        { status: 500 }
+      );
     }
 
     // OTP is valid, return success response
-    return NextResponse.json({ message: 'OTP verified successfully' }, { status: 200 });
-
+    return NextResponse.json(
+      { message: "OTP verified successfully" },
+      { status: 200 }
+    );
   } catch (error) {
-    console.error('Error verifying OTP:', error);
-    return NextResponse.json({ error: 'Failed to verify OTP' }, { status: 500 });
+    console.error("Error verifying OTP:", error);
+    return NextResponse.json(
+      { error: "Failed to verify OTP" },
+      { status: 500 }
+    );
   }
 }

@@ -11,6 +11,8 @@ import {
 import { truncateFileName } from "@/lib/helpers/helpers";
 import { Download } from "lucide-react";
 import { motion, Variants } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { ImageItem, VideoItem } from "@/modules/common/components/shared/new-task/file-item";
 
 const slideUpVariants: Variants = {
   hidden: { y: "100%", opacity: 0 },
@@ -25,55 +27,88 @@ const slideUpVariants: Variants = {
 export default function GroupAllFilesItem({
   file_name,
   file_url,
-  index
+  index,
 }: TaskFileType) {
-  // Determine the file type icon
+  const lowerCaseFileName = file_name.toLowerCase();
+
+  // Determine the file type icon based on file name
   const getFileIcon = () => {
-    const extension = file_name.split(".").pop()?.toLowerCase();
-    switch (extension) {
-      case "pdf":
-        return (
-          <Image
-            src='/file-preview/pdf.png'
-            alt='PDF Icon'
-            fill
-            className='object-cover'
-            priority
-          />
-        );
-      case "csv":
-        return (
-          <Image
-            src='/file-preview/text.png'
-            alt='CSV Icon'
-            fill
-            className='object-cover'
-            priority
-          />
-        );
-      case "docx":
-      case "doc":
-        return (
-          <Image
-            src='/file-preview/docx.png'
-            alt='Word Icon'
-            fill
-            className='object-cover'
-            priority
-          />
-        );
-      default:
-        return (
-          <Image
-            src='/file-preview/text.png'
-            alt='Default Icon'
-            fill
-            className='object-cover'
-            priority
-          />
-        );
+    if (
+      lowerCaseFileName.endsWith(".png") ||
+      lowerCaseFileName.endsWith(".jpg") ||
+      lowerCaseFileName.endsWith(".jpeg")
+    ) {
+      return <ImageItem imageSrc={file_url} />;
     }
+
+    if (
+      lowerCaseFileName.endsWith(".mp4") ||
+      lowerCaseFileName.endsWith(".mov") ||
+      lowerCaseFileName.endsWith(".avi")
+    ) {
+      return <VideoItem videoSrc={file_url} />;
+    }
+
+    if (lowerCaseFileName.endsWith(".pdf")) {
+      return (
+        <Image
+          src='/file-preview/pdf.png'
+          alt='PDF Icon'
+          fill
+          className='object-cover'
+          priority
+        />
+      );
+    }
+
+    if (lowerCaseFileName.endsWith(".csv")) {
+      return (
+        <Image
+          src='/file-preview/text.png'
+          alt='CSV Icon'
+          fill
+          className='object-cover'
+          priority
+        />
+      );
+    }
+
+    if (
+      lowerCaseFileName.endsWith(".docx") ||
+      lowerCaseFileName.endsWith(".doc")
+    ) {
+      return (
+        <Image
+          src='/file-preview/docx.png'
+          alt='Word Document Icon'
+          fill
+          className='object-cover'
+          priority
+        />
+      );
+    }
+
+    // Default file icon
+    return (
+      <Image
+        src='/file-preview/file.png'
+        alt='Default File Icon'
+        fill
+        className='object-cover'
+        priority
+      />
+    );
   };
+
+  const isVideo =
+    lowerCaseFileName.endsWith(".mp4") ||
+    lowerCaseFileName.endsWith(".mov") ||
+    lowerCaseFileName.endsWith(".avi");
+
+  const isImage =
+    lowerCaseFileName.endsWith(".png") ||
+    lowerCaseFileName.endsWith(".jpg") ||
+    lowerCaseFileName.endsWith(".jpeg");
 
   return (
     <motion.div
@@ -83,7 +118,11 @@ export default function GroupAllFilesItem({
       custom={index}
       className='relative inline-flex flex-col items-center space-y-1 flex-shrink-0 border p-2 rounded-lg shadow-sm hover:shadow-md transition-shadow'>
       {/* File Icon */}
-      <div className='relative w-[2rem] min-w-[2rem] h-[3rem] p-0'>
+      <div
+        className={cn(
+          isVideo || isImage ? "w-full" : "w-[2rem]",
+          "relative min-w-[2rem] h-[3rem] p-0"
+        )}>
         {getFileIcon()}
       </div>
 
@@ -108,6 +147,7 @@ export default function GroupAllFilesItem({
       <div className='absolute right-2 top-1 '>
         <a
           href={file_url}
+          title="Download file"
           target='_blank'
           rel='noopener noreferrer'
           className='text-sm text-foreground/30 hover:text-foreground transition-all'>

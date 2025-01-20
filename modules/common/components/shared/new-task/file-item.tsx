@@ -143,7 +143,9 @@ export default function FileItem({
   );
 }
 
-function ImageItem({ imageSrc }: { imageSrc: string }) {
+export function ImageItem({ imageSrc }: { imageSrc: string }) {
+  console.log(imageSrc);
+
   return (
     <div className='relative w-full min-w-[2rem] h-full p-0 '>
       <Image
@@ -157,7 +159,7 @@ function ImageItem({ imageSrc }: { imageSrc: string }) {
   );
 }
 
-function VideoItem({ videoSrc }: { videoSrc: string }) {
+export function VideoItem({ videoSrc }: { videoSrc: string }) {
   return (
     <video
       src={videoSrc}

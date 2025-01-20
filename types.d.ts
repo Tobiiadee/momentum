@@ -102,6 +102,7 @@ type TaskType = {
 };
 
 type TaskFileType = {
+  file?: File;
   created_at: string;
   file_name: string;
   file_url: string;
@@ -109,4 +110,15 @@ type TaskFileType = {
   task_id: string;
   uploaded_at: string;
   index?: number;
+};
+
+type SearchReturnPeopleType = {
+  username: string;
+  full_name: string;
+};
+
+type SearchReturnType = {
+  tasks: Task[];
+  files: TaskFileType[];
+  people: UserDataType[];
 };

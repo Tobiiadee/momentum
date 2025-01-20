@@ -22,7 +22,7 @@ export default function DeleteAccountModal() {
       await deleteUser(user?.id || "");
     },
     onSuccess: () => {
-      toast.success("Account deleted successfully!");
+      setIsDeleteAccount(false);
       router.push("/");
     },
     onError: (error) => {

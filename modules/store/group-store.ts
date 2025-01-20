@@ -37,6 +37,8 @@ interface GroupStoreType {
   addMemberArray: AddMemberType[];
   setAddMemberArray: (addMemberArray: AddMemberType[]) => void;
   deleteMember: (memberId: string) => void;
+  isGroupChat: boolean;
+  setIsGroupChat: (isGroupChat: boolean) => void;
   reset: () => void;
 }
 
@@ -96,6 +98,8 @@ export const useGroupStore = create<GroupStoreType>((set) => ({
     set(() => ({
       deleteGroupObject: deleteGroupObj,
     })),
+  isGroupChat: false,
+  setIsGroupChat: (isGroupChat) => set({ isGroupChat }),
   reset: () =>
     set({
       isGroup: false,

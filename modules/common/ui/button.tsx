@@ -3,7 +3,7 @@ import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
-import { LoaderCircle } from "lucide-react"
+import { Loader } from "lucide-react"
 
 // Define the button variants using cva
 const buttonVariants = cva(
@@ -53,7 +53,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {/* Show spinner if loading */}
         {isLoading && (
-         <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+         <Loader className="mr-2 h-4 w-4 animate-spin" />
         )}
         {/* Render children alongside spinner */}
         {children}

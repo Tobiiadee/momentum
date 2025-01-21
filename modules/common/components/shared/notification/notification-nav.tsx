@@ -22,15 +22,16 @@ export default function NotificationNav() {
   return (
     <div className='overflow-hidden w-full h-full'>
       <Tabs defaultValue='all' className='w-full '>
-        <TabsList className='justify-start rounded-none p-0 bg-foreground/5 shadow-none w-full'>
+        <TabsList className='justify-start rounded-none px-1 py-0 bg-transparent border-b shadow-none w-full'>
           {notifiactionNav.map((nav) => (
             <TabsTrigger
               key={nav.nav_value}
               value={nav.nav_value}
-              className='relative space-x-6 data-[state=active]:bg-background group data-[state=active]:shadow-none h-full rounded-none shadow-none'>
-              <Text variant='p'>{nav.nav_name}</Text>
-
-              <div className='absolute -left-[1.5rem] top-0 w-full h-[1.5px] bg-foreground hidden group-data-[state=active]:block'></div>
+              className='relative  space-x-6 data-[state=active]:bg-background group data-[state=active]:shadow-none h-full rounded-none shadow-none'>
+              <div className='flex items-center space-x-4'>
+                <Text variant='p'>{nav.nav_name}</Text>
+              </div>
+              <div className='absolute -left-[1.5rem] bottom-[-1.5px] w-full h-[1.5px] bg-foreground hidden group-data-[state=active]:block'></div>
             </TabsTrigger>
           ))}
         </TabsList>

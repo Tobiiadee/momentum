@@ -14,8 +14,15 @@ export default function GroupChatInput() {
     }
   };
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("submit");
+  };
+
   return (
-    <form className='absolute bottom-0 left-0 w-full bg-foreground/5 py-1.5'>
+    <form
+      onSubmit={handleSubmit}
+      className='absolute bottom-0 left-0 w-full bg-foreground/5 py-1.5'>
       <Textarea
         ref={inputRef}
         className='bg-transparent shadow-none border-none min-h-9 max-h-16 focus-visible:ring-0 pr-11'
@@ -24,7 +31,7 @@ export default function GroupChatInput() {
       <button
         role='button'
         type='submit'
-        title="Send"
+        title='Send'
         className='absolute top-1/2 -translate-y-1/2 right-2 text-foreground w-max h-max p-2'>
         <SendHorizonal size={20} strokeWidth={1.5} />
       </button>

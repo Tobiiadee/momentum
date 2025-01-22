@@ -58,7 +58,7 @@ export default function UserGroups() {
           </div>
         ) : userGroups.length > 0 ? (
           <>
-            <div className='flex items-center justify-between'>
+            <div className='flex items-center space-x-4'>
               <Button
                 disabled={!showLeft}
                 onClick={scrollLeft}

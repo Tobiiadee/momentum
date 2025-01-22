@@ -9,7 +9,13 @@ import NewTaskTime from "@/modules/common/components/shared/new-task/new-task-ti
 import { Button } from "@/modules/common/ui/button";
 import { Text } from "@/modules/common/ui/text";
 import useNewTaskStore from "@/modules/store/new-task.store";
+import { Metadata } from "next";
 import React from "react";
+
+export const metadata: Metadata = {
+  title: "Momentum | Create New Task",
+  description: "Create a new task.",
+};
 
 export default function Index() {
   const setPreviewTask = useNewTaskStore((state) => state.setPreviewTask);
@@ -27,7 +33,7 @@ export default function Index() {
       </div>
       <div className='grid grid-cols-3 gap-4 w-full'>
         <CallLinks />
-        <NewTaskFile/>
+        <NewTaskFile />
       </div>
       <div className='w-full flex justify-start'>
         <Button onClick={() => setPreviewTask(true)} disabled={!isValid}>

@@ -1,9 +1,22 @@
 import { createClient } from "@/modules/supabase/utils/server";
 
-
 export async function getUserData(): Promise<UserDataType> {
   const supabase = createClient();
   const res = await (await supabase).auth.getUser();
+
+  //update email column in user table
+  if (res.data.user?.email) {
+    const { error } = await (await supabase)
+      .from("users")
+      .update({ email: res.data.user?.email })
+      .eq("id", res.data.user?.id);
+
+    if (error) {
+      console.error("Error updating email in user table:", error.message);
+    }
+  }
+
+  // Fetch user data from the user table
   const { data } = await (await supabase)
     .from("users")
     .select("*")

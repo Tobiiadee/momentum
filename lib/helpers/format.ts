@@ -109,3 +109,45 @@ export function formatDateString(dateString: string): string {
 
   return `${day} ${month}, ${year}`;
 }
+
+export function timeAgo(timestampStr: string): string {
+  if (!timestampStr || typeof timestampStr !== "string") {
+    return "Invalid date";
+  }
+
+  // Convert timestamp to a valid ISO format by replacing '+00:00' with 'Z'
+  const formattedTimestampStr = timestampStr.replace(/\+00:00$/, "Z");
+  const timestamp = new Date(formattedTimestampStr);
+
+  // Validate timestamp
+  if (isNaN(timestamp.getTime())) {
+    return "Invalid date";
+  }
+
+  const now = new Date();
+  const deltaSeconds = Math.floor((now.getTime() - timestamp.getTime()) / 1000);
+
+  const minutes = Math.floor(deltaSeconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  const weeks = Math.floor(days / 7);
+  const years = Math.floor(days / 365);
+
+  if (years > 0) {
+    return `${years} year${years > 1 ? "s" : ""} ago`;
+  } else if (weeks > 0) {
+    return `${weeks} week${weeks > 1 ? "s" : ""} ago`;
+  } else if (days > 0) {
+    return `${days} day${days > 1 ? "s" : ""} ago`;
+  } else if (hours > 0) {
+    return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+  } else if (minutes > 0) {
+    return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+  } else {
+    return `${deltaSeconds} second${deltaSeconds > 1 ? "s" : ""} ago`;
+  }
+}
+
+// // Example usage
+// const timestampStr = "2025-01-23T05:33:18.950947+00:00";
+// console.log(timeAgo(timestampStr));

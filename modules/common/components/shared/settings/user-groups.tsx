@@ -41,69 +41,75 @@ export default function UserGroups() {
     }
   }, [isAllGroupsInTableError, allGroupsInTableError]);
 
+  
+
+  if (isLoadingAllGroupsInTable) {
+    return (
+      <div className='flex flex-col space-y-2'>
+        <div className='flex items-center space-x-2 overflow-y-auto'>
+          {Array.from({ length: 5 }).map((_, idx) => (
+            <GroupItemSkeleton key={idx} />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  console.log(userGroups);
+  
+
+  if (userGroups.length === 0) {
+    return (
+      <Text variant='h5' className='text-foreground text-center h-[15vh] w-full'>
+        You are not a member of any group
+      </Text>
+    );
+  }
+
   return (
     <div className='flex flex-col space-y-4'>
-      <Text variant='p' className='font-medium'>
-        Your Groups
-      </Text>
-
       <div className='flex flex-col space-y-2'>
-        {isLoadingAllGroupsInTable ? (
-          <div className='flex items-center space-x-2 overflow-y-auto'>
-            {Array(5)
-              .fill(0)
-              .map((_, idx) => (
-                <GroupItemSkeleton key={idx} />
-              ))}
-          </div>
-        ) : userGroups.length > 0 ? (
-          <>
-            <div className='flex items-center space-x-4'>
-              <Button
-                disabled={!showLeft}
-                onClick={scrollLeft}
-                variant='ghost'
-                size='sm'
-                aria-label='Scroll left'>
-                <MoveLeft strokeWidth={1.5} size={20} />
-              </Button>
-              <Button
-                disabled={!showRight}
-                onClick={scrollRight}
-                variant='ghost'
-                size='sm'
-                aria-label='Scroll right'>
-                <MoveRight strokeWidth={1.5} size={20} />
-              </Button>
-            </div>
-            <div
-              id='hide-scrollbar'
-              ref={scrollRef}
-              className='flex items-center space-x-2 overflow-y-auto'>
-              {userGroups.map((group, index) => (
-                <UserGroupItem
-                  key={group.list_id}
-                  index={index}
-                  id={group.list_id}
-                  name={group.label}
-                  members={group.members.map((member) => member.member_id)}
-                  isAdmin={
-                    user?.id === group.creator_id ||
-                    group.members.some(
-                      (member) =>
-                        member.member_id === user?.id &&
-                        capitalize(member.role) === "Admin"
-                    )
-                  }
-                />
-              ))}
-            </div>
-          </>
-        ) : (
-          <Text variant='p' className='text-sm text-muted'>
-            You are not a member of any group.
-          </Text>
-        )}
+        <div className='flex items-center space-x-2'>
+          <Button
+            disabled={!showLeft}
+            onClick={scrollLeft}
+            variant='ghost'
+            size='sm'
+            aria-label='Scroll left'>
+            <MoveLeft strokeWidth={1.5} size={20} />
+          </Button>
+
+          <Button
+            disabled={!showRight}
+            onClick={scrollRight}
+            variant='ghost'
+            size='sm'
+            aria-label='Scroll right'>
+            <MoveRight strokeWidth={1.5} size={20} />
+          </Button>
+        </div>
+        <div
+          id='hide-scrollbar'
+          ref={scrollRef}
+          className='flex items-center space-x-2 overflow-y-auto'>
+          {userGroups.map((group, index) => (
+            <UserGroupItem
+              key={group.list_id}
+              index={index}
+              id={group.list_id}
+              name={group.label}
+              members={group.members.map((member) => member.member_id)}
+              isAdmin={
+                user?.id === group.creator_id ||
+                group.members.some(
+                  (member) =>
+                    member.member_id === user?.id &&
+                    capitalize(member.role) === "Admin"
+                )
+              }
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

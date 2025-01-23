@@ -85,7 +85,7 @@ export default function SideBar() {
 
   return (
     <>
-      <div className='fixed w-[20rem] flex flex-col space-y-8 h-screen min-h-screen z-40 bg-background px-4 pt-6 pb-10 shadow-md overflow-y-auto'>
+      <div className='fixed w-[20rem] flex flex-col space-y-8 h-screen min-h-screen z-40 bg-background px-4 pt-6 pb-10 shadow-md overflow-x-hidden overflow-y-auto'>
         <Logo />
         <div className='flex flex-col space-y-3'>
           <CreateNewTask />

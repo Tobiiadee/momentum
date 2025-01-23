@@ -33,7 +33,7 @@ export default function SearchModal() {
         setIsSearch(false);
         setIsSearchResults(false);
       }}
-      className='bg-foreground/10 backdrop-blur-sm '>
+      className='bg-foreground/10 backdrop-blur-sm'>
       <motion.div
         variants={previewVariant}
         animate='visible'

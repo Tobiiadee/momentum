@@ -1,3 +1,5 @@
+/*eslint-disable @typescript-eslint/no-explicit-any*/
+
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
@@ -12,6 +14,7 @@ import { v4 as uuidv4 } from "uuid";
 import useUserStore from "@/modules/store/user-store";
 import useGroupAction from "@/hooks/use-group-action";
 import { toast } from "sonner";
+import { sendInvite } from "@/lib/utils/invite-response";
 
 export const FadeInOutvariants: Variants = {
   hidden: { y: 0, opacity: 0 },
@@ -82,12 +85,12 @@ export default function NewGroup() {
       created_at: new Date().toISOString(),
       role: "Admin" as GroupRoleType,
     },
-    ...membersId,
   ];
 
-  const groupHandler = () => {
+  const groupHandler = async () => {
+    const group_id = uuidv4();
     const group: GroupType = {
-      list_id: uuidv4(),
+      list_id: group_id,
       label: groupName.trim(),
       members: allMembers,
       creator_id: user?.id as string,
@@ -97,6 +100,22 @@ export default function NewGroup() {
     if (!!groupName) {
       addGroupMutate(group);
       reset();
+
+      const receiverIds = membersId.map((member) => member.member_id);
+
+      try {
+        const sendInviteRes = await sendInvite(
+          group_id,
+          user?.id as string,
+          receiverIds
+        );
+
+        if (sendInviteRes.status === "success") {
+          toast.success("Invite sent successfully");
+        }
+      } catch (error: any) {
+        toast.error(error.message);
+      }
     }
 
     if (isAddGroupError) {

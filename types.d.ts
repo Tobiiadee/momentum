@@ -122,3 +122,25 @@ type SearchReturnType = {
   files: TaskFileType[];
   people: UserDataType[];
 };
+
+type InviteType = {
+  invite_id: string;
+  group_id: string;
+  sender_id: string;
+  reciever_id: string;
+  status: string;
+
+
+};
+
+type NotificationType = {
+  created_at: string;
+  user_id: string;
+  message: string;
+  type: string;
+  req_id: string;
+  invite_state: string;
+  req_id: string;
+  invite_id: string;
+  sender_id: string;
+};

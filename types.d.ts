@@ -129,8 +129,7 @@ type InviteType = {
   sender_id: string;
   reciever_id: string;
   status: string;
-
-
+  created_at: string;
 };
 
 type NotificationType = {

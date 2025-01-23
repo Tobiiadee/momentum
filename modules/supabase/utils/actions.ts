@@ -833,7 +833,7 @@ export async function searchEntities(
 
     // Fetch files linked to group tasks with searchTerm
     const groupTaskIds = (groupTasks || []).map((task) => task.task_id);
-    
+
     const { data: groupTaskFiles, error: groupFilesError } = await supabase
       .from("task_files")
       .select("*")
@@ -877,3 +877,18 @@ export async function searchEntities(
   }
 }
 
+//Get pending invites
+export async function getGroupPendingInvites(
+  group_id: string
+): Promise<InviteType[]> {
+  const { data: invites, error: invitesError } = await supabase
+    .from("invite_table")
+    .select("*")
+    .eq("group_id", group_id)
+    .eq("status", "pending");
+
+  if (invitesError) {
+    throw new Error(invitesError.message || "An unexpected error occurred.");
+  }
+  return invites || [];
+}

@@ -892,3 +892,20 @@ export async function getGroupPendingInvites(
   }
   return invites || [];
 }
+
+//fetch notifications
+export async function fetchNotifications(
+  userId: string
+): Promise<NotificationType[]> {
+  const { data, error } = await supabase
+    .from("notification_table")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching notifications:", error.message);
+  }
+
+  return data || [];
+}

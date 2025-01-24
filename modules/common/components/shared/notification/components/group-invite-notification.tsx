@@ -44,15 +44,18 @@ export default function GroupInviteNotification({
   const user = useUserStore((state) => state.user);
   const userId = user?.id as string;
 
-  const handleResponseAccept = async (status: "accepted") => {
+  const handleResponseAccept = async () => {
     setLoadingAccept(true);
     // setError(null);
 
     try {
-      await axios.post("/api/invites/respond", { userId, status });
+      await axios.post("/api/invites/respond", {
+        user_id: userId,
+        status: "accepted",
+      });
       // setSuccess(status);
       // setError(null);
-      toast.success(`Invite ${status}`);
+      toast.success(`Invite accepted`);
       setLoadingAccept(false);
     } catch (err: any) {
       toast.error(`error: ${err.message}`);
@@ -62,15 +65,18 @@ export default function GroupInviteNotification({
     }
   };
 
-  const handleResponseDecline = async (status: "declined") => {
+  const handleResponseDecline = async () => {
     setLoadingDecline(true);
     // setError(null);
 
     try {
-      await axios.post("/api/invites/respond", { userId, status });
+      await axios.post("/api/invites/respond", {
+        user_id: userId,
+        status: "declined",
+      });
       // setSuccess(status);
       // setError(null);
-      toast.success(`Invite ${status}`);
+      toast.success(`Invite declined`);
     } catch (err) {
       // setError("Something went wrong. Please try again.");
       setLoadingDecline(false);
@@ -93,7 +99,7 @@ export default function GroupInviteNotification({
         <AccordionContent className='w-full'>
           <div className='flex items-center space-x-4 justify-end'>
             <Button
-              onClick={() => handleResponseAccept("accepted")}
+              onClick={handleResponseAccept}
               isLoading={loadingAccept}
               size='sm'
               className='flex items-center'>
@@ -103,7 +109,7 @@ export default function GroupInviteNotification({
             </Button>
 
             <Button
-              onClick={() => handleResponseDecline("declined")}
+              onClick={handleResponseDecline}
               isLoading={loadingDecline}
               variant={"ghost"}
               size='sm'

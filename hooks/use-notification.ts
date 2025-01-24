@@ -1,6 +1,8 @@
 /*eslint-disable @typescript-eslint/no-explicit-any*/
 
+import { fetchNotifications } from "@/modules/supabase/utils/actions";
 import { createClient } from "@supabase/supabase-js";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 // Initialize Supabase client
@@ -12,24 +14,16 @@ const supabase = createClient(
 const useNotifications = (userId: string) => {
   const [notifications, setNotifications] = useState<NotificationType[]>([]);
 
+  const { data: notificationsData } = useQuery({
+    queryKey: ["notifications", userId],
+    queryFn: () => fetchNotifications(userId),
+    enabled: !!userId,
+  });
+
   useEffect(() => {
-    if (!userId) return; // Ensure userId is provided
-
-    const fetchNotifications = async () => {
-      const { data, error } = await supabase
-        .from("notification_table")
-        .select("*")
-        .eq("user_id", userId)
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("Error fetching notifications:", error.message);
-      } else {
-        setNotifications(data || []);
-      }
-    };
-
-    fetchNotifications();
+    if (notificationsData) {
+      setNotifications(notificationsData);
+    }
 
     // Set up real-time subscription using Supabase channel
     const channel = supabase
@@ -52,7 +46,7 @@ const useNotifications = (userId: string) => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [userId]);
+  }, [userId, notificationsData]);
 
   return notifications;
 };

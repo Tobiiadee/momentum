@@ -1,3 +1,5 @@
+/*eslint-disable @typescript-eslint/no-explicit-any*/
+
 "use client";
 
 import PreviewWithModal from "@/modules/common/components/shared/preview-with-modal";
@@ -9,6 +11,7 @@ import useUserStore from "@/modules/store/user-store";
 import { useParams } from "next/navigation";
 import UpdateMembers from "./update-members";
 import { toast } from "sonner";
+import { sendInvite } from "@/lib/utils/invite-response";
 
 export default function AddMemberModal() {
   const { groupId } = useParams();
@@ -19,15 +22,16 @@ export default function AddMemberModal() {
 
   const {
     allGroups,
-    inviteMembersMutate,
     isInviteMembers,
     isInviteMembersError,
     inviteMembersError,
   } = useGroupAction(user?.id as string);
 
+  const decodeGroupId = decodeURIComponent(groupId as string);
+
   const filteredGroupId =
     allGroups?.find(
-      (group) => group.label.toLowerCase() === (groupId as string).toLowerCase()
+      (group) => group.label.toLowerCase() === (decodeGroupId as string).toLowerCase()
     )?.list_id ?? null;
 
   const filteredGroupMembers =
@@ -41,20 +45,30 @@ export default function AddMemberModal() {
     role: "Member",
   }));
 
-  const handleMembersUpdateGroup = () => {
-    inviteMembersMutate({
-      groupId: filteredGroupId as string,
-      members: setMembers,
-    });
+  console.log(filteredGroupId)
 
-    if (!isInviteMembers && !isInviteMembersError) {
-      setIsAddMember(false);
+  const receiverIds = setMembers.map((member) => member.member_id);
+
+  const handleMembersUpdateGroup = async () => {
+    try {
+      const sendInviteRes = await sendInvite(
+        filteredGroupId as string,
+        user?.id as string,
+        receiverIds
+      );
+
+      if (sendInviteRes.status === "success") {
+        toast.success("Invite sent successfully");
+      }
+    } catch (error: any) {
+      toast.error(error.message);
     }
 
     if (isInviteMembersError) toast.error(inviteMembersError?.message);
     if (!isInviteMembers && !isInviteMembersError)
       toast.success("Invite sent successfully");
     setGroupMembers();
+    setIsAddMember(false);
   };
 
   return (

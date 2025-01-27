@@ -98,7 +98,7 @@ export default function NewList() {
           disabled={!listName || svgImage === ""}
           variant={"default"}
           className=''>
-          Add
+          Create list
         </Button>
 
         <div className='absolute -top-[2.5rem] -right-4 w-8 aspect-square shadow-md bg-background flex justify-center items-center rounded-full overflow-hidden'>

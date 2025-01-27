@@ -520,17 +520,23 @@ export async function fetchUsers(): Promise<UserDataType[]> {
   return data || [];
 }
 
-//search users
+// Search users by email or username
 export async function searchUsers(searchTerm: string): Promise<UserDataType[]> {
+  if (!searchTerm || searchTerm.trim().length < 3) {
+    throw new Error("Search term must be at least 3 characters long");
+  }
+
   const { data, error } = await supabase
     .from("users")
     .select("*")
-    .ilike("email", `%${searchTerm}%`);
+    .or(`email.ilike.%${searchTerm}%,username.ilike.%${searchTerm}%`); // Partial match for email or username
 
   if (error) throw error;
 
   return data || [];
 }
+
+
 
 export async function fetchAllUsers(): Promise<UserDataType[]> {
   const { data, error } = await supabase.from("users").select("*");

@@ -5,9 +5,14 @@ import React, { useState } from "react";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import useGroupStore from "@/modules/store/group-store";
 import { Button } from "@/modules/common/ui/button";
-import { Loader, X } from "lucide-react";
+import { Loader, Search, X } from "lucide-react";
 import useSearchUsers from "@/hooks/use-search-users";
 import useUserStore from "@/modules/store/user-store";
+
+const heightVariants: Variants = {
+  hidden: { maxHeight: 0 },
+  visible: { maxHeight: 196 },
+};
 
 const memberVariants: Variants = {
   hidden: { y: 20, opacity: 0 },
@@ -64,19 +69,43 @@ export default function AddMember() {
   );
 
   return (
-    <div className='relative flex flex-col space-y-2 h-48 max-h-48 '>
+    <motion.div
+      variants={heightVariants}
+      initial='hidden'
+      animate='visible'
+      exit={"hidden"}
+      className='relative flex flex-col space-y-2 h-48 max-h-48'>
       <motion.div
         variants={inputVariants}
         initial='hidden'
         animate='visible'
-        className='flex items-center space-x-3'>
+        className='flex items-center space-x-3 relative p-0'>
         <Input
           onChange={(e) => {
             setSearchMember(e.target.value);
           }}
-          placeholder='Search member by email...'
-          className='placeholder:text-xs'
+          placeholder='Search member by username or email...'
+          className='placeholder:text-xs pl-9'
         />
+        <div className='absolute left-0'>
+          {isLoading ? (
+            <div className='absolute top-1/2 -translate-y-1/2 left-0'>
+              <Loader
+                size={18}
+                strokeWidth={1.3}
+                className='animate-spin text-foreground/60'
+              />
+            </div>
+          ) : (
+            <div className='absolute top-1/2 -translate-y-1/2 left-0'>
+              <Search
+                size={18}
+                strokeWidth={1.3}
+                className='text-foreground/50'
+              />
+            </div>
+          )}
+        </div>
       </motion.div>
 
       {searchMember !== "" && (
@@ -84,7 +113,7 @@ export default function AddMember() {
           variants={memberVariants}
           initial='hidden'
           animate='visible'
-          className='absolute top-10 z-30 w-full h-max max-h-[9rem] overflow-y-auto flex flex-col space-y-1 bg-background rounded-b-md shadow-lg pb-2'>
+          className='absolute top-10 z-30 w-full h-max max-h-[9rem]  overflow-y-auto flex flex-col space-y-1 bg-background rounded-b-md shadow-lg pb-2'>
           {isError && (
             <div className='w-full grid place-items-center min-h-8'>
               <Text
@@ -92,15 +121,6 @@ export default function AddMember() {
                 className='text-center italic text-foreground/60'>
                 {error?.message}
               </Text>
-            </div>
-          )}
-          {isLoading && (
-            <div className='w-full grid place-items-center min-h-8'>
-              <Loader
-                size={20}
-                strokeWidth={1.5}
-                className='animate-spin text-foreground/60'
-              />
             </div>
           )}
 
@@ -117,10 +137,8 @@ export default function AddMember() {
 
           {searchMember !== "" && filteredMembers?.length === 0 && (
             <div className='w-full grid place-items-center min-h-8'>
-              <Text
-                variant={"p"}
-                className='text-center italic text-foreground/60'>
-                Email not found
+              <Text variant={"p"} className='text-center text-foreground/60'>
+                User not found
               </Text>
             </div>
           )}
@@ -129,7 +147,7 @@ export default function AddMember() {
 
       <AnimatePresence mode='wait'>
         {membersList.length !== 0 && (
-          <div className='flex flex-col h-max max-h-48 overflow-y-auto'>
+          <div className='flex flex-col h-max max-h-48 overflow-y-auto '>
             {membersList.map((member) => (
               <MemberListItem
                 key={member.id + member.email}
@@ -145,12 +163,12 @@ export default function AddMember() {
 
       {membersList.length === 0 && (
         <div className='w-full grid place-items-center h-40'>
-          <Text variant={"p"} className='italic text-foreground/60'>
+          <Text variant={"p"} className='text-foreground/60'>
             Choose your team members
           </Text>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }
 
@@ -158,7 +176,7 @@ interface MemberItemProps extends MemberType {
   setSearchedMembers: (members: string) => void;
 }
 
-function MemberItem({
+export function MemberItem({
   name,
   email,
   image,
@@ -185,7 +203,7 @@ function MemberItem({
       onClick={handleSelect}
       id={id}
       className='flex items-center space-x-2 hover:bg-foreground/10 active:bg-foreground/15 transition-all duration-300 py-1 px-2 cursor-pointer'>
-      <div className='relative w-6 aspect-square rounded-full overflow-hidden flex items-center justify-center'>
+      <div className='relative w-8 aspect-square rounded-full overflow-hidden flex items-center justify-center'>
         <Image
           src={image}
           alt={"profile" + name}
@@ -194,8 +212,11 @@ function MemberItem({
         />
       </div>
 
-      <div className=''>
-        <Text variant={"p"} className=''>
+      <div className='flex flex-col -space-y-1'>
+        <Text variant={"p"} className='capitalize font-medium'>
+          {name}
+        </Text>
+        <Text variant={"p"} className='text-xs'>
           {email}
         </Text>
       </div>
@@ -203,7 +224,7 @@ function MemberItem({
   );
 }
 
-function MemberListItem({ name, email, image, id }: MemberType) {
+export function MemberListItem({ name, email, image, id }: MemberType) {
   const deleteItem = useGroupStore((state) => state.deleteMember);
 
   return (
@@ -214,7 +235,7 @@ function MemberListItem({ name, email, image, id }: MemberType) {
       exit='exit'
       className='flex items-center justify-between hover:bg-foreground/10 transition-all duration-300 py-1 px-2'>
       <div className='flex space-x-2 items-center'>
-        <div className='relative w-6 aspect-square rounded-full overflow-hidden flex items-center justify-center'>
+        <div className='relative w-8 aspect-square rounded-full overflow-hidden flex items-center justify-center'>
           <Image
             src={image}
             alt={"profile" + name}
@@ -223,8 +244,11 @@ function MemberListItem({ name, email, image, id }: MemberType) {
           />
         </div>
 
-        <div className=''>
-          <Text variant={"p"} className=''>
+        <div className='flex flex-col -space-y-1'>
+          <Text variant={"p"} className='capitalize font-medium'>
+            {name}
+          </Text>
+          <Text variant={"p"} className='text-xs'>
             {email}
           </Text>
         </div>

@@ -78,3 +78,40 @@ export const signInWithGoogle = async () => {
   // revalidatePath("/dashboard", "layout");
   // return redirect("/auth/login");
 };
+
+//Reset Password
+export async function resetPassword(email: string) {
+  const supabase = createClient();
+
+  // Request a password reset email
+  const { data, error } = await (
+    await supabase
+  ).auth.resetPasswordForEmail(email);
+
+  if (error) {
+    console.error("Error sending password reset email:", error.message);
+  } else {
+    console.log("Password reset email sent:", data);
+  }
+
+  return data;
+}
+
+export async function updatePassword(newPassword: string) {
+  const supabase = createClient();
+
+  // After the user clicks the link in the email, they will be directed to a page where they can set a new password
+  const { data, error: updateError } = await (
+    await supabase
+  ).auth.updateUser({
+    password: newPassword,
+  });
+
+  if (updateError) {
+    console.error("Error updating password:", updateError.message);
+  } else {
+    console.log("Password updated successfully:", data);
+  }
+
+  return data;
+}

@@ -73,7 +73,7 @@ export default function AddMemberModal() {
 
   return (
     <PreviewWithModal
-      title='add member'
+      title='invite members'
       ariaLabel='add member'
       position='top-[10rem] left-1/2 -translate-x-1/2'
       width='w-[22rem]'
@@ -90,7 +90,7 @@ export default function AddMemberModal() {
         onClick={handleMembersUpdateGroup}
         aria-label='invite members'
         className='w-full'>
-        Invite
+        Invite members
       </Button>
     </PreviewWithModal>
   );

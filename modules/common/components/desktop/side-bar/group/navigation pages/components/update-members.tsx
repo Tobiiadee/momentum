@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import useGroupStore from "@/modules/store/group-store";
 import { Button } from "@/modules/common/ui/button";
-import { Loader, X } from "lucide-react";
+import { Loader, Search, X } from "lucide-react";
 import useSearchUsers from "@/hooks/use-search-users";
 import useUserStore from "@/modules/store/user-store";
 
@@ -67,22 +67,40 @@ export default function UpdateMembers({ oldMembers }: UpdateMembersProps) {
       member.id !== user_id &&
       !oldMembers.some((oldMember) => oldMember.member_id === member.id)
   );
-  
-  
+
   return (
     <div className='relative flex flex-col space-y-2 h-48 max-h-48 '>
       <motion.div
         variants={inputVariants}
         initial='hidden'
         animate='visible'
-        className='flex items-center space-x-3'>
+        className='flex items-center space-x-3 relative p-0'>
         <Input
           onChange={(e) => {
             setSearchMember(e.target.value);
           }}
-          placeholder='Search member by email...'
-          className='placeholder:text-xs'
+          placeholder='Search member by username or email...'
+          className='placeholder:text-xs pl-9'
         />
+        <div className='absolute left-0'>
+          {isLoading ? (
+            <div className='absolute top-1/2 -translate-y-1/2 left-0'>
+              <Loader
+                size={18}
+                strokeWidth={1.3}
+                className='animate-spin text-foreground/60'
+              />
+            </div>
+          ) : (
+            <div className='absolute top-1/2 -translate-y-1/2 left-0'>
+              <Search
+                size={18}
+                strokeWidth={1.3}
+                className='text-foreground/50'
+              />
+            </div>
+          )}
+        </div>
       </motion.div>
 
       {searchMember !== "" && (
@@ -98,15 +116,6 @@ export default function UpdateMembers({ oldMembers }: UpdateMembersProps) {
                 className='text-center italic text-foreground/60'>
                 {error?.message}
               </Text>
-            </div>
-          )}
-          {isLoading && (
-            <div className='w-full grid place-items-center min-h-8'>
-              <Loader
-                size={20}
-                strokeWidth={1.5}
-                className='animate-spin text-foreground/60'
-              />
             </div>
           )}
 
@@ -126,7 +135,7 @@ export default function UpdateMembers({ oldMembers }: UpdateMembersProps) {
             <div className='w-full grid place-items-center min-h-8'>
               <Text
                 variant={"p"}
-                className='text-center italic text-foreground/60'>
+                className='text-center text-xs text-foreground/60'>
                 Email not found
               </Text>
             </div>
@@ -152,7 +161,7 @@ export default function UpdateMembers({ oldMembers }: UpdateMembersProps) {
 
       {membersList.length === 0 && (
         <div className='w-full grid place-items-center h-40'>
-          <Text variant={"p"} className='italic text-foreground/60'>
+          <Text variant={"p"} className='text-xs text-foreground/60'>
             Choose your team members
           </Text>
         </div>
@@ -193,7 +202,7 @@ function MemberItem({
       onClick={handleSelect}
       id={id}
       className='flex items-center space-x-2 hover:bg-foreground/10 active:bg-foreground/15 transition-all duration-300 py-1 px-2 cursor-pointer'>
-      <div className='relative w-6 aspect-square rounded-full overflow-hidden flex items-center justify-center'>
+      <div className='relative w-8 aspect-square rounded-full overflow-hidden flex items-center justify-center'>
         <Image
           src={image}
           alt={"profile" + name}
@@ -202,8 +211,11 @@ function MemberItem({
         />
       </div>
 
-      <div className=''>
-        <Text variant={"p"} className=''>
+      <div className='flex flex-col -space-y-1'>
+        <Text variant={"p"} className='font-medium'>
+          {name}
+        </Text>
+        <Text variant={"p"} className='text-xs'>
           {email}
         </Text>
       </div>
@@ -222,7 +234,7 @@ function MemberListItem({ name, email, image, id }: MemberType) {
       exit='exit'
       className='flex items-center justify-between hover:bg-foreground/10 transition-all duration-300 py-1 px-2'>
       <div className='flex space-x-2 items-center'>
-        <div className='relative w-6 aspect-square rounded-full overflow-hidden flex items-center justify-center'>
+        <div className='relative w-8 aspect-square rounded-full overflow-hidden flex items-center justify-center'>
           <Image
             src={image}
             alt={"profile" + name}
@@ -231,8 +243,11 @@ function MemberListItem({ name, email, image, id }: MemberType) {
           />
         </div>
 
-        <div className=''>
-          <Text variant={"p"} className=''>
+        <div className='flex flex-col -space-y-1'>
+          <Text variant={"p"} className='font-medium'>
+            {name}
+          </Text>
+          <Text variant={"p"} className='text-xs'>
             {email}
           </Text>
         </div>

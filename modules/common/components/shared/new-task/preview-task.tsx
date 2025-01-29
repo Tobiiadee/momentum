@@ -87,7 +87,7 @@ export default function PreviewTask() {
         task_id: taskId,
         files: taskFile.map((file) => file.file),
       });
-      
+
       if (!isAddTaskError && !isUploadTaskFilesError) {
         toast.success("Task added successfully");
         reset();
@@ -113,33 +113,35 @@ export default function PreviewTask() {
     <Modal
       onClick={handleClosePreview}
       className='bg-foreground/30 backdrop-blur-sm'>
-      <motion.div
-        variants={previewVariant}
-        initial='hidden'
-        animate='visible'
-        exit='exit'
-        className='absolute left-1/3 -translate-x-1/3 top-[5rem] bg-background w-[40vw] z-50 h-max pb-5 rounded-lg'>
-        <Header onClose={handleClosePreview} />
-        <div className='mt-4 flex justify-end px-4'>
-          <EditButton onClick={() => setPreviewTask(false)} />
-        </div>
-        <TaskDetails
-          title={taskTitle}
-          description={taskDescription}
-          date={taskDate}
-          time={formatTaskTime(taskTimeFrom, taskTimeUntil)}
-          category={selectedCategory?.label}
-          callLink={callLink}
-        />
-        <div className='w-full px-4 mt-8 flex justify-start'>
-          <Button
-            isLoading={isAddingTask}
-            onClick={handleSaveTask}
-            aria-label='save task'>
-            <Text variant='p'>Save Task</Text>
-          </Button>
-        </div>
-      </motion.div>
+      <div className='fixed inset-0 flex items-center justify-center z-50 bg-background/90'>
+        <motion.div
+          variants={previewVariant}
+          initial='hidden'
+          animate='visible'
+          exit='exit'
+          className='absolute left-1/3 -translate-x-1/3 top-[5rem] bg-background w-[40vw] z-50 h-max pb-5 rounded-lg'>
+          <Header onClose={handleClosePreview} />
+          <div className='mt-4 flex justify-end px-4'>
+            <EditButton onClick={() => setPreviewTask(false)} />
+          </div>
+          <TaskDetails
+            title={taskTitle}
+            description={taskDescription}
+            date={taskDate}
+            time={formatTaskTime(taskTimeFrom, taskTimeUntil)}
+            category={selectedCategory?.label}
+            callLink={callLink}
+          />
+          <div className='w-full px-4 mt-8 flex justify-start'>
+            <Button
+              isLoading={isAddingTask}
+              onClick={handleSaveTask}
+              aria-label='save task'>
+              <Text variant='p'>Save Task</Text>
+            </Button>
+          </div>
+        </motion.div>
+      </div>
     </Modal>
   );
 }

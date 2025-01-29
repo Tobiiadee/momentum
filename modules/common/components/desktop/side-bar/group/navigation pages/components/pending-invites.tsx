@@ -42,9 +42,7 @@ export default function PendingInvites() {
     },
     enabled: !!group_id,
   });
-
-  // const reciever_ids = pendingInvites?.map((invite) => invite.reciever_id);
-  // const inviteSentAt = pendingInvites?.map((invite) => invite.created_at);
+  
 
   return (
     <div className='col-span-2 w-full flex flex-col bg-foreground/10 p-4'>

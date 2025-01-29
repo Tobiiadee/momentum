@@ -6,7 +6,7 @@ import HeaderSearch from "./header-search";
 
 export default function Header() {
   return (
-    <div className='flex justify-between items-start'>
+    <div className='lg:flex justify-between items-start hidden'>
       <div className='flex items-start space-x-8 w-[80%]'>
         <Greeting />
         <HeaderSearch />

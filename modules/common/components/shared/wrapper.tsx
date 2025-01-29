@@ -8,7 +8,7 @@ interface WrapperProps {
 
 export default function Wrapper({ className, children }: WrapperProps) {
   return (
-    <div className={cn(className, "pl-[22rem] 2xl:pr-20 pt-6 pr-6 bg-foreground/5 min-h-screen max-h-screen overflow-hidden")}>
+    <div className={cn(className, "pl-4 pr-4 lg:pl-[22rem] 2xl:pr-20 lg:pt-6 lg:pr-6 bg-foreground/5 min-h-screen max-h-screen overflow-hidden")}>
       {children}
     </div>
   );

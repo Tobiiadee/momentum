@@ -24,10 +24,10 @@ export default function AddFile() {
   };
 
   return (
-    <div className='h-full'>
+    <div className='h-full w-full'>
       <label
         htmlFor='task-file'
-        className='grid place-items-center w-full h-full border border-dashed border-foreground/30 cursor-pointer hover:border-foreground/50 focus-within:border-foreground/50 transition-colors'>
+        className='grid place-items-center w-full h-28 lg:h-full border border-dashed border-foreground/30 cursor-pointer hover:border-foreground/50 focus-within:border-foreground/50 transition-colors'>
         <PlusIcon
           size={40}
           strokeWidth={0.7}

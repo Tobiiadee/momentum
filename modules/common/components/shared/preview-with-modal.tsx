@@ -32,37 +32,39 @@ export default function PreviewWithModal({
 }: PreviewWithModalProps) {
   return (
     <Modal onClick={closeModal} className={cn(modalBackground)}>
-      <motion.div
-        variants={previewVariant}
-        initial='hidden'
-        animate='visible'
-        exit={"exit"}
-        className={cn(
-          width,
-          background,
-          className,
-          position,
-          "flex flex-col space-y-4 shadow-md absolute z-50 h-max pt-0 pb-5 rounded-lg"
-        )}>
-        <div className='w-full flex justify-between items-center border-b py-1 pr-2 pl-4'>
-          <Text variant={"p"} className='font-semibold capitalize'>
-            {title}
-          </Text>
-          <Button
-            onClick={closeModal}
-            variant={"ghost"}
-            aria-label={ariaLabel}
-            size={"sm"}
-            className='rounded-full group px-[7px]'>
-            <X
-              strokeWidth={2}
-              size={24}
-              className='text-foreground/60 group-hover:text-foreground'
-            />
-          </Button>
-        </div>
-        <div className='px-4'>{children}</div>
-      </motion.div>
+      <div className='fixed top-1/3 -translate-y-1/3 left-1/2 -translate-x-1/2 w-max h-max flex items-center justify-center z-50'>
+        <motion.div
+          variants={previewVariant}
+          initial='hidden'
+          animate='visible'
+          exit={"exit"}
+          className={cn(
+            width,
+            background,
+            className,
+            position,
+            "flex flex-col space-y-4 shadow-md absolute z-50 h-max pt-0 pb-5 rounded-lg"
+          )}>
+          <div className='w-full flex justify-between items-center border-b py-1 pr-2 pl-4'>
+            <Text variant={"p"} className='font-semibold capitalize'>
+              {title}
+            </Text>
+            <Button
+              onClick={closeModal}
+              variant={"ghost"}
+              aria-label={ariaLabel}
+              size={"sm"}
+              className='rounded-full group px-[7px]'>
+              <X
+                strokeWidth={2}
+                size={24}
+                className='text-foreground/60 group-hover:text-foreground'
+              />
+            </Button>
+          </div>
+          <div className='px-4'>{children}</div>
+        </motion.div>
+      </div>
     </Modal>
   );
 }

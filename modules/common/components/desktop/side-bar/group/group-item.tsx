@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Text } from "@/modules/common/ui/text";
 import useGroupStore from "@/modules/store/group-store";
+import useSidebarStore from "@/modules/store/sidebar-store";
 import { fetchUser } from "@/modules/supabase/utils/actions";
 import { useQuery } from "@tanstack/react-query";
 import { Variants, motion } from "framer-motion";
@@ -34,6 +35,9 @@ export default function GroupItem({
   isAdmin,
 }: GroupItemProps) {
   const router = useRouter();
+
+  const setIsSidebarOpen = useSidebarStore((state) => state.setIsSidebarOpen);
+
   // const [deleteGroup, setDeleteGroup] = useState(false);
   const setDeleteGroupObject = useGroupStore(
     (state) => state.setDeleteGroupObject
@@ -67,6 +71,7 @@ export default function GroupItem({
         router.push(`/dashboard/group/${encodeGroupName}?id=${id}`);
         setListIdFromDatabase(id);
         setDeleteGroupObject({ group_label: name, list_Id: id });
+        setIsSidebarOpen(false);
       }}
       variants={groupItemVariants}
       custom={index}

@@ -2,30 +2,63 @@
 
 import React, { useEffect } from "react";
 import Logo from "../../shared/logo/logo";
-import SideBarLinks from "./side-bar-links";
-import CreateNewList from "./new list/create-new-list";
-import Group from "./group/group";
+
 import { useListStore } from "@/modules/store/list-store";
 import useGroupStore from "@/modules/store/group-store";
 import Modal from "@/modules/common/ui/modal";
-import NewList from "./new list/new-list";
-import { AnimatePresence } from "framer-motion";
-import NewListItem from "./new list/new-list-item";
-import NewGroup from "./group/new-group";
+import { AnimatePresence, useAnimation } from "framer-motion";
+
 import { list } from "@/modules/assets/list";
-import CreateNewTask from "./create-new-task";
 import useUserStore from "@/modules/store/user-store";
 import { useNewTask } from "@/hooks/use-new-task";
 import { today } from "../../task/todays-task";
 import { formatDate } from "@/lib/helpers/format";
-import CreateNewGroup from "./group/create-new-group";
 import useListAction from "@/hooks/use-list-action";
 import { Skeleton } from "@/modules/common/ui/skeleton";
 import { Button } from "@/modules/common/ui/button";
 import { useRouter } from "next/navigation";
+import SideBarLinks from "../../desktop/side-bar/side-bar-links";
+import NewListItem from "../../desktop/side-bar/new list/new-list-item";
 
-export default function SideBar() {
+import Group from "../../desktop/side-bar/group/group";
+import NewList from "../../desktop/side-bar/new list/new-list";
+import NewGroup from "../../desktop/side-bar/group/new-group";
+import { motion, Variants } from "framer-motion";
+import { X } from "lucide-react";
+import useSidebarStore from "@/modules/store/sidebar-store";
+
+const slideInAnim: Variants = {
+  visible: {
+    x: 0,
+    transition: {
+      duration: 0.5,
+    },
+  },
+  hidden: {
+    x: -500,
+    transition: {
+      duration: 0.5,
+    },
+  },
+  exit: {
+    x: "-100%",
+    transition: {
+      duration: 0.5,
+    },
+  },
+};
+
+export default function SideBarMobile() {
   const router = useRouter();
+  const controls = useAnimation();
+
+  const setIsSidebarOpen = useSidebarStore((state) => state.setIsSidebarOpen);
+  const isSidebarOpen = useSidebarStore((state) => state.isSidebarOpen);
+
+  // Animate sidebar when state changes
+  useEffect(() => {
+    controls.start(isSidebarOpen ? "visible" : "hidden");
+  }, [isSidebarOpen, controls]);
 
   const isList = useListStore((state) => state.isList);
   const resetList = useListStore((state) => state.reset);
@@ -85,10 +118,34 @@ export default function SideBar() {
 
   return (
     <>
-      <div className='fixed w-[20rem] hidden lg:flex flex-col space-y-8 h-screen min-h-screen z-40 bg-background px-4 pt-6 pb-10 shadow-md overflow-x-hidden overflow-y-auto'>
-        <Logo />
+      <motion.div
+        variants={slideInAnim}
+        initial='hidden'
+        animate={controls}
+        exit={"exit"}
+        drag='x'
+        dragConstraints={{ left: 0, right: 0 }}
+        dragElastic={0.2}
+        onDragEnd={(event, info) => {
+          if (info.offset.x > 100) {
+            setIsSidebarOpen(false); // Close on swipe right
+          } else if (info.offset.x < -100) {
+            setIsSidebarOpen(true); // Open on swipe left
+          }
+        }}
+        className='fixed w-full lg:hidden flex flex-col space-y-8 h-screen min-h-screen z-50 bg-background px-4 pt-6 pb-10 shadow-md overflow-x-hidden overflow-y-auto'>
+        <div className='flex items-center justify-between'>
+          <Logo />
+          <Button
+            onClick={() => setIsSidebarOpen(false)}
+            variant={"ghost"}
+            size={"sm"}
+            className=''>
+            <X size={26} strokeWidth={1.5} />
+          </Button>
+        </div>
+
         <div className='flex flex-col space-y-3'>
-          <CreateNewTask />
           <nav className='flex flex-col space-y-3'>
             {updatedList?.map((list, index) => (
               <SideBarLinks
@@ -129,12 +186,9 @@ export default function SideBar() {
             )}
           </div>
         </div>
-        <div className='flex items-center space-x-4'>
-          <CreateNewList />
-          <CreateNewGroup />
-        </div>
+
         <Group />
-      </div>
+      </motion.div>
 
       <AnimatePresence mode='wait'>
         {isList && (

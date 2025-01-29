@@ -17,19 +17,21 @@ export default function CreateNewTaskMain() {
 
   return (
     <div className='pb-20 flex flex-col space-y-4 w-full pr-4 overflow-y-auto'>
-      <div className='flex space-x-4'>
+      <div className='flex flex-col lg:flex-row space-y-4 lg:space-x-4 lg:space-y-0'>
         <NewTaskInputs />
         <NewTaskCalendar />
       </div>
-      <div className='flex space-x-4'>
+
+      <div className='flex flex-col lg:flex-row space-y-4 lg:space-x-4 lg:space-y-0'>
         <NewTaskTime />
         <NewTaskAvailableList />
       </div>
-      <div className='grid grid-cols-3 gap-4 w-full'>
+
+      <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 w-full'>
         <CallLinks />
         <NewTaskFile />
       </div>
-      <div className='w-full flex justify-start'>
+      <div className='w-full flex justify-center lg:justify-start pt-6'>
         <Button onClick={() => setPreviewTask(true)} disabled={!isValid}>
           <Text variant={"p"}>Preview Task</Text>
         </Button>

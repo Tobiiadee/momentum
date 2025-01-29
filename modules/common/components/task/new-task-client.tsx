@@ -16,6 +16,8 @@ import { useSearchStore } from "@/modules/store/search-store";
 import SearchModal from "../desktop/header/search-modal";
 import useUserStore from "@/modules/store/user-store";
 import DeleteAccountModal from "../shared/settings/delete-account-modal";
+import SideBarMobile from "../mobile/side-bar/side-bar-mobile";
+import useSidebarStore from "@/modules/store/sidebar-store";
 
 export default function NewTaskClient() {
   const isNewTask = useNewTaskStore((state) => state.isNewTask);
@@ -25,6 +27,8 @@ export default function NewTaskClient() {
   const isAddMember = useGroupStore((state) => state.isAddMember);
   const isSearch = useSearchStore((state) => state.isSearch);
   const isDeleteAccount = useUserStore((state) => state.isDeleteAccount);
+
+  const isSidebarOpen = useSidebarStore((state) => state.isSidebarOpen);
 
   const isNotifications = useNotificationStore(
     (state) => state.isNotifications
@@ -50,6 +54,8 @@ export default function NewTaskClient() {
         {isNotifications && <NotificationModal />}
         {isAddMember && <AddMemberModal />}
         {isSearch && <SearchModal />}
+
+        {isSidebarOpen && <SideBarMobile />}
 
         {isDeleteAccount && <DeleteAccountModal />}
       </AnimatePresence>

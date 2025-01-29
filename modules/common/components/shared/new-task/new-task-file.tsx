@@ -10,7 +10,7 @@ export default function NewTaskFile() {
   const taskFile = useNewTaskStore((state) => state.taskFile);
 
   return (
-    <div className='col-span-1 w-full bg-background px-4 py-4 rounded-md flex flex-col space-y-4'>
+    <div className='lg:col-span-1  w-full bg-background px-4 py-4 rounded-md flex flex-col space-y-4'>
       <div className='flex items-center justify-between border-b pb-1'>
         <Text variant={"p"} className='font-medium '>
           Add a file

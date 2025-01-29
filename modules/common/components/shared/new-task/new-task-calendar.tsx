@@ -34,7 +34,7 @@ export default function NewTaskCalendar() {
   };
 
   return (
-    <div className='w-80 min-w-80 flex flex-col space-y-2 bg-background rounded-lg'>
+    <div className='w-full lg:w-80 min-w-80 flex flex-col space-y-2 bg-background rounded-lg'>
       <div className='flex items-center justify-between border-b pb-2 mx-4 mt-3'>
         <Text variant={"p"} className='font-medium '>
           Choose a date for your task

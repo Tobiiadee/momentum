@@ -11,6 +11,7 @@ import { Loader, X } from "lucide-react";
 import TaskNumber from "../../../task/task-number";
 import Image from "next/image";
 import useListStore from "@/modules/store/list-store";
+import useSidebarStore from "@/modules/store/sidebar-store";
 
 const listItemVariants: Variants = {
   hidden: { x: 70, opacity: 0 },
@@ -47,6 +48,9 @@ export default function NewListItem({
   isRemoving,
 }: NewListItemProps) {
   const [deleteList, setDeletelist] = useState(false);
+
+  const setIsSidebarOpen = useSidebarStore((state) => state.setIsSidebarOpen);
+
   // const removeFromList = useAllListStore((state) => state.removeFromList);
   const pathName = usePathname();
   const router = useRouter();
@@ -60,7 +64,6 @@ export default function NewListItem({
     setDeleteObject({ list_Id: id, list_label: name });
   };
 
-
   // console.log(id);
 
   return (
@@ -73,7 +76,10 @@ export default function NewListItem({
       exit='exit'
       className='relative'>
       <div
-        onClick={() => router.push(`/dashboard/list/${name.toLowerCase()}`)}
+        onClick={() => {
+          router.push(`/dashboard/list/${name.toLowerCase()}`);
+          setIsSidebarOpen(false);
+        }}
         id={id}
         className={cn(
           isActive && "bg-foreground/10",

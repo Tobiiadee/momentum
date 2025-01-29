@@ -141,71 +141,73 @@ export default function NewGroup() {
   const isValid = members.length > 0 && groupName !== "";
 
   return (
-    <motion.div
-      initial='hidden'
-      animate='visible'
-      exit={"exit"}
-      variants={FadeInOutvariants}
-      className='absolute top-1/3 -translate-y-1/3 left-[22rem] z-50 w-[22rem] h-max max-h-72 flex flex-col space-y-4 justify-between shadow-lg bg-background rounded-md px-3 py-2'>
-      <div className='flex flex-col space-y-2 overflow-hidden p-0.5'>
-        {isGroupName && (
-          <motion.div
-            variants={SlideInNameVariants}
-            initial='hidden'
-            animate='visible'
-            className=''>
-            <Text variant={"p"} className='text-foreground/60 capitalize'>
-              {isGroupName}
-            </Text>
-          </motion.div>
-        )}
+    <div className='fixed top-1/3 -translate-y-1/3  left-1/2 -translate-x-1/2 w-max h-max flex items-center justify-center z-50'>
+      <motion.div
+        initial='hidden'
+        animate='visible'
+        exit={"exit"}
+        variants={FadeInOutvariants}
+        className='h-max max-h-72 w-[20rem] lg:w-[24rem] flex flex-col space-y-4 justify-between shadow-lg bg-background rounded-md px-3 py-2'>
+        <div className='flex flex-col space-y-2 overflow-hidden p-0.5'>
+          {isGroupName && (
+            <motion.div
+              variants={SlideInNameVariants}
+              initial='hidden'
+              animate='visible'
+              className=''>
+              <Text variant={"p"} className='text-foreground/60 capitalize'>
+                {isGroupName}
+              </Text>
+            </motion.div>
+          )}
 
-        {!isGroupMember ? (
-          <form
-            onSubmit={groupNameHandler}
-            className='w-full flex flex-col space-y-2'>
-            <div className='flex flex-col items-center space-y-1'>
-              <Input
-                onChange={(e) => {
-                  setGroupName(e.target.value);
-                }}
-                ref={inputRef}
-                value={groupName}
-                placeholder='Choose a group name...'
-                className='placeholder:text-xs'
-              />
-              {isGroupNameExist && (
-                <ErrorTemp error='Group name already exists' />
-              )}
-            </div>
-          </form>
-        ) : (
-          <AnimatePresence mode='wait'>
-            <AddMember />
-          </AnimatePresence>
-        )}
-      </div>
+          {!isGroupMember ? (
+            <form
+              onSubmit={groupNameHandler}
+              className='w-full flex flex-col space-y-2'>
+              <div className='flex flex-col items-center space-y-1'>
+                <Input
+                  onChange={(e) => {
+                    setGroupName(e.target.value);
+                  }}
+                  ref={inputRef}
+                  value={groupName}
+                  placeholder='Choose a group name...'
+                  className='placeholder:text-xs'
+                />
+                {isGroupNameExist && (
+                  <ErrorTemp error='Group name already exists' />
+                )}
+              </div>
+            </form>
+          ) : (
+            <AnimatePresence mode='wait'>
+              <AddMember />
+            </AnimatePresence>
+          )}
+        </div>
 
-      <Button
-        isLoading={isAddingGroup}
-        onClick={groupHandler}
-        variant={"default"}
-        disabled={!isValid}
-        className=''>
-        Create group
-      </Button>
-
-      <div className='absolute -top-[2rem] -right-5 w-8 aspect-square shadow-md bg-background flex justify-center items-center rounded-full overflow-hidden'>
         <Button
-          onClick={() => {
-            setIsGroup(false);
-            reset();
-          }}
-          variant={"ghost"}
+          isLoading={isAddingGroup}
+          onClick={groupHandler}
+          variant={"default"}
+          disabled={!isValid}
           className=''>
-          <X strokeWidth={1.5} size={20} />
+          Create group
         </Button>
-      </div>
-    </motion.div>
+
+        <div className='absolute -top-[2rem] -right-5 w-8 aspect-square shadow-md bg-background flex justify-center items-center rounded-full overflow-hidden'>
+          <Button
+            onClick={() => {
+              setIsGroup(false);
+              reset();
+            }}
+            variant={"ghost"}
+            className=''>
+            <X strokeWidth={1.5} size={20} />
+          </Button>
+        </div>
+      </motion.div>
+    </div>
   );
 }

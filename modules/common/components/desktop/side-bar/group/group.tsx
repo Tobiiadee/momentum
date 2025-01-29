@@ -10,10 +10,14 @@ import { toast } from "sonner";
 import { Button } from "@/modules/common/ui/button";
 import { useRouter } from "next/navigation";
 import { capitalize } from "@/lib/helpers/helpers";
+import useSidebarStore from "@/modules/store/sidebar-store";
 
 export default function Group() {
   const router = useRouter();
   const user = useUserStore((state) => state.user);
+
+  const setIsSidebarOpen = useSidebarStore((state) => state.setIsSidebarOpen);
+
 
   const {
     allGroupsInTable,
@@ -75,7 +79,9 @@ export default function Group() {
             <div className='flex justify-end'>
               <Button
                 variant={"link"}
-                onClick={() => router.push("/dashboard/all-list-group")}>
+                onClick={() => {router.push("/dashboard/all-list-group")
+                  setIsSidebarOpen(false);
+                }}>
                 <Text variant={"p"} className='text-xs'>
                   View All Groups
                 </Text>

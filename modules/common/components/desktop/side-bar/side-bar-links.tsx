@@ -5,6 +5,7 @@ import { Text } from "@/modules/common/ui/text";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useMemo } from "react";
 import TaskNumber from "../../task/task-number";
+import useSidebarStore from "@/modules/store/sidebar-store";
 
 interface SideBarLinksProps {
   icon?: React.ReactNode;
@@ -24,6 +25,7 @@ export default function SideBarLinks({
 }: SideBarLinksProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const setIsSidebarOpen = useSidebarStore((state) => state.setIsSidebarOpen);
 
   const href =
     label === "home" ? "/dashboard" : `/dashboard/${label?.toLowerCase()}`;
@@ -32,6 +34,7 @@ export default function SideBarLinks({
 
   const navigateHandler = () => {
     router.push(href);
+    setIsSidebarOpen(false);
   };
 
   return (

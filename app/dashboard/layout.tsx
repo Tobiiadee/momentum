@@ -7,7 +7,8 @@ import React from "react";
 import PreviewTaskClient from "@/modules/common/components/shared/new-task/preview-task-client";
 import TaskRescheduleClient from "@/modules/common/components/task/task-reschedule-client";
 import EditClient from "@/modules/common/components/shared/settings/edit-client";
-
+import MobileHeader from "@/modules/common/components/mobile/mobile-header/mobile-header";
+import CreateAll from "@/modules/common/components/mobile/main/create-all";
 
 export default function MainLayout({
   children,
@@ -17,6 +18,7 @@ export default function MainLayout({
   return (
     <div className='relative overflow-hidden'>
       <SideBar />
+      
       {/* <TaskButtons /> */}
       <NewTaskClient />
       <PreviewTaskClient />
@@ -24,8 +26,10 @@ export default function MainLayout({
       <TaskRescheduleClient />
       <Wrapper className='flex flex-col space-y-5'>
         <Header />
+        <MobileHeader />
         {children}
       </Wrapper>
+      <CreateAll/>
     </div>
   );
 }

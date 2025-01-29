@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import chroma from "chroma-js";
 
 // Define a base color palette and generate variations from it

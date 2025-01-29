@@ -5,10 +5,6 @@ import React from "react";
 import { NotificationOptions } from "./group-invite-notification";
 import { Separator } from "@/modules/common/ui/separator";
 import { motion, Variants } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
-// import useUserStore from "@/modules/store/user-store";
-import { fetchUsersByInviteId } from "@/modules/supabase/utils/actions";
-import NameList from "../../name-list";
 
 export const slideInVariant: Variants = {
   hidden: { x: 100, opacity: 0 },
@@ -30,34 +26,54 @@ export type NotificationStatusType = "accepted" | "declined";
 interface GroupInviteResponseNotificationProps {
   message?: string;
   group_id?: string;
-  created_at: string;
+  created_at?: string;
   status: NotificationStatusType;
   group_label: string;
   index: number;
-  invite_id: string;
-  sender_id: string;
 }
 
-export default function SendInviteNotification({
+export default function GroupInviteUserResponseNotification({
   created_at,
-
+  status,
   group_label,
-  //   message,
+  message,
   index,
-  invite_id,
-  sender_id,
 }: GroupInviteResponseNotificationProps) {
-  // const user = useUserStore((state) => state.user);
+  const messageResponse = () => {
+    switch (status) {
+      case "accepted":
+        return (
+          <Text variant='p' className='text-foreground/60 text-xs'>
+            You have accepted the invite from{" "}
+            <span className='font-semibold'>{group_label}</span>.
+          </Text>
+        );
+      case "declined":
+        return (
+          <Text variant='p'>
+            You have declined the invite from{" "}
+            <span className='font-semibold'>{group_label}</span>.
+          </Text>
+        );
 
-  //fetch users using invite id
-  const { data: recievers } = useQuery({
-    queryKey: ["recievers", invite_id],
-    queryFn: async () =>
-      await fetchUsersByInviteId(invite_id as string, sender_id as string),
-    enabled: !!invite_id,
-  });
+      default:
+        return (
+          <Text variant='p' className='text-foreground/60 text-xs'>
+            You have declined the invite from{" "}
+            <span className='font-semibold'>{group_label}</span>.
+          </Text>
+        );
+    }
+  };
 
-  const recieversList = recievers?.map((user) => user.username);
+  const responseMessage =
+    message !== "" ? (
+      <Text variant='p' className='text-foreground/60 text-xs'>
+        {message}
+      </Text>
+    ) : (
+      messageResponse()
+    );
 
   return (
     <motion.div
@@ -77,22 +93,17 @@ export default function SendInviteNotification({
         <div className='flex flex-col -space-y-1 w-full -mt-2'>
           {/* Header */}
           <div className='flex items-center justify-between w-full'>
-            <Text variant='p'>Sent Invite</Text>
+            <Text variant='p'>Invite Response</Text>
             <div className='flex items-center space-x-2'>
               <Text variant='p' className='text-foreground/60 text-xs'>
-                {timeAgo(created_at as string)}
+                {created_at ? timeAgo(created_at) : "Unknown time"}
               </Text>
               <NotificationOptions />
             </div>
           </div>
 
           {/* Message */}
-          <div className='flex items-center'>
-            <Text variant='p' className='text-foreground/60 text-xs'>
-              You sent group invites from {group_label} to {recieversList && <NameList names={recieversList as []} />}
-            </Text>
-           
-          </div>
+          {responseMessage}
         </div>
       </div>
 

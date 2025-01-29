@@ -42,7 +42,7 @@ export default function useGroupAction(userId: string, group_id?: string) {
     error: allGroupsInTableError,
     refetch: refetchAllGroupsInTable,
   } = useQuery({
-    queryKey: ["all-groups"],
+    queryKey: ["all-groups", userId],
     queryFn: async () => {
       const allGroups = await fetchAllGroups();
       return allGroups;

@@ -65,3 +65,10 @@ export const assignRandomColor = (id: string): string => {
   // Return a color based on the hash
   return colors[Math.abs(hash)];
 };
+
+// Helper function to sort notifications by created_at
+export const sortByCreatedAt = (arr: any[]) =>
+  arr.sort(
+    (a, b) =>
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );

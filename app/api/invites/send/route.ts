@@ -44,17 +44,22 @@ export async function POST(req: Request) {
         req_id: groupId,
         invite_id: inviteId,
         sender_id: senderId,
+        status: "pending",
+        group_label: group?.label,
+        reciever_id: receiverId,
       }));
 
       //send notification to sender
       const senderNotification = {
         user_id: senderId,
         invite_state: "invite_sent",
-        message: `You sent group invites to ${receiverIds.length} users`,
+        message: `You sent group invites to ${receiverIds.length} users to join ${group?.label} group`,
         type: "sender_notification",
         req_id: groupId,
         invite_id: inviteId,
         sender_id: senderId,
+        status: "pending",
+        group_label: group?.label,
       };
 
       // Insert multiple notifications

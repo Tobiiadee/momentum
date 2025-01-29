@@ -23,22 +23,30 @@ import { timeAgo } from "@/lib/helpers/format";
 import axios from "axios";
 import { toast } from "sonner";
 import useUserStore from "@/modules/store/user-store";
+import { slideInVariant } from "./group-invite-user-response-notification";
+import { motion } from "framer-motion";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface GroupInviteNotificationProps {
   message: string;
   group_id?: string;
   created_at?: string;
   inviteId: string;
+  index: number;
 }
 
 export default function GroupInviteNotification({
   message,
   created_at,
+  group_id,
+  index,
 }: GroupInviteNotificationProps) {
   const [loadingAccept, setLoadingAccept] = useState(false);
   const [loadingDecline, setLoadingDecline] = useState(false);
   // const [success, setSuccess] = useState<"accepted" | "declined" | null>(null);
   // const [error, setError] = useState<string | null>(null);
+
+  const queryClient = useQueryClient();
 
   //get user id
   const user = useUserStore((state) => state.user);
@@ -52,11 +60,14 @@ export default function GroupInviteNotification({
       await axios.post("/api/invites/respond", {
         user_id: userId,
         status: "accepted",
+        group_id: group_id,
       });
       // setSuccess(status);
       // setError(null);
       toast.success(`Invite accepted`);
       setLoadingAccept(false);
+      queryClient.invalidateQueries({ queryKey: ["notifications", userId] });
+      queryClient.invalidateQueries({ queryKey: ["all-groups", userId] });
     } catch (err: any) {
       toast.error(`error: ${err.message}`);
       return err;
@@ -77,6 +88,7 @@ export default function GroupInviteNotification({
       // setSuccess(status);
       // setError(null);
       toast.success(`Invite declined`);
+      queryClient.invalidateQueries({ queryKey: ["recievers", userId] });
     } catch (err) {
       // setError("Something went wrong. Please try again.");
       setLoadingDecline(false);
@@ -88,41 +100,48 @@ export default function GroupInviteNotification({
   };
 
   return (
-    <Accordion type='single' collapsible className='w-full '>
-      <AccordionItem value={`item-${1 + 4}`} className=''>
-        <AccordionTrigger className='py-2'>
-          <GroupInviteCollasible
-            created_at={created_at as string}
-            message={message}
-          />
-        </AccordionTrigger>
-        <AccordionContent className='w-full'>
-          <div className='flex items-center space-x-4 justify-end'>
-            <Button
-              onClick={handleResponseAccept}
-              isLoading={loadingAccept}
-              size='sm'
-              className='flex items-center'>
-              <Text variant={"p"} className='text-xs'>
-                Accept
-              </Text>
-            </Button>
+    <motion.div
+      variants={slideInVariant}
+      initial='hidden'
+      animate='visible'
+      custom={index}
+      exit={"hidden"}>
+      <Accordion type='single' collapsible className='w-full '>
+        <AccordionItem value={`item-${1 + 4}`} className=''>
+          <AccordionTrigger className='py-2'>
+            <GroupInviteCollasible
+              created_at={created_at as string}
+              message={message}
+            />
+          </AccordionTrigger>
+          <AccordionContent className='w-full'>
+            <div className='flex items-center space-x-4 justify-end'>
+              <Button
+                onClick={handleResponseAccept}
+                isLoading={loadingAccept}
+                size='sm'
+                className='flex items-center'>
+                <Text variant={"p"} className='text-xs'>
+                  Accept
+                </Text>
+              </Button>
 
-            <Button
-              onClick={handleResponseDecline}
-              isLoading={loadingDecline}
-              variant={"ghost"}
-              size='sm'
-              className='flex items-center bg-foreground/10 hover:bg-foreground/15'>
-              <Text variant={"p"} className='text-xs'>
-                Decline
-              </Text>
-            </Button>
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-      <Separator className='w-full' />
-    </Accordion>
+              <Button
+                onClick={handleResponseDecline}
+                isLoading={loadingDecline}
+                variant={"ghost"}
+                size='sm'
+                className='flex items-center bg-foreground/10 hover:bg-foreground/15'>
+                <Text variant={"p"} className='text-xs'>
+                  Decline
+                </Text>
+              </Button>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+        <Separator className='w-full' />
+      </Accordion>
+    </motion.div>
   );
 }
 

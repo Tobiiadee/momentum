@@ -190,6 +190,8 @@ export async function createGroup(userId: string, group: GroupType) {
   return error;
 }
 
+//update group data
+
 export async function updateGroup(
   userId: string,
   groupId: string,
@@ -535,8 +537,6 @@ export async function searchUsers(searchTerm: string): Promise<UserDataType[]> {
 
   return data || [];
 }
-
-
 
 export async function fetchAllUsers(): Promise<UserDataType[]> {
   const { data, error } = await supabase.from("users").select("*");
@@ -914,4 +914,26 @@ export async function fetchNotifications(
   }
 
   return data || [];
+}
+
+export async function fetchUsersByInviteId(
+  invite_id: string,
+  user_id: string
+): Promise<UserDataType[]> {
+  // Fetch data from the table
+  const { data, error } = await supabase
+    .from("invite_table")
+    .select("*")
+    .eq("invite_id", invite_id)
+    .eq("sender_id", user_id);
+
+  if (error) throw new Error(error.message || "An unexpected error occurred.");
+
+  // Extract user IDs
+  const user_ids = data?.map((entry) => entry.reciever_id) || [];
+
+  // Fetch users for each user_id concurrently
+  const users = await Promise.all(user_ids.map((id) => fetchUser(id)));
+
+  return users;
 }

@@ -132,6 +132,7 @@ type InviteType = {
   created_at: string;
 };
 
+
 type NotificationType = {
   created_at: string;
   user_id: string;
@@ -142,4 +143,6 @@ type NotificationType = {
   req_id: string;
   invite_id: string;
   sender_id: string;
+  status?: string;
+  group_label?: string;
 };

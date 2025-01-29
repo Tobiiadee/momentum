@@ -16,11 +16,11 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const { user_id, status } = body;
+    const { user_id, status, group_id } = body;
 
-    if (!user_id || !status) {
+    if (!user_id || !status || !group_id) {
       return NextResponse.json(
-        { error: "user_id and status are required" },
+        { error: "user_id, status and group_id are required" },
         { status: 400 }
       );
     }
@@ -32,6 +32,7 @@ export async function POST(req: Request) {
     const { data: invite, error: statusUpdateError } = await supabaseAdmin
       .from("invite_table")
       .update({ status })
+      .eq("group_id", group_id)
       .eq("reciever_id", user_id)
       .select()
       .single();
@@ -39,7 +40,7 @@ export async function POST(req: Request) {
     if (statusUpdateError) throw new Error(statusUpdateError.message);
 
     //fetch group
-    const group = await fetchGroup(invite.group_id);
+    const group = await fetchGroup(group_id);
 
     if (status === "accepted") {
       // Add user to the group
@@ -67,7 +68,7 @@ export async function POST(req: Request) {
           {
             user_id: invite.sender_id,
             type: `invite_response`,
-            message: `User ${
+            message: `${
               user.username
             } has ${status.toLowerCase()} your invite.`,
             invite_state: "invite_accepted",
@@ -83,10 +84,9 @@ export async function POST(req: Request) {
           {
             user_id: user_id,
             type: `invite_response_user`,
-            message: `You have ${status.toLowerCase()} the invite from ${
-              group?.label
-            }.`,
             invite_state: "invite_accepted",
+            status: "accepted",
+            message: '',
           },
         ]);
 
@@ -110,10 +110,11 @@ export async function POST(req: Request) {
           {
             user_id: invite.sender_id,
             type: `invite_response`,
-            message: `User ${
+            message: `${
               user.username
             } has ${status.toLowerCase()} your invite.`,
             invite_state: "invite_declined",
+            status: "declined",
           },
         ]);
 
@@ -126,10 +127,10 @@ export async function POST(req: Request) {
           {
             user_id: user_id,
             type: `invite_response_user`,
-            message: `You have ${status.toLowerCase()} the invite. from ${
-              group?.label
-            }`,
             invite_state: "invite_declined",
+            status: "declined",
+            group_label: group?.label,
+            message: '',
           },
         ]);
 

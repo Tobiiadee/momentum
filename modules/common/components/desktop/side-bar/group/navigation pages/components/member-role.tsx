@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/modules/common/ui/select";
 import useUserStore from "@/modules/store/user-store";
-import { Trash2 } from "lucide-react";
+import { X } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
 
@@ -87,7 +87,7 @@ export function MembersRole({
         variant='ghost'
         size='sm'
         className='hover:bg-foreground/15'>
-        <Trash2 strokeWidth={1.5} size={18} />
+        <X strokeWidth={1.5} size={18} />
       </Button>
     </div>
   );

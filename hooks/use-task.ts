@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { useState, useEffect } from "react";
 import { createClient, PostgrestError } from "@supabase/supabase-js";
 
@@ -22,7 +24,7 @@ interface Task {
 export function useTasks(userId: string) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<PostgrestError |string | null>(null);
+  const [error, setError] = useState<PostgrestError | string | null>(null);
   const [onSuccess, setOnSuccess] = useState(false);
 
   // Fetch tasks for the user
@@ -52,7 +54,10 @@ export function useTasks(userId: string) {
     setError(null);
     setOnSuccess(false);
     try {
-      const { data, error } = await supabase.from("tasks").insert([task]).select();
+      const { data, error } = await supabase
+        .from("tasks")
+        .insert([task])
+        .select();
 
       if (error) setError(error);
       setOnSuccess(true);

@@ -205,7 +205,7 @@ export function MemberItem({
       className='flex items-center space-x-2 hover:bg-foreground/10 active:bg-foreground/15 transition-all duration-300 py-1 px-2 cursor-pointer'>
       <div className='relative w-8 aspect-square rounded-full overflow-hidden flex items-center justify-center'>
         <Image
-          src={image}
+          src={image || "/images/image_placeholder.jpg"}
           alt={"profile" + name}
           fill
           className='object-cover'

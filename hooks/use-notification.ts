@@ -1,9 +1,8 @@
-/*eslint-disable @typescript-eslint/no-explicit-any*/
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { fetchNotifications } from "@/modules/supabase/utils/actions";
 import { createClient } from "@supabase/supabase-js";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 // Initialize Supabase client
 const supabase = createClient(
@@ -12,18 +11,21 @@ const supabase = createClient(
 );
 
 const useNotifications = (userId: string) => {
-  const [notifications, setNotifications] = useState<NotificationType[]>([]);
+  const queryClient = useQueryClient();
 
-  const { data: notificationsData } = useQuery({
+  // Fetch initial notifications with React Query
+  const {
+    data: notifications,
+    isFetching,
+    error,
+  } = useQuery<NotificationType[]>({
     queryKey: ["notifications", userId],
     queryFn: () => fetchNotifications(userId),
-    enabled: !!userId,
+    enabled: !!userId, // Only fetch if userId is available
   });
 
   useEffect(() => {
-    if (notificationsData) {
-      setNotifications(notificationsData);
-    }
+    if (!userId) return;
 
     // Set up real-time subscription using Supabase channel
     const channel = supabase
@@ -36,8 +38,11 @@ const useNotifications = (userId: string) => {
           table: "notification_table",
           filter: `user_id=eq.${userId}`,
         },
-        (payload) => {
-          setNotifications((prev: any) => [payload.new, ...prev]);
+        () => {
+          // Invalidate the query to refetch notifications
+          queryClient.invalidateQueries({
+            queryKey: ["notifications", userId],
+          });
         }
       )
       .subscribe();
@@ -46,9 +51,9 @@ const useNotifications = (userId: string) => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [userId, notificationsData]);
+  }, [userId, queryClient]);
 
-  return notifications;
+  return { notifications, isFetching, error };
 };
 
 export default useNotifications;

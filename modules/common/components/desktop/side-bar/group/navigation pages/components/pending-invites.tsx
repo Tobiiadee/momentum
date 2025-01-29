@@ -1,19 +1,23 @@
+/*eslint-disable @typescript-eslint/no-explicit-any*/
+
 "use client";
 
 import { Text } from "@/modules/common/ui/text";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/modules/common/ui/button";
 import { useParams } from "next/navigation";
 import useUserStore from "@/modules/store/user-store";
 import useGroupAction from "@/hooks/use-group-action";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   fetchUser,
   getGroupPendingInvites,
 } from "@/modules/supabase/utils/actions";
 import { Skeleton } from "@/modules/common/ui/skeleton";
 import { formatDateString } from "@/lib/helpers/format";
+import axios from "axios";
+import { toast } from "sonner";
 
 export default function PendingInvites() {
   const { groupId } = useParams();
@@ -55,12 +59,23 @@ export default function PendingInvites() {
           variant={"p"}
           className='uppercase col-span-2 font-semibold'></Text>
       </div>
+
+      {pendingInvites?.length === 0 && (
+        <div className='w-full grid place-items-center h-20'>
+          <Text variant={"h5"} className=''>
+            No pending invites
+          </Text>
+        </div>
+      )}
+
       <div className='divide-y divide-foreground/10 flex flex-col space-y-4'>
         {pendingInvites?.map((invite) => (
           <RecieverItem
             key={invite.reciever_id}
             reciever_id={invite.reciever_id}
             invite_sent_at={invite.created_at}
+            group_id={invite.group_id}
+            invite_id={invite.invite_id}
           />
         ))}
       </div>
@@ -71,9 +86,16 @@ export default function PendingInvites() {
 interface RecieverItemProps {
   reciever_id: string;
   invite_sent_at: string;
+  group_id: string;
+  invite_id: string;
 }
 
-function RecieverItem({ reciever_id, invite_sent_at }: RecieverItemProps) {
+function RecieverItem({
+  reciever_id,
+  invite_sent_at,
+  group_id,
+  invite_id,
+}: RecieverItemProps) {
   const { data: recieverData, isLoading } = useQuery({
     queryKey: ["reciever_id", reciever_id],
     queryFn: async () => {
@@ -90,7 +112,10 @@ function RecieverItem({ reciever_id, invite_sent_at }: RecieverItemProps) {
         <div className='col-span-2 flex space-x-4 items-center'>
           <div className='relative w-10 aspect-square rounded-full overflow-hidden'>
             <Image
-              src={recieverData?.avatar as string}
+              src={
+                (recieverData?.avatar as string) ||
+                "/images/image_placeholder.jpg"
+              }
               alt={`${recieverData?.full_name}'s avatar`}
               fill
               priority
@@ -119,13 +144,60 @@ function RecieverItem({ reciever_id, invite_sent_at }: RecieverItemProps) {
       {isLoading ? (
         <Skeleton className='w-[10rem] h-4 rounded-sm col-span-2' />
       ) : (
-        <RecieverActions />
+        <RecieverActions
+          invite_id={invite_id}
+          group_id={group_id}
+          reciever_id={reciever_id}
+        />
       )}
     </div>
   );
 }
 
-function RecieverActions() {
+interface RecieverActionsProps {
+  invite_id: string;
+  group_id: string;
+  reciever_id: string;
+}
+
+function RecieverActions({
+  invite_id,
+  group_id,
+  reciever_id,
+}: RecieverActionsProps) {
+  const [isCancelling, setIsCancelling] = useState(false);
+
+  const queryClient = useQueryClient();
+
+  //cancel invite
+  const onCancelInvite = async () => {
+    try {
+      setIsCancelling(true);
+      const response = await axios.delete("/api/invites/cancel", {
+        data: {
+          invite_id: invite_id,
+          group_id: group_id,
+          reciever_id: reciever_id,
+        },
+      });
+
+      setIsCancelling(false);
+
+      if (response.status !== 200) {
+        throw new Error("Error cancelling invite");
+      }
+
+      toast.success("Invite cancelled successfully");
+      queryClient.invalidateQueries({
+        queryKey: ["getGroupPendingInvites", group_id],
+      });
+      
+    } catch (error: any) {
+      setIsCancelling(false);
+      toast.error(`Error: ${error.response?.data?.error || error.message}`);
+    }
+  };
+
   return (
     <div className='col-span-2 flex space-x-4'>
       <div className='flex space-x-4 items-center'>
@@ -136,7 +208,10 @@ function RecieverActions() {
             Resend Invite
           </Text>
         </Button>
-        <Button className='flex items-center'>
+        <Button
+          isLoading={isCancelling}
+          onClick={onCancelInvite}
+          className='flex items-center'>
           <Text variant={"p"} className='text-xs'>
             Cancel Invite
           </Text>

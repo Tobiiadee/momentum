@@ -50,20 +50,22 @@ export default function MembersDesc({ group_id }: MembersDescProps) {
             Download CSV
           </Text>
         </Button>
-        <Button
-          onClick={() => {
-            if (!isAdmin) {
-              toast.error("Only admins can invite members");
-              return;
-            }
-            setIsAddMember(true);
-          }}
-          className='flex items-center'>
-          <Plus strokeWidth={1.5} size={18} />
-          <Text variant={"p"} className='text-xs'>
-            Invite member
-          </Text>
-        </Button>
+        {isAdmin && (
+          <Button
+            onClick={() => {
+              if (!isAdmin) {
+                toast.error("Only admins can invite members");
+                return;
+              }
+              setIsAddMember(true);
+            }}
+            className='flex items-center'>
+            <Plus strokeWidth={1.5} size={18} />
+            <Text variant={"p"} className='text-xs'>
+              Invite member
+            </Text>
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -48,10 +48,7 @@ export default function GroupNotification() {
     (notification) =>
       notification.type === "invite_response" &&
       notification.status === "invite_cancelled"
-  );
-
-  console.log("inviteCancelledNotifications", inviteCancelledNotifications);
-  
+  );  
 
   if (isFetching) {
     return (

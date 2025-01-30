@@ -17,11 +17,13 @@ import useGroupStore from "@/modules/store/group-store";
 export default function CreateAll() {
   const pathname = usePathname();
 
-  const isTrue = pathname !== "/dashboard/create-new-task";
-
+  const isExcluded =
+  pathname.startsWith("/dashboard/create-new-task") ||
+  pathname.startsWith("/dashboard/group") ||
+  pathname.startsWith("/dashboard/list");
   return (
     <>
-      {isTrue && (
+      {!isExcluded && (
         <div className='lg:hidden absolute bottom-0 left-0 z-40 w-full grid place-items-center h-max pb-5'>
           <CreateAllTab />
         </div>

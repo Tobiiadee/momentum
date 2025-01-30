@@ -147,7 +147,7 @@ export default function NewGroup() {
         animate='visible'
         exit={"exit"}
         variants={FadeInOutvariants}
-        className='h-max max-h-72 w-[20rem] lg:w-[24rem] flex flex-col space-y-4 justify-between shadow-lg bg-background rounded-md px-3 py-2'>
+        className='h-max max-h-72 w-[20rem] md:w-[24rem] flex flex-col space-y-4 justify-between shadow-lg bg-background rounded-md px-3 py-2'>
         <div className='flex flex-col space-y-2 overflow-hidden p-0.5'>
           {isGroupName && (
             <motion.div

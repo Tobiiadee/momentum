@@ -73,7 +73,7 @@ export default function NewList() {
         animate='visible'
         exit={"exit"}
         variants={variants}
-        className='w-[20rem] lg:w-[24rem] h-max flex flex-col space-y-4 shadow-lg bg-background rounded-md px-3 py-4'>
+        className='w-[20rem] md:w-[24rem] h-max flex flex-col space-y-4 shadow-lg bg-background rounded-md px-3 py-4'>
         {!!svgImage && <SVGSelected />}
 
         <div className='relative flex space-x-1 items-center'>

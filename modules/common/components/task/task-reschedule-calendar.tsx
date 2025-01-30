@@ -22,13 +22,13 @@ export default function TaskRescheduleCalendar() {
   };
 
   return (
-    <div className='px-4'>
+    <div className=''>
       {!!taskDate && (
         <motion.div
           variants={taskTimeVariant}
           initial='hidden'
           animate='visible'
-          className='bg-background px-2 py-1 grid place-items-center rounded-md'>
+          className='bg-background py-1 grid place-items-center rounded-md'>
           <Text variant={"p"} className='text-foreground/60 text-xs'>
             {taskDate}
           </Text>

@@ -16,7 +16,7 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className='relative overflow-hidden'>
+    <div className='relative overflow-hidden h-screen min-h-screen'>
       <SideBar />
       
       {/* <TaskButtons /> */}

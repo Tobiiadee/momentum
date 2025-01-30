@@ -47,7 +47,7 @@ export default function NotificationModal() {
         initial='hidden'
         animate='visible'
         exit={"exit"}
-        className='h-dvh lg:h-[95vh] w-[25rem] min-h-[10rem] bg-background flex flex-col space-y-4 shadow-md absolute right-0 lg:right-4 lg:top-4 z-50 pt-0 lg:pb-5 rounded-l-lg overflow-hidden'>
+        className='h-screen md:w-[70%] lg:h-[95vh] w-screen lg:w-[25rem] min-h-[10rem] bg-background flex flex-col space-y-4 shadow-md absolute right-0 lg:right-4 lg:top-4 z-50 pt-0 lg:pb-5 lg:rounded-l-lg overflow-hidden'>
         <div className='w-full flex justify-between items-center border-b py-1 pr-2 pl-4'>
           <Text variant={"p"} className='font-semibold capitalize'>
             Notifications

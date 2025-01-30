@@ -19,7 +19,7 @@ export default function TaskRescheduleInputs() {
 
   return (
     <div className='flex flex-col space-y-2 w-full'>
-      <div className='flex space-x-1 items-center px-4'>
+      <div className='flex space-x-1 items-center'>
         <motion.input
           onChange={(e) => setTimeFrom(e.target.value)}
           variants={inputVariant1}

@@ -39,7 +39,7 @@ export default function AllListMain() {
               List
             </Text>
           )}
-          <div className='grid grid-cols-2 lg:grid-cols-3 gap-4 mt-4 w-full'>
+          <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-4 w-full'>
             {isLoadingAllLists &&
               isLoadingAllTasks &&
               Array.from({ length: 6 }).map((_, index) => (

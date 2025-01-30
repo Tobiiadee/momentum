@@ -38,6 +38,7 @@ export default function NewTaskClient() {
     <>
       <AnimatePresence mode='wait'>
         {isDeteleList && <RemoveListModal />}
+        {isSidebarOpen && <SideBarMobile />}
       </AnimatePresence>
       <AnimatePresence mode='wait'>
         {isDeleteGroup && <RemoveGroupModal />}
@@ -54,8 +55,6 @@ export default function NewTaskClient() {
         {isNotifications && <NotificationModal />}
         {isAddMember && <AddMemberModal />}
         {isSearch && <SearchModal />}
-
-        {isSidebarOpen && <SideBarMobile />}
 
         {isDeleteAccount && <DeleteAccountModal />}
       </AnimatePresence>

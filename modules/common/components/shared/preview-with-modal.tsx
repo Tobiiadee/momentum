@@ -27,12 +27,12 @@ export default function PreviewWithModal({
   modalBackground = "bg-foreground/30 backdrop-blur-sm",
   title,
   ariaLabel,
-  position = "left-1/3 -translate-x-1/3 top-[5rem]",
+  position,
   className,
 }: PreviewWithModalProps) {
   return (
     <Modal onClick={closeModal} className={cn(modalBackground)}>
-      <div className='fixed top-1/3 -translate-y-1/3 left-1/2 -translate-x-1/2 w-max h-max flex items-center justify-center z-50'>
+      <div className='fixed top-[40%] lg:top-1/2 lg:-translate-y-1/2 left-1/2 -translate-x-1/2 w-max h-max flex items-center justify-center z-50'>
         <motion.div
           variants={previewVariant}
           initial='hidden'

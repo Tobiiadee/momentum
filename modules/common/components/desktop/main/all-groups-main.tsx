@@ -49,14 +49,14 @@ export default function AllGroupsMain() {
         </div>
       )}
 
-      <div className='grid grid-cols-2 lg:grid-cols-5 gap-2 w-full'>
+      <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 w-full'>
         {isLoadingAllGroupsInTable &&
           Array.from({ length: 3 }).map((_, index) => (
             <GroupItemSkeleton key={index} />
           ))}
       </div>
 
-      <div className='grid grid-cols-2 lg:grid-cols-5 gap-4 w-full'>
+      <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 w-full'>
         {userGroups?.map((group, index) => (
           <GroupItem
             key={group.list_id}

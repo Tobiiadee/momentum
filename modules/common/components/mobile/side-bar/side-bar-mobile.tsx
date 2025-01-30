@@ -35,7 +35,7 @@ const slideInAnim: Variants = {
     },
   },
   hidden: {
-    x: -500,
+    x: -600,
     transition: {
       duration: 0.5,
     },
@@ -133,7 +133,7 @@ export default function SideBarMobile() {
             setIsSidebarOpen(true); // Open on swipe left
           }
         }}
-        className='fixed w-full lg:hidden flex flex-col space-y-8 h-screen min-h-screen z-50 bg-background px-4 pt-6 pb-10 shadow-md overflow-x-hidden overflow-y-auto'>
+        className='fixed w-full md:w-[70%] lg:hidden flex flex-col space-y-8 h-screen min-h-screen z-50 bg-background px-4 pt-6 pb-10 shadow-md overflow-x-hidden overflow-y-auto'>
         <div className='flex items-center justify-between'>
           <Logo />
           <Button
@@ -189,6 +189,7 @@ export default function SideBarMobile() {
 
         <Group />
       </motion.div>
+      <Modal onClick={() => setIsSidebarOpen(false)} className='bg-foreground/20'></Modal>
 
       <AnimatePresence mode='wait'>
         {isList && (

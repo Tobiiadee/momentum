@@ -16,7 +16,7 @@ export default function CreateNewTaskMain() {
   const isValid = useNewTaskStore((state) => state.isValid());
 
   return (
-    <div className='pb-20 flex flex-col space-y-4 w-full pr-4 overflow-y-auto'>
+    <div className='pb-20 flex flex-col space-y-4 w-full lg:pr-4 overflow-y-auto'>
       <div className='flex flex-col lg:flex-row space-y-4 lg:space-x-4 lg:space-y-0'>
         <NewTaskInputs />
         <NewTaskCalendar />

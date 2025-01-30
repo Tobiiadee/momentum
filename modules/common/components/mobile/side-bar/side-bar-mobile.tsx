@@ -31,22 +31,24 @@ const slideInAnim: Variants = {
   visible: {
     x: 0,
     transition: {
-      duration: 0.5,
+      duration: 0.3,
     },
   },
   hidden: {
     x: -600,
     transition: {
-      duration: 0.5,
+      duration: 0.3,
     },
   },
   exit: {
     x: "-100%",
     transition: {
-      duration: 0.5,
+      duration: 0.3,
     },
   },
 };
+
+
 
 export default function SideBarMobile() {
   const router = useRouter();

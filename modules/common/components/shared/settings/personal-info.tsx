@@ -24,7 +24,7 @@ export default function PersonalInfo() {
 
       {user && (
         <div className='flex flex-col space-y-4'>
-          <div className='grid grid-cols-2 w-[70%]'>
+          <div className='grid grid-cols-2 w-full md:w-[70%] '>
             <div className='flex flex-col space-y-1'>
               <Text variant={"p"} className='text-foreground/60'>
                 Full Name
@@ -47,7 +47,7 @@ export default function PersonalInfo() {
             </div>
           </div>
 
-          <div className='grid grid-cols-2 w-[70%]'>
+          <div className='grid grid-cols-2 w-full md:w-[70%] '>
             <div className='flex flex-col space-y-1'>
               <Text variant={"p"} className='text-foreground/60'>
                 Email address
@@ -66,7 +66,7 @@ export default function PersonalInfo() {
             </div>
           </div>
 
-          <div className='grid grid-cols-2 w-[70%]'>
+          <div className='grid grid-cols-2 w-full md:w-[70%]'>
             <div className='flex flex-col space-y-1'>
               <Text variant={"p"} className='text-foreground/60'>
                 Country
@@ -85,7 +85,7 @@ export default function PersonalInfo() {
             </div>
           </div>
 
-          <div className='w-[70%]'>
+          <div className='w-full md:w-[70%]'>
             <div className='flex flex-col space-y-1'>
               <Text variant={"p"} className='text-foreground/60'>
                 Bio

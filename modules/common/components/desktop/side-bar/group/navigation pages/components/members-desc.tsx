@@ -28,7 +28,7 @@ export default function MembersDesc({ group_id }: MembersDescProps) {
     );
 
   return (
-    <div className='flex justify-between items-center'>
+    <div className='flex flex-col space-y-4 md:space-y-0 md:flex-row md:justify-between md:items-center'>
       <div className='flex flex-col space-y-2'>
         <Text variant={"h5"} className='font-medium'>
           Members
@@ -41,12 +41,12 @@ export default function MembersDesc({ group_id }: MembersDescProps) {
         </div>
       </div>
 
-      <div className='flex space-x-4 items-center'>
+      <div className='flex space-x-4 md:items-center'>
         <Button
           variant={"ghost"}
           className='flex items-center bg-foreground/10 hover:bg-foreground/15'>
           <Download strokeWidth={1.5} size={18} />
-          <Text variant={"p"} className='text-xs'>
+          <Text variant={"p"} className='text-xs hidden md:block'>
             Download CSV
           </Text>
         </Button>

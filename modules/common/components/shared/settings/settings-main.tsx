@@ -6,7 +6,7 @@ import { WrenchIcon } from "lucide-react";
 
 export default function SettingsMain() {
   return (
-    <div className='w-full flex flex-col space-y-4 h-[84vh] overflow-y-auto'>
+    <div className='w-full flex flex-col space-y-4 h-[84vh] overflow-y-auto overflow-x-hidden'>
       <div className='flex flex-col border-b border-foreground/10 pb-2'>
         <Text variant={"h2"} className=''>
           Settings

@@ -40,7 +40,7 @@ export default function HeaderSearch() {
       <div className='absolute top-1/2 -translate-y-1/2 left-2'>
         <Search strokeWidth={1.5} size={16} className='text-foreground/60' />
       </div>
-      <div className='absolute top-1/2 -translate-y-1/2 right-2 flex items-center bg-foreground py-0.5 px-2 rounded-lg'>
+      <div className='hidden absolute top-1/2 -translate-y-1/2 right-2 lg:flex items-center bg-foreground py-0.5 px-2 rounded-lg'>
         <Text variant='p' className='font-semibold text-background'>
           ctrl+
         </Text>

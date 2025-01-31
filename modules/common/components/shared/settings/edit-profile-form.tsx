@@ -79,7 +79,7 @@ export function EditProfileForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 w-full'>
-        <div className='flex items-center space-x-4 w-full'>
+        <div className='flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4 w-full'>
           <FormField
             control={form.control}
             name='fullName'
@@ -118,7 +118,7 @@ export function EditProfileForm() {
           />
         </div>
 
-        <div className='flex items-center space-x-4 w-full'>
+        <div className='flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4 w-full'>
           <FormField
             control={form.control}
             name='email'

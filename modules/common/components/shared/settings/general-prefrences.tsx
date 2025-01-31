@@ -16,7 +16,7 @@ export default function GeneralPrefrences() {
 
 function MaxNumberOfTaskPerDay() {
   return (
-    <div className='w-[60%] flex items-center justify-between'>
+    <div className='w-full md:w-[60%] flex items-center justify-between'>
       <Text variant={"p"} className='font-medium'>
         Maximum number of tasks per day
       </Text>

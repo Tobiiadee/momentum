@@ -34,7 +34,7 @@ export default function DeleteAccountModal() {
     <PreviewWithModal
       closeModal={() => setIsDeleteAccount(false)}
       title='Delete Account'
-      width='w-[30rem]'
+      width='w-[90vw] md:w-[70vw] lg:w-[30rem]'
       ariaLabel='Delete Account'>
       <div className='flex flex-col space-y-4'>
         <div className='flex flex-col items-center'>

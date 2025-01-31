@@ -57,7 +57,7 @@ export default function LoginForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className='space-y-4 w-[80%] lg:w-[60%]'>
+        className='space-y-4 w-[80%] md:w-[60%]'>
         <FormField
           control={form.control}
           name='email'

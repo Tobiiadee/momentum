@@ -13,20 +13,34 @@ import useNewTaskStore from "@/modules/store/new-task.store";
 import { usePathname, useRouter } from "next/navigation";
 import useListStore from "@/modules/store/list-store";
 import useGroupStore from "@/modules/store/group-store";
+import { Variants, motion } from "framer-motion";
+
+const slideUpVariant: Variants = {
+  hidden: { y: "100%" },
+  visible: {
+    y: "0%",
+    transition: { type: "spring", duration: 0.6, stiffness: 200, damping: 10 },
+  },
+};
 
 export default function CreateAll() {
   const pathname = usePathname();
 
   const isExcluded =
-  pathname.startsWith("/dashboard/create-new-task") ||
-  pathname.startsWith("/dashboard/group") ||
-  pathname.startsWith("/dashboard/list");
+    pathname.startsWith("/dashboard/create-new-task") ||
+    pathname.startsWith("/dashboard/group") ||
+    pathname.startsWith("/dashboard/list") ||
+    pathname.startsWith("/dashboard/settings");
   return (
     <>
       {!isExcluded && (
-        <div className='lg:hidden absolute bottom-0 left-0 z-40 w-full grid place-items-center h-max pb-5'>
+        <motion.div
+          variants={slideUpVariant}
+          initial='hidden'
+          animate='visible'
+          className='lg:hidden absolute bottom-0 left-0 z-40 w-full grid place-items-center h-max pb-8'>
           <CreateAllTab />
-        </div>
+        </motion.div>
       )}
     </>
   );
@@ -49,8 +63,8 @@ function CreateAllTab() {
         <div
           role='button'
           title='Create new events'
-          className='w-14 aspect-square shadow-md bg-foreground text-background rounded-full grid place-items-center'>
-          <Plus size={28} strokeWidth={1.5} />
+          className='w-14 aspect-square shadow-lg bg-foreground text-background rounded-full grid place-items-center'>
+          <Plus size={28} strokeWidth={1.5} className="data-[state=open]:rotate-180"/>
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='ml-32'>

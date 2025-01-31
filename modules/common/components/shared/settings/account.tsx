@@ -18,7 +18,12 @@ export default function Account() {
       <Separator className='w-full' />
       <AccountIntegration />
       <Separator className='w-full' />
-      <DeleteAccount />
+      <div className='flex flex-col space-y-4'>
+        <Text variant={"h5"} className='font-semibold text-red-600'>
+          Danger Zone
+        </Text>
+        <DeleteAccount />
+      </div>
     </div>
   );
 }

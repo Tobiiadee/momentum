@@ -3,18 +3,20 @@
 import React from "react";
 import Logo from "../../shared/logo/logo";
 import Notification from "../../desktop/header/notification";
-import AdminProfile from "../../desktop/header/admin-profile";
-import { Menu } from "lucide-react";
+// import AdminProfile from "../../desktop/header/admin-profile";
+import { ArrowRightFromLine } from "lucide-react";
 import { Button } from "@/modules/common/ui/button";
 import useSidebarStore from "@/modules/store/sidebar-store";
+import HeaderSearch from "../../desktop/header/header-search";
 
 export default function MobileHeader() {
   return (
     <div className='flex justify-between items-center w-full lg:hidden'>
       <Logo />
-      <div className='flex items-center space-x-6'>
+      <HeaderSearch />
+      <div className='flex items-center space-x-2'>
         <Notification />
-        <AdminProfile />
+        {/* <AdminProfile /> */}
         <Hamburger />
       </div>
     </div>
@@ -31,7 +33,7 @@ function Hamburger() {
       variant={"ghost"}
       size={"sm"}
       className='rounded border border-transparent active:border-border transition-all'>
-      <Menu size={24} strokeWidth={1.3} />
+      <ArrowRightFromLine size={24} strokeWidth={1.3} />
     </Button>
   );
 }

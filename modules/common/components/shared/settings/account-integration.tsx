@@ -38,7 +38,7 @@ function AccountIntegrationItem() {
   const [isConnected, setIsConnected] = React.useState(false);
 
   return (
-    <div className='flex items-center justify-between border border-foreground/10 rounded-lg p-2 space-y-2 w-[80%] shadow'>
+    <div className='flex items-center justify-between border border-foreground/10 rounded-lg p-2 space-y-2 w-full md:w-[80%] shadow'>
       <div className='flex space-x-4 items-center'>
         <div className='w-12 aspect-square rounded-md shadow'></div>
         <div className='flex flex-col'>

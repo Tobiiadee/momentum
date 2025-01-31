@@ -22,7 +22,7 @@ export default function AllResults() {
     return <NoResults />;
   }
 
-  console.log(searchResults);
+  // console.log(searchResults);
 
   return (
     <div className='flex flex-col space-y-1'>

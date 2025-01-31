@@ -12,7 +12,7 @@ export default function EditProfile() {
       title='Edit your Profile'
       ariaLabel='close edit profile'
       closeModal={() => setEditMyProfile(false)}
-      width='w-[50vw]'>
+      width='w-[90vw] md:w-[80vw] lg:w-[50vw]'>
       <EditProfileForm />
     </PreviewWithModal>
   );

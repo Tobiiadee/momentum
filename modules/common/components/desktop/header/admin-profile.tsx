@@ -18,11 +18,14 @@ import useUserStore from "@/modules/store/user-store";
 import GenerateAvatar from "./generate-avatar";
 import { getLetterAndDynamicColor } from "@/lib/helpers/helpers";
 import { FileStack, LogIn, LogOut, Settings, Trash2 } from "lucide-react";
+import { Text } from "@/modules/common/ui/text";
+import useSidebarStore from "@/modules/store/sidebar-store";
 
 export default function AdminProfile() {
   const router = useRouter();
   const user = supabase.auth.getUser();
   const userData = useUserStore((state) => state.user);
+  const setIsSidebarOpen = useSidebarStore((state) => state.setIsSidebarOpen);
   const { signOut } = useAuth();
 
   const { letter, color } = getLetterAndDynamicColor(userData?.email as string);
@@ -32,28 +35,45 @@ export default function AdminProfile() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        {userData?.avatar ? (
-          <ProfileImage image={userData?.avatar} />
-        ) : (
-          <GenerateAvatar letter={letter} color={color} />
-        )}
+        <div className='flex items-center space-x-4'>
+          {userData?.avatar ? (
+            <ProfileImage image={userData?.avatar} />
+          ) : (
+            <GenerateAvatar letter={letter} color={color} />
+          )}
+          <Text variant={"h5"} className='lg:hidden'>
+            Account
+          </Text>
+        </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className='mr-5 w-[10rem]'>
+      <DropdownMenuContent className='ml-14 lg:mr-5 w-[12rem] lg:w-[10rem]'>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => router.push("/dashboard/achieve")}>
+        <DropdownMenuItem
+          onClick={() => {
+            router.push("/dashboard/achieve");
+            setIsSidebarOpen(false);
+          }}>
           Achieve
           <DropdownMenuShortcut>
             <FileStack strokeWidth={1.5} size={16} />
           </DropdownMenuShortcut>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push("/dashboard/settings")}>
+        <DropdownMenuItem
+          onClick={() => {
+            router.push("/dashboard/settings");
+            setIsSidebarOpen(false);
+          }}>
           Settings
           <DropdownMenuShortcut>
             <Settings strokeWidth={1.5} size={16} />
           </DropdownMenuShortcut>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push("/dashboard/trash")}>
+        <DropdownMenuItem
+          onClick={() => {
+            router.push("/dashboard/trash");
+            setIsSidebarOpen(false);
+          }}>
           Trash
           <DropdownMenuShortcut>
             <Trash2 strokeWidth={1.5} size={16} />
@@ -61,14 +81,22 @@ export default function AdminProfile() {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         {!!user ? (
-          <DropdownMenuItem onClick={() => signOut()}>
+          <DropdownMenuItem
+            onClick={() => {
+              signOut();
+              setIsSidebarOpen(false);
+            }}>
             Log out
             <DropdownMenuShortcut>
               <LogOut strokeWidth={1.5} size={16} />
             </DropdownMenuShortcut>
           </DropdownMenuItem>
         ) : (
-          <DropdownMenuItem onClick={() => router.push("/auth/login")}>
+          <DropdownMenuItem
+            onClick={() => {
+              router.push("/auth/login");
+              setIsSidebarOpen(false);
+            }}>
             Login
             <DropdownMenuShortcut>
               <LogIn strokeWidth={1.5} size={16} />

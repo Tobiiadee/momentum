@@ -51,7 +51,7 @@ export default function MembersItems() {
           <Text variant={"p"} className='col-span-2 font-semibold'>
             Name
           </Text>
-          <Text variant={"p"} className='font-semibold'>
+          <Text variant={"p"} className='font-semibold hidden md:block'>
             Date Added
           </Text>
           <Text

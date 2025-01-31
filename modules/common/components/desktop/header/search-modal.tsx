@@ -34,23 +34,25 @@ export default function SearchModal() {
         setIsSearchResults(false);
       }}
       className='bg-foreground/10 backdrop-blur-sm'>
-      <motion.div
-        variants={previewVariant}
-        animate='visible'
-        initial='hidden'
-        exit='exit'
-        className='w-[40rem] h-max max-h-[80vh] flex flex-col space-y-2 absolute left-1/4 -translate-x-1/4 top-16 p-4 rounded-lg z-50'>
-        <SearchInput />
-        {isSearchResults && (
-          <motion.div
-            initial='hidden'
-            animate='visible'
-            variants={searchVariants}
-            className='w-full h-max'>
-            <SearchResult />
-          </motion.div>
-        )}
-      </motion.div>
+      <div className="fixed top-16 left-1/2 -translate-x-1/2 w-max h-max flex items-center justify-center z-50">
+        <motion.div
+          variants={previewVariant}
+          animate='visible'
+          initial='hidden'
+          exit='exit'
+          className='w-[95vw] md:w-[80vw] lg:w-[50vw] h-max max-h-[80vh] flex flex-col space-y-2 p-4 rounded-lg z-50'>
+          <SearchInput />
+          {isSearchResults && (
+            <motion.div
+              initial='hidden'
+              animate='visible'
+              variants={searchVariants}
+              className='w-full h-max'>
+              <SearchResult />
+            </motion.div>
+          )}
+        </motion.div>
+      </div>
     </Modal>
   );
 }

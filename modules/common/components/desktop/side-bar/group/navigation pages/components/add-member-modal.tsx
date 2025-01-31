@@ -78,8 +78,8 @@ export default function AddMemberModal() {
     <PreviewWithModal
       title='invite members'
       ariaLabel='add member'
-      position='top-[10rem] left-1/2 -translate-x-1/2'
-      width='w-[22rem]'
+      // position='top-[10rem] left-1/2 -translate-x-1/2'
+      width='w-[90vw] md:w-[70vw] lg:w-[22rem]'
       modalBackground='bg-foreground/20'
       closeModal={() => {
         setIsAddMember(false);

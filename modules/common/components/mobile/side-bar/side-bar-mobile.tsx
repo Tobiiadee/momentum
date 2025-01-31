@@ -26,22 +26,26 @@ import NewGroup from "../../desktop/side-bar/group/new-group";
 import { motion, Variants } from "framer-motion";
 import { X } from "lucide-react";
 import useSidebarStore from "@/modules/store/sidebar-store";
+import AdminProfile from "../../desktop/header/admin-profile";
 
 const slideInAnim: Variants = {
   visible: {
     x: 0,
+    opacity: 1,
     transition: {
       duration: 0.3,
     },
   },
   hidden: {
     x: -600,
+    opacity: 0,
     transition: {
       duration: 0.3,
     },
   },
   exit: {
     x: "-100%",
+    opacity: 0,
     transition: {
       duration: 0.3,
     },
@@ -190,8 +194,12 @@ export default function SideBarMobile() {
         </div>
 
         <Group />
+
+        <div>
+          <AdminProfile />
+        </div>
       </motion.div>
-      <Modal onClick={() => setIsSidebarOpen(false)} className='bg-foreground/20'></Modal>
+      {/* <Modal onClick={() => setIsSidebarOpen(false)} className='bg-foreground/20'></Modal> */}
 
       <AnimatePresence mode='wait'>
         {isList && (

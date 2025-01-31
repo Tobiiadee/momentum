@@ -55,7 +55,7 @@ export default function UserGroups() {
     );
   }
 
-  console.log(userGroups);
+  // console.log(userGroups);
   
 
   if (userGroups.length === 0) {

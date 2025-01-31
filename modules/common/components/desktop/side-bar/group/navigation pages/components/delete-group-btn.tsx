@@ -44,7 +44,7 @@ export default function DeleteGroupBtn({
             variant={"destructive"}
             className='text-xs'>
             <Trash2 size={20} strokeWidth={1.5} />
-            <Text variant={"p"} className='text-xs'>
+            <Text variant={"p"} className='text-xs hidden md:block'>
               Delete group
             </Text>
           </Button>

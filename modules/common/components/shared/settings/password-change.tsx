@@ -50,7 +50,7 @@ export default function PasswordChange() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className='space-y-2 w-1/2'>
+          className='space-y-2 md:w-1/2'>
           <InputPassword
             control={form.control}
             placeholder='Enter your current password'

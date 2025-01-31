@@ -39,8 +39,8 @@ export default function MembersItem({
  
 
   return (
-    <div className='grid grid-cols-5 gap-4 items-center pt-4'>
-      <div className='col-span-2 flex space-x-4 items-center'>
+    <div className='grid grid-cols-2 md:grid-cols-5 gap-4 items-center pt-4'>
+      <div className='md:col-span-2 flex space-x-4 items-center'>
         {isPending && <MemberItemSkeleton />}
         {isPending === false && (
           <div className='relative w-10 aspect-square rounded-full overflow-hidden'>
@@ -70,14 +70,14 @@ export default function MembersItem({
       </div>
 
       {isPending ? (
-        <Skeleton className='w-[10rem] h-4 rounded-sm' />
+        <Skeleton className='w-[10rem] h-4 rounded-sm hidden md:block' />
       ) : (
-        <Text variant={"p"} className='text-xs'>
+        <Text variant={"p"} className='text-xs hidden md:block'>
           {formatDateString(created_at as string)}
         </Text>
       )}
 
-      <div className='flex justify-end w-full col-span-2'>
+      <div className='flex justify-end w-full md:col-span-2'>
         {isPending ? (
           <Skeleton className='w-[150px] h-4 rounded-sm' />
         ) : (

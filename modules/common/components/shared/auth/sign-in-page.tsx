@@ -11,7 +11,7 @@ export default function SignInPage() {
   const router = useRouter();
 
   return (
-    <div className='h-full w-full flex flex-col pt-2'>
+    <div className='h-full w-full flex flex-col pt-2 '>
       <Button
         onClick={() => router.back()}
         variant={"ghost"}

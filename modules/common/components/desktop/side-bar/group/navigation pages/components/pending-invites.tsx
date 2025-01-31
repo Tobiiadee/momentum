@@ -50,7 +50,7 @@ export default function PendingInvites() {
         <Text variant={"p"} className='col-span-2 font-semibold'>
           Name
         </Text>
-        <Text variant={"p"} className='font-semibold'>
+        <Text variant={"p"} className='font-semibold hidden md:block'>
           Date Sent
         </Text>
         <Text
@@ -103,7 +103,7 @@ function RecieverItem({
   });
 
   return (
-    <div className='grid grid-cols-5 gap-4 items-center pt-4'>
+    <div className='grid grid-cols-2 md:grid-cols-5 gap-4 items-center pt-4'>
       {isLoading ? (
         <RecieverItemSkeleton />
       ) : (
@@ -132,9 +132,9 @@ function RecieverItem({
       )}
 
       {isLoading ? (
-        <Skeleton className='w-[10rem] h-4 rounded-sm' />
+        <Skeleton className='w-[10rem] h-4 rounded-sm hidden md:block' />
       ) : (
-        <Text variant={"p"} className='text-xs'>
+        <Text variant={"p"} className='text-xs hidden md:block'>
           {formatDateString(invite_sent_at as string)}
         </Text>
       )}

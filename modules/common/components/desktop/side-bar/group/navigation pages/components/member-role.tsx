@@ -71,7 +71,7 @@ export function MembersRole({
         defaultValue={memberRole.toLowerCase()}
         disabled={!isAdmin}
         onValueChange={handleRoleChange}>
-        <SelectTrigger className='w-[150px] border-foreground/30 text-xs'>
+        <SelectTrigger className='w-[100px] md:w-[150px] border-foreground/30 text-xs'>
           <SelectValue className='placeholder:text-xs' placeholder='Role' />
         </SelectTrigger>
         <SelectContent>

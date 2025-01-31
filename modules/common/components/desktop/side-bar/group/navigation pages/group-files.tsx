@@ -96,7 +96,7 @@ export default function GroupFiles() {
           <EmptyTaskModule height='h-[40vh]' text='No files uploaded yet' />
         </div>
       )}
-      <div className='grid grid-cols-5 gap-4'>
+      <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4'>
         {isLoadingFetchedTasksByListId &&
           isFetchingTaskFiles &&
           Array.from({ length: 4 }).map((_, i) => (

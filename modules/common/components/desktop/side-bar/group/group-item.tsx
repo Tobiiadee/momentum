@@ -68,7 +68,7 @@ export default function GroupItem({
   return (
     <motion.div
       onClick={() => {
-        router.push(`/dashboard/group/${encodeGroupName}?id=${id}`);
+        router.push(`/dashboard/group/${id}?name=${encodeGroupName}`);
         setListIdFromDatabase(id);
         setDeleteGroupObject({ group_label: name, list_Id: id });
         setIsSidebarOpen(false);

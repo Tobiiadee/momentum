@@ -4,26 +4,13 @@ import { MessageCircleReply } from "lucide-react";
 import React from "react";
 import { NotificationOptions } from "./group-invite-notification";
 import { Separator } from "@/modules/common/ui/separator";
-import { motion, Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 // import useUserStore from "@/modules/store/user-store";
 import { fetchUsersByInviteId } from "@/modules/supabase/utils/actions";
 import NameList from "../../name-list";
+import { slideInVariant } from "./group-invite-user-response-notification";
 
-export const slideInVariant: Variants = {
-  hidden: { x: 100, opacity: 0 },
-  visible: (i: number) => ({
-    x: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.5,
-      type: "spring",
-      stiffness: 300,
-      damping: 20,
-      delay: 0.2 * i,
-    },
-  }),
-};
 
 export type NotificationStatusType = "accepted" | "declined";
 

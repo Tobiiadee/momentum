@@ -4,12 +4,13 @@ import React, { useEffect, useMemo, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { RotateCw } from "lucide-react";
-
-import useGroupAction from "@/hooks/use-group-action";
 import useGroupStore from "@/modules/store/group-store";
 import useSortArrayStore from "@/modules/store/sort-array-store";
 import useUserStore from "@/modules/store/user-store";
-import { fetchTasksByListId } from "@/modules/supabase/utils/actions";
+import {
+  fetchGroup,
+  fetchTasksByListId,
+} from "@/modules/supabase/utils/actions";
 
 import { Button } from "@/modules/common/ui/button";
 import DaySelector from "@/modules/common/components/shared/day-selector";
@@ -23,36 +24,42 @@ export default function TasksGroup() {
   const { groupId } = useParams();
   const user = useUserStore((state) => state.user);
 
-  const decodedGroupId = decodeURIComponent(groupId as string);
+  //fetch group
+  const { data: group, isLoading: isLoadingGroup } = useQuery({
+    queryKey: [groupId],
+    queryFn: async () => fetchGroup(groupId as string),
+  });
+
+  // const decodedGroupId = decodeURIComponent(groupId as string);
 
   // Fetch groups
-  const { allGroupsInTable, isLoadingAllGroupsInTable } = useGroupAction(
-    user?.id as string
-  );
+  // const { allGroupsInTable, isLoadingAllGroupsInTable } = useGroupAction(
+  //   user?.id as string
+  // );
 
   // Memoize the user group to avoid recalculations
-  const userGroup = useMemo(
-    () =>
-      allGroupsInTable?.find(
-        (group) => group.label.toLowerCase() === decodedGroupId.toLowerCase()
-      ),
-    [allGroupsInTable, decodedGroupId]
-  );
+  // const userGroup = useMemo(
+  //   () =>
+  //     allGroupsInTable?.find(
+  //       (group) => group.label.toLowerCase() === decodedGroupId.toLowerCase()
+  //     ),
+  //   [allGroupsInTable, decodedGroupId]
+  // );
 
-  const listId = userGroup?.list_id;
+  const listId = group?.list_id;
 
   // Check if user is a member
   const isUserMember = useMemo(
-    () => userGroup?.members.some((member) => member.member_id === user?.id),
-    [userGroup, user?.id]
+    () => group?.members.some((member) => member.member_id === user?.id),
+    [group, user?.id]
   );
 
   // Redirect if the user is not a member
   useEffect(() => {
-    if (!isLoadingAllGroupsInTable && !isUserMember) {
+    if (!isLoadingGroup && !isUserMember) {
       router.replace("/dashboard");
     }
-  }, [isLoadingAllGroupsInTable, isUserMember, router]);
+  }, [isLoadingGroup, isUserMember, router]);
 
   // Fetch tasks
   const {
@@ -78,13 +85,13 @@ export default function TasksGroup() {
     (state) => state.setGroupTitleMembers
   );
   useEffect(() => {
-    if (!isLoadingAllGroupsInTable && userGroup) {
+    if (!isLoadingGroup && group) {
       setGroupTitleMembers({
-        group_title: userGroup.label,
-        members: userGroup.members,
+        group_title: group?.label,
+        members: group?.members,
       });
     }
-  }, [isLoadingAllGroupsInTable, userGroup, setGroupTitleMembers]);
+  }, [isLoadingGroup, group, setGroupTitleMembers]);
 
   // Update tasks in the store
   const setSortData = useSortArrayStore((state) => state.setSortData);
@@ -132,7 +139,8 @@ export default function TasksGroup() {
           isError={isTasksError}
           isLoading={isLoadingTasks}
           error={tasksError}
-          isGroupLoading={isLoadingTasks || isLoadingAllGroupsInTable}
+          isGroupLoading={isLoadingTasks || isLoadingGroup}
+          group_label={group?.label}
         />
       </div>
     </div>

@@ -1,11 +1,13 @@
 "use client";
 
-import useGroupAction from "@/hooks/use-group-action";
 import { useNewTask } from "@/hooks/use-new-task";
 import { Skeleton } from "@/modules/common/ui/skeleton";
 import { Text } from "@/modules/common/ui/text";
 import useUserStore from "@/modules/store/user-store";
-import { fetchTasksByListId } from "@/modules/supabase/utils/actions";
+import {
+  fetchGroup,
+  fetchTasksByListId,
+} from "@/modules/supabase/utils/actions";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
@@ -17,31 +19,25 @@ export default function GroupFiles() {
   const { groupId } = useParams();
   const router = useRouter();
 
-  const decodeGroupId = decodeURIComponent(groupId as string);
+  //Fetch group
+  const { data: group, isLoading: isLoadingGroup } = useQuery({
+    queryKey: [groupId],
+    queryFn: async () => fetchGroup(groupId as string),
+  });
 
-
-  // Fetch all groups and find the current group
-  const { allGroupsInTable, isLoadingAllGroupsInTable } = useGroupAction(
-    user?.id as string
-  );
-  const userGroup = allGroupsInTable?.find(
-    (group) =>
-      group.label.toLowerCase() === (decodeGroupId as string).toLocaleLowerCase()
-  );
-
-  const listId = userGroup?.list_id;
+  const listId = group?.list_id;
 
   // Check if the user is a member of the group
-  const isUserMember = userGroup?.members.some(
+  const isUserMember = group?.members.some(
     (member) => member.member_id === user?.id
   );
 
   // Redirect if the user is not a member
   useEffect(() => {
-    if (!isLoadingAllGroupsInTable && !isUserMember) {
+    if (!isLoadingGroup && !isUserMember) {
       router.replace("/dashboard");
     }
-  }, [isLoadingAllGroupsInTable, isUserMember, router]);
+  }, [isLoadingGroup, isUserMember, router]);
 
   // Fetch tasks by list_id
   const {
@@ -82,7 +78,7 @@ export default function GroupFiles() {
       <Text variant={"h3"} className='font-medium'>
         Files({numberOfFiles || 0})
       </Text>
-      {isLoadingAllGroupsInTable &&
+      {isLoadingGroup &&
         isFetchedTasksErrorByListId &&
         fetchedTasksErrorByListId &&
         isFetchTaskFilesError && (

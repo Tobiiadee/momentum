@@ -75,7 +75,7 @@ function SearchResultNav() {
   ];
 
   return (
-    <div className='overflow-hidden w-full h-full overflow-y-auto bg-background py-2 px-4 rounded-b-lg '>
+    <div className='overflow-hidden hidden md:block w-full h-full overflow-y-auto bg-background py-2 px-4 rounded-b-lg '>
       <Tabs defaultValue='all' className='w-full '>
         <TabsList className='relative justify-start border-b-2 border-foreground/10 rounded-none p-0 bg-background shadow-none w-full'>
           {SearchResultNavTabs.map((nav) => (

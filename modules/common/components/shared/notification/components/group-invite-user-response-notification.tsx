@@ -7,12 +7,12 @@ import { Separator } from "@/modules/common/ui/separator";
 import { motion, Variants } from "framer-motion";
 
 export const slideInVariant: Variants = {
-  hidden: { x: 100, opacity: 0 },
+  hidden: { scale: 0.8, opacity: 0 },
   visible: (i: number) => ({
-    x: 0,
+    scale: 1,
     opacity: 1,
     transition: {
-      duration: 0.5,
+      duration: 0.2,
       type: "spring",
       stiffness: 300,
       damping: 20,

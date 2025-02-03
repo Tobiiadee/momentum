@@ -16,6 +16,7 @@ export interface ComponentTaskProps {
   group_members?: MemberType[];
   group_title?: string;
   isGroupLoading?: boolean;
+  group_label?: string;
 }
 
 export default function WorkTask({

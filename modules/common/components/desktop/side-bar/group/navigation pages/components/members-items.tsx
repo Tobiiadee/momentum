@@ -4,32 +4,28 @@
 
 import { Text } from "@/modules/common/ui/text";
 import React from "react";
-import useGroupAction from "@/hooks/use-group-action";
 import useUserStore from "@/modules/store/user-store";
 import { useParams } from "next/navigation";
 import MembersItem from "./member-item";
 import ExitGroupBtn from "./exit-group-btn";
 import DeleteGroupBtn from "./delete-group-btn";
+import { useQuery } from "@tanstack/react-query";
+import { fetchGroup } from "@/modules/supabase/utils/actions";
 
 export default function MembersItems() {
   const { groupId } = useParams();
 
-  const decodeGroupId = decodeURIComponent(groupId as string);
-
+  const { data: group } = useQuery({
+    queryKey: [groupId],
+    queryFn: async () => fetchGroup(groupId as string),
+  });
 
   const user = useUserStore((state) => state.user);
-  const { allGroupsInTable } = useGroupAction(user?.id as string);
 
-  const selectedGroup = allGroupsInTable?.filter(
-    (group) =>
-      group.label.toLocaleLowerCase() ===
-      (decodeGroupId as string).toLocaleLowerCase()
-  );
+  const group_id = group?.list_id;
 
-  const group_id = selectedGroup?.map((group) => group.list_id)[0];
-
-  const members = selectedGroup?.map((group) => group.members)[0];
-  const creator_id = selectedGroup?.map((group) => group.creator_id)[0];
+  const members = group?.members;
+  const creator_id = group?.creator_id;
 
   const permission = creator_id === user?.id;
 

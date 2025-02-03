@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { searchEntities } from "@/modules/supabase/utils/actions";
 import SearchResult from "./search-result";
 import { cn } from "@/lib/utils";
+import SearchResultMobile from "../../mobile/mobile-header/search-result-mobile";
 
 const searchVariants = {
   visible: {
@@ -34,7 +35,7 @@ export default function SearchModal() {
         setIsSearchResults(false);
       }}
       className='bg-foreground/10 backdrop-blur-sm'>
-      <div className="fixed top-16 left-1/2 -translate-x-1/2 w-max h-max flex items-center justify-center z-50">
+      <div className="fixed top-10 md:top-16 left-1/2 -translate-x-1/2 w-max h-max flex items-center justify-center z-50">
         <motion.div
           variants={previewVariant}
           animate='visible'
@@ -49,6 +50,7 @@ export default function SearchModal() {
               variants={searchVariants}
               className='w-full h-max'>
               <SearchResult />
+              <SearchResultMobile />
             </motion.div>
           )}
         </motion.div>

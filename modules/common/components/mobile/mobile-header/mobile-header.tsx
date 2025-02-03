@@ -32,7 +32,7 @@ function Hamburger() {
       onClick={() => setIsSidebarOpen(true)}
       variant={"ghost"}
       size={"sm"}
-      className='rounded border border-transparent active:border-border transition-all'>
+      className='border border-border transition-all rounded-md'>
       <ArrowRightFromLine size={24} strokeWidth={1.3} />
     </Button>
   );

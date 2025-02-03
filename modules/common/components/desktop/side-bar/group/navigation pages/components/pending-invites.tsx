@@ -7,10 +7,9 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { Button } from "@/modules/common/ui/button";
 import { useParams } from "next/navigation";
-import useUserStore from "@/modules/store/user-store";
-import useGroupAction from "@/hooks/use-group-action";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  fetchGroup,
   fetchUser,
   getGroupPendingInvites,
 } from "@/modules/supabase/utils/actions";
@@ -22,18 +21,12 @@ import { toast } from "sonner";
 export default function PendingInvites() {
   const { groupId } = useParams();
 
-  const decodeGroupId = decodeURIComponent(groupId as string);
+  const { data: group } = useQuery({
+    queryKey: [groupId],
+    queryFn: async () => fetchGroup(groupId as string),
+  });
 
-  const user = useUserStore((state) => state.user);
-  const { allGroupsInTable } = useGroupAction(user?.id as string);
-
-  const selectedGroup = allGroupsInTable?.filter(
-    (group) =>
-      group.label.toLocaleLowerCase() ===
-      (decodeGroupId as string).toLocaleLowerCase()
-  );
-
-  const group_id = selectedGroup?.map((group) => group.list_id)[0];
+  const group_id = group?.list_id;
 
   const { data: pendingInvites } = useQuery({
     queryKey: ["getGroupPendingInvites", group_id],
@@ -42,7 +35,6 @@ export default function PendingInvites() {
     },
     enabled: !!group_id,
   });
-  
 
   return (
     <div className='col-span-2 w-full flex flex-col bg-foreground/10 p-4'>
@@ -189,7 +181,6 @@ function RecieverActions({
       queryClient.invalidateQueries({
         queryKey: ["getGroupPendingInvites", group_id],
       });
-      
     } catch (error: any) {
       setIsCancelling(false);
       toast.error(`Error: ${error.response?.data?.error || error.message}`);

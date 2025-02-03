@@ -8,36 +8,23 @@ import { useParams } from "next/navigation";
 import useGroupStore from "@/modules/store/group-store";
 import { AnimatePresence } from "framer-motion";
 import GroupChat from "../side-bar/group/navigation pages/components/chat/group-chat";
-import useUserStore from "@/modules/store/user-store";
-import useGroupAction from "@/hooks/use-group-action";
+import { useQuery } from "@tanstack/react-query";
+import { fetchGroup } from "@/modules/supabase/utils/actions";
 
 export default function GroupMain() {
   const { groupId } = useParams();
   const isGroupChat = useGroupStore((state) => state.isGroupChat);
 
-  const decodeGroupId = decodeURIComponent(groupId as string);
-
-  const user = useUserStore((state) => state.user);
-  const { allGroupsInTable } = useGroupAction(user?.id as string);
-
-  const selectedGroup = allGroupsInTable?.filter(
-    (group) =>
-      group.label.toLocaleLowerCase() ===
-      (decodeGroupId as string).toLocaleLowerCase()
-  );
-
-  // const group_id = selectedGroup?.map((group) => group.list_id)[0];
-
-  const members = selectedGroup?.map((group) => group.members)[0];
-  // const creator_id = selectedGroup?.map((group) => group.creator_id)[0];
-
-  const decodeURI = decodeURIComponent(groupId as string);
+  const { data: group } = useQuery({
+    queryKey: [groupId],
+    queryFn: async () => fetchGroup(groupId as string),
+  });
 
   return (
     <div className='relative flex flex-col space-y-4 h-max max-h-screen'>
       <div className='flex flex-col space-y-4'>
         <Text variant={"h4"} className='capitalize'>
-          {decodeURI}
+          {group?.label}
         </Text>
         <GroupNav />
       </div>
@@ -45,8 +32,8 @@ export default function GroupMain() {
       <AnimatePresence mode='wait'>
         {isGroupChat && (
           <GroupChat
-            group_title={decodeURI}
-            group_members={members as AddMemberType[]}
+            group_title={group?.label as string}
+            group_members={group?.members as AddMemberType[]}
           />
         )}
       </AnimatePresence>

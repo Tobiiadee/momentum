@@ -6,11 +6,13 @@ import TaskRescheduleCalendar from "./task-reschedule-calendar";
 import TaskRescheduleInputs from "../shared/task-reschedule-inputs";
 import { Button } from "../../ui/button";
 
-import { UpdateTaskType, useNewTask } from "@/hooks/use-new-task";
+import { UpdateTaskType } from "@/hooks/use-new-task";
 import useUserStore from "@/modules/store/user-store";
 import { formatTimeIntl } from "@/lib/helpers/format";
 import { toast } from "sonner";
 import PreviewWithModal from "../shared/preview-with-modal";
+import { updateTask } from "@/modules/supabase/utils/actions";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function TaskReschedule() {
   const setIsReschedule = useNewTaskStore((state) => state.setIsReschedule);
@@ -22,14 +24,33 @@ export default function TaskReschedule() {
   // const isReschedule = useNewTaskStore((state) => state.isReschedule);
   const user = useUserStore((state) => state.user);
 
+  const queryClient = useQueryClient();
+
+  // const {
+  //   updateTaskMutate,
+  //   isUpdatingTask,
+  //   isUpdateTaskError,
+  //   updateTaskError,
+  //   isUpdateTaskSuccess,
+  //   refetchAllTasks,
+  // } = useNewTask(user?.id as string);
+
   const {
-    updateTaskMutate,
-    isUpdatingTask,
-    isUpdateTaskError,
-    updateTaskError,
-    isUpdateTaskSuccess,
-    refetchAllTasks,
-  } = useNewTask(user?.id as string);
+    isPending: isUpdatingTask,
+    mutate: updateTaskMutate,
+    isError: isUpdateTaskError,
+    error: updateTaskError,
+    isSuccess: isUpdateTaskSuccess,
+  } = useMutation({
+    mutationFn: ({ task_id, updatedTask }: UpdateTaskType) =>
+      updateTask(task_id, updatedTask),
+    onSuccess: () => {
+      toast.success("Task rescheduled successfully");
+      queryClient.invalidateQueries({
+        queryKey: ["all-task", user?.id],
+      });
+    },
+  });
 
   const formatTaskTime = () => {
     if (!taskFrom || !taskUntil) return "";
@@ -54,17 +75,21 @@ export default function TaskReschedule() {
     updateTaskMutate(updateObj);
     if (!isUpdatingTask && !isUpdateTaskError) {
       setIsReschedule(false);
-      refetchAllTasks();
+      // refetchAllTasks();
       reset();
     }
-  };
 
-  if (isUpdateTaskError) {
-    toast.error(updateTaskError?.message);
-  }
-  if (isUpdateTaskSuccess) {
-    toast.success("Task rescheduled successfully");
-  }
+    // queryClient.invalidateQueries({
+    //   queryKey: ["all-task", user?.id, taskId],
+    // });
+
+    if (isUpdateTaskError) {
+      toast.error(updateTaskError?.message);
+    }
+    if (isUpdateTaskSuccess) {
+      toast.success("Task rescheduled successfully");
+    }
+  };
 
   return (
     <PreviewWithModal

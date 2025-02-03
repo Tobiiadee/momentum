@@ -56,7 +56,7 @@ export default function SettingsNav() {
   return (
     <div>
       <Tabs defaultValue='general' className='w-full '>
-        <TabsList className='sticky top-0 left-0 z-40 justify-start w-full rounded-none p-0 bg-background shadow-none overflow-x-auto'>
+        <TabsList id="hide-scrollbar" className='sticky top-0 left-0 z-40 justify-start w-full rounded-none p-0 bg-background shadow-none overflow-x-auto'>
           {tabs.map((tab) => (
             <TabsTrigger
               key={tab.value}

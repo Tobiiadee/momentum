@@ -8,6 +8,10 @@ import { Button } from "@/modules/common/ui/button";
 import { Loader, Search, X } from "lucide-react";
 import useSearchUsers from "@/hooks/use-search-users";
 import useUserStore from "@/modules/store/user-store";
+import { useParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { getGroupPendingInvites } from "@/modules/supabase/utils/actions";
+import { toast } from "sonner";
 
 const memberVariants: Variants = {
   hidden: { y: 20, opacity: 0 },
@@ -62,11 +66,11 @@ export default function UpdateMembers({ oldMembers }: UpdateMembersProps) {
     error,
   } = useSearchUsers(user_id as string, searchMember);
 
-  const filteredMembers = searchedMembers?.filter(
-    (member) =>
-      member.id !== user_id &&
-      !oldMembers.some((oldMember) => oldMember.member_id === member.id)
-  );
+  // const filteredMembers = searchedMembers?.filter(
+  //   (member) =>
+  //     member.id !== user_id &&
+  //     !oldMembers.some((oldMember) => oldMember.member_id === member.id)
+  // );
 
   return (
     <div className='relative flex flex-col space-y-2 h-48 max-h-48 '>
@@ -119,7 +123,7 @@ export default function UpdateMembers({ oldMembers }: UpdateMembersProps) {
             </div>
           )}
 
-          {filteredMembers?.map((member) => (
+          {searchedMembers?.map((member) => (
             <MemberItem
               oldMembers={oldMembers}
               key={member.id + member.email}
@@ -131,7 +135,7 @@ export default function UpdateMembers({ oldMembers }: UpdateMembersProps) {
             />
           ))}
 
-          {searchMember !== "" && filteredMembers?.length === 0 && (
+          {searchMember !== "" && searchedMembers?.length === 0 && (
             <div className='w-full grid place-items-center min-h-8'>
               <Text
                 variant={"p"}
@@ -181,12 +185,37 @@ function MemberItem({
   image,
   id,
   setSearchedMembers,
+  oldMembers
 }: MemberItemProps) {
+  const { groupId } = useParams();
   const setMembers = useGroupStore((state) => state.setMembers);
-  const members = useGroupStore((state) => state.members);
+  // const members = useGroupStore((state) => state.members);
+
+  //fetch pending invites
+  const { data: pendingInvites } = useQuery({
+    queryKey: ["getGroupPendingInvites", groupId],
+    queryFn: async () => {
+      return await getGroupPendingInvites(groupId as string);
+    },
+    enabled: !!groupId,
+  });
+
+  //check if invite has been sent to the user
+  const isInvited = pendingInvites?.some((invite) => invite.reciever_id === id);
+
+  //check if searched user is already a member
+  const isAlreadyMember = oldMembers.some((member) => member.member_id === id);
 
   const handleSelect = () => {
-    if (members.find((member) => member.id === id)) return;
+    if (isInvited) {
+      toast.error(`An invite has been sent to ${name} already.`);
+      return;
+    }
+
+    if (isAlreadyMember) {
+      toast.error(`${name} is already a member.`);
+      return;
+    }
     setSearchedMembers("");
     setMembers({
       name,

@@ -11,7 +11,7 @@ export default function DeleteAccount() {
  
 
   return (
-    <div className='flex items-center justify-between border border-red-500 rounded-lg p-4 w-full md:w-[80%] shadow'>
+    <div className='flex flex-col space-y-4 md:space-y-0 md:flex-row md:items-center md:justify-between border border-red-500 rounded-lg p-4 w-full md:w-[80%] shadow'>
       <div className='flex flex-col'>
         <Text variant={"p"} className='font-medium text-red-600'>
           Delete Account

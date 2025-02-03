@@ -6,18 +6,24 @@ import PreviewWithModal from "@/modules/common/components/shared/preview-with-mo
 import useGroupStore from "@/modules/store/group-store";
 import React, { useState } from "react";
 import { Button } from "@/modules/common/ui/button";
-import useGroupAction from "@/hooks/use-group-action";
 import useUserStore from "@/modules/store/user-store";
 import { useParams } from "next/navigation";
 import UpdateMembers from "./update-members";
 import { toast } from "sonner";
 import { sendInvite } from "@/lib/utils/invite-response";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchGroup } from "@/modules/supabase/utils/actions";
 
 export default function AddMemberModal() {
   const { groupId } = useParams();
 
   const [isInviting, setIsInviting] = useState(false);
+
+  //fetch group with id
+  const { data: group } = useQuery({
+    queryKey: [groupId],
+    queryFn: async () => fetchGroup(groupId as string),
+  });
 
   const queryClient = useQueryClient();
 
@@ -25,21 +31,6 @@ export default function AddMemberModal() {
   const setIsAddMember = useGroupStore((state) => state.setIsAddMember);
   const members = useGroupStore((state) => state.members);
   const setGroupMembers = useGroupStore((state) => state.reset);
-
-  const { allGroups } = useGroupAction(user?.id as string);
-
-  const decodeGroupId = decodeURIComponent(groupId as string);
-
-  const filteredGroupId =
-    allGroups?.find(
-      (group) =>
-        group.label.toLowerCase() === (decodeGroupId as string).toLowerCase()
-    )?.list_id ?? null;
-
-  const filteredGroupMembers =
-    allGroups?.find(
-      (group) => group.label.toLowerCase() === (groupId as string).toLowerCase()
-    )?.members ?? [];
 
   const setMembers: AddMemberType[] = members.map((member) => ({
     member_id: member.id,
@@ -53,7 +44,7 @@ export default function AddMemberModal() {
     try {
       setIsInviting(true);
       const sendInviteRes = await sendInvite(
-        filteredGroupId as string,
+        group?.list_id as string,
         user?.id as string,
         receiverIds
       );
@@ -61,9 +52,10 @@ export default function AddMemberModal() {
       if (sendInviteRes.status === 200) {
         toast.success("Invite sent successfully");
         queryClient.invalidateQueries({
-          queryKey: ["getGroupPendingInvites", filteredGroupId],
+          queryKey: ["getGroupPendingInvites", group?.list_id],
         });
         setIsInviting(false);
+        toast.success("Invite sent successfully");
       }
     } catch (error: any) {
       setIsInviting(false);
@@ -86,10 +78,11 @@ export default function AddMemberModal() {
         setGroupMembers();
       }}>
       <div className='flex flex-col space-y-4'>
-        <UpdateMembers oldMembers={filteredGroupMembers} />
+        <UpdateMembers oldMembers={group?.members as AddMemberType[]} />
       </div>
       <Button
         isLoading={isInviting}
+        disabled={receiverIds.length === 0}
         onClick={handleMembersUpdateGroup}
         aria-label='invite members'
         className='w-full'>

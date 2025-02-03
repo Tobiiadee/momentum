@@ -43,8 +43,8 @@ const tabs = [
 export default function GroupNav() {
   return (
     <div>
-      <Tabs defaultValue='tasks' className='w-full h-[77vh] lg:pr-4 overflow-y-auto overflow-x-hidden'>
-        <TabsList className='sticky top-0 left-0 z-40 justify-start w-full rounded-none p-0 bg-background shadow-none overflow-x-auto'>
+      <Tabs  defaultValue='tasks' className='w-full h-[77vh] lg:pr-4 overflow-y-auto overflow-x-hidden'>
+        <TabsList id="hide-scrollbar" className='sticky top-0 left-0 z-40 justify-start w-full rounded-none p-0 bg-background shadow-none overflow-x-auto'>
           {tabs.map((tab) => (
             <TabsTrigger
               key={tab.value}

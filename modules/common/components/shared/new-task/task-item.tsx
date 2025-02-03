@@ -29,6 +29,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Skeleton } from "../../../ui/skeleton";
 import TaskFileItem from "./task-file-item";
 import { fetchGroup } from "@/modules/supabase/utils/actions";
+import { useQueryClient } from "@tanstack/react-query";
 // import { mergeRefs } from "react-merge-refs";
 
 const accordionVariants: Variants = {
@@ -261,7 +262,7 @@ function CollapsibleTrigger({
           <Text variant={"p"} className=''>
             {title}
           </Text>
-          <div className='w-max h-max grid place-items-center'>
+          <div className='w-max h-max hidden md:grid place-items-center'>
             {convertStringToHTML({ list_icon })}
           </div>
         </div>
@@ -313,6 +314,9 @@ function MoreOptionsDropdown({
   taskId: string;
   file_urls: string[];
 }) {
+  const queryClient = useQueryClient();
+  const user_id = useUserStore((state) => state.user?.id);
+
   const setIsReschedule = useNewTaskStore((state) => state.setIsReschedule);
   const setTaskId = useNewTaskStore((state) => state.setTaskId);
   const user = useUserStore((state) => state.user);
@@ -356,6 +360,7 @@ function MoreOptionsDropdown({
             if (file_urls.length > 0) {
               deleteTaskFileMutate({ taskId, fileUrls: file_urls });
             }
+            queryClient.invalidateQueries({ queryKey: ["all-task", user_id] });
           }}>
           Delete
         </DropdownMenuItem>

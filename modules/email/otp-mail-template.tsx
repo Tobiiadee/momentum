@@ -24,7 +24,7 @@ export function OtpEmailTemplate({ otp, recipientName }: OtpMailProps) {
           <p>Dear ${recipientName},</p>
           <p>Use the OTP code below to complete your request:</p>
 
-          <div style="text-align: center; font-size: 24px; font-weight: bold; color: #000000; padding: 10px; border: 2px dashed #000000; background-color: #f9f9f9; display: inline-block;">
+          <div style="text-align: center; font-size: 24px; font-weight: bold; color: #000000; padding: 10px; border: 2px dashed #000000; background-color: #f9f9f9; display: flex; width: 100%; justify-content: center; align-items: center;">
             ${otp}
           </div>
 

@@ -16,10 +16,9 @@ export default function Members() {
   const user = useUserStore((state) => state.user);
 
   const { data: group } = useQuery({
-    queryKey: [groupId],
+    queryKey: ["group", groupId],
     queryFn: async () => fetchGroup(groupId as string),
   });
-
 
   // Check if the logged-in user is the creator or an admin in the group.
   const isAdmin =
@@ -31,7 +30,7 @@ export default function Members() {
 
   return (
     <div className='flex flex-col space-y-8 w-full'>
-      <MembersDesc isAdmin={isAdmin as boolean}  />
+      <MembersDesc isAdmin={isAdmin as boolean} />
       <MembersItems />
       <Separator className='w-full' />
       {isAdmin && <PendingInvitesMain />}

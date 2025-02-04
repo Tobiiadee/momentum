@@ -16,7 +16,7 @@ export default function MembersItems() {
   const { groupId } = useParams();
 
   const { data: group } = useQuery({
-    queryKey: [groupId],
+    queryKey: ["group", groupId],
     queryFn: async () => fetchGroup(groupId as string),
   });
 

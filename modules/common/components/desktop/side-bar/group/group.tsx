@@ -34,7 +34,7 @@ export default function Group() {
 
   useEffect(() => {
     refetchAllGroupsInTable();
-  }, [refetchAllGroupsInTable, userGroups]);
+  }, [refetchAllGroupsInTable]);
 
   if (isAllGroupsInTableError) {
     toast.error(allGroupsInTableError?.message);

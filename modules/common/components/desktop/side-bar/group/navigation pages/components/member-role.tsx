@@ -2,6 +2,12 @@ import useGroupAction from "@/hooks/use-group-action";
 import { capitalize } from "@/lib/helpers/helpers";
 import { Button } from "@/modules/common/ui/button";
 import {
+  DropdownMenuItem,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/modules/common/ui/dropdown-menu";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -9,7 +15,8 @@ import {
   SelectValue,
 } from "@/modules/common/ui/select";
 import useUserStore from "@/modules/store/user-store";
-import { X } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { EllipsisVertical } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
 
@@ -28,6 +35,8 @@ export function MembersRole({
   creator_id,
 }: MembersRoleProps) {
   const user = useUserStore((state) => state.user);
+
+  const queryClient = useQueryClient();
 
   // Fetch the group data to check the logged-in user's role.
   const { fetchedGroup, deleteMemberMutate, updateMemberRoleMutate } =
@@ -49,6 +58,10 @@ export function MembersRole({
     deleteMemberMutate({
       groupId: group_id,
       memberId: member_id,
+    });
+
+    queryClient.invalidateQueries({
+      queryKey: ["group", group_id, "members", member_id],
     });
   };
 
@@ -81,14 +94,35 @@ export function MembersRole({
         </SelectContent>
       </Select>
 
-      <Button
-        onClick={handleDeleteMember}
-        disabled={!isAdmin}
-        variant='ghost'
-        size='sm'
-        className='hover:bg-foreground/15'>
-        <X strokeWidth={1.5} size={18} />
-      </Button>
+      {isAdmin && (
+        <RemoveMember deleteMember={handleDeleteMember} isAdmin={isAdmin} />
+      )}
     </div>
+  );
+}
+
+function RemoveMember({
+  deleteMember,
+  isAdmin,
+}: {
+  deleteMember: () => void;
+  isAdmin: boolean;
+}) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          onClick={deleteMember}
+          disabled={!isAdmin}
+          variant='ghost'
+          size='sm'
+          className='hover:bg-foreground/15'>
+          <EllipsisVertical strokeWidth={1.5} size={18} />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className='mr-24'>
+        <DropdownMenuItem onClick={deleteMember}>Remove</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

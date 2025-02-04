@@ -746,6 +746,65 @@ export async function deleteUser(userId: string) {
 
     if (deleteGroupsError) throw new Error("Failed to delete groups");
 
+    //Step 5: remove user from group members
+    const { data: groups, error: fetchGroupsError } = await supabase
+    .from("groups")
+    .select("list_id, creator_id, members")
+    .or(`creator_id.eq.${userId}, members.cs.[{"member_id": "${userId}"}]`);
+  
+  if (fetchGroupsError) throw new Error("Failed to fetch groups");
+  
+  // Iterate over each group to update the database
+  for (const group of groups || []) {
+    const { list_id, creator_id, members } = group;
+  
+    // Remove the user from the members array
+    const updatedMembers = members.filter((member: any) => member.member_id !== userId);
+  
+    if (creator_id === userId) {
+      // 🚀 User is the creator - reassign if possible
+      if (updatedMembers.length > 0) {
+        // Assign the first remaining member as the new creator
+        const newCreator = updatedMembers[0].member_id;
+  
+        // Update the group in Supabase
+        const { error: updateError } = await supabase
+          .from("groups")
+          .update({ creator_id: newCreator, members: updatedMembers })
+          .eq("list_id", list_id);
+  
+        if (updateError) {
+          console.error(`Failed to update group ${list_id}:`, updateError.message);
+        } else {
+          console.log(`Group ${list_id} creator reassigned to ${newCreator}`);
+        }
+      } else {
+        // No members left - delete the group
+        const { error: deleteError } = await supabase.from("groups").delete().eq("list_id", list_id);
+        if (deleteError) {
+          console.error(`Failed to delete group ${list_id}:`, deleteError.message);
+        } else {
+          console.log(`Group ${list_id} deleted as it had no remaining members.`);
+        }
+      }
+    } else {
+      // User is just a member - update without changing creator
+      const { error: updateError } = await supabase
+        .from("groups")
+        .update({ members: updatedMembers })
+        .eq("list_id", list_id);
+  
+      if (updateError) {
+        console.error(`Failed to remove user from group ${list_id}:`, updateError.message);
+      } else {
+        console.log(`User removed from group ${list_id}.`);
+      }
+    }
+  }
+  
+  console.log("User successfully removed or reassigned from all groups.");
+  
+
     // Step 6: Delete the user's information from the database
     const { error: deleteUserError } = await supabase
       .from("users")

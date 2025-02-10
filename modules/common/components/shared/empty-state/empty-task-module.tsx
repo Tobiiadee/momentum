@@ -17,7 +17,7 @@ export default function EmptyTaskModule({
   module,
   isAdmin = true,
   text: state,
-  height = "h-[55vh]",
+  height = "h-[50vh] lg:h-[45vh]",
 }: EmptyTaskModuleProps) {
   const router = useRouter();
 
@@ -28,13 +28,13 @@ export default function EmptyTaskModule({
   };
 
   return (
-    <div className={cn(height, "grid place-items-center")}>
+    <div className={cn(height, "grid place-items-center w-full")}>
       {!!state ? (
         <Text variant={"h4"}>{state}</Text>
       ) : (
-        <div className='flex flex-col space-y-4'>
+        <div className='flex flex-col space-y-4 '>
           <div className='flex flex-col text-center'>
-            <Text variant={"h2"} className='font-normal text-center'>
+            <Text variant={"h2"} className='font-normal text-center w-full'>
               You have no task on{" "}
               {!!module && decodeURIComponent(lowerCaseModule as string)} list.
             </Text>

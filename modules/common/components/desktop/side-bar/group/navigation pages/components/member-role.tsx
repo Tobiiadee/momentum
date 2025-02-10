@@ -120,7 +120,7 @@ function RemoveMember({
           <EllipsisVertical strokeWidth={1.5} size={18} />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className='mr-24'>
+      <DropdownMenuContent className='mr-14 md:mr-24'>
         <DropdownMenuItem onClick={deleteMember}>Remove</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

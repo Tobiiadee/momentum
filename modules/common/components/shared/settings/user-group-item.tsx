@@ -13,7 +13,6 @@ import {
 } from "../../desktop/side-bar/group/group-item";
 import { cn } from "@/lib/utils";
 
-
 const groupItemVariants: Variants = {
   hidden: { x: 70, opacity: 0 },
   visible: (index: number) => ({
@@ -49,7 +48,9 @@ export default function UserGroupItem({
 
   return (
     <motion.div
-      onClick={() => router.push(`/dashboard/group/${name.toLowerCase()}`)}
+      onClick={() =>
+        router.push(`/dashboard/group/${id}?name=${name.toLowerCase()}`)
+      }
       variants={groupItemVariants}
       custom={index}
       initial='hidden'

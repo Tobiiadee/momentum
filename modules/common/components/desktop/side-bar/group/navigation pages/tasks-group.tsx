@@ -30,21 +30,6 @@ export default function TasksGroup() {
     queryFn: async () => fetchGroup(groupId as string),
   });
 
-  // const decodedGroupId = decodeURIComponent(groupId as string);
-
-  // Fetch groups
-  // const { allGroupsInTable, isLoadingAllGroupsInTable } = useGroupAction(
-  //   user?.id as string
-  // );
-
-  // Memoize the user group to avoid recalculations
-  // const userGroup = useMemo(
-  //   () =>
-  //     allGroupsInTable?.find(
-  //       (group) => group.label.toLowerCase() === decodedGroupId.toLowerCase()
-  //     ),
-  //   [allGroupsInTable, decodedGroupId]
-  // );
 
   const listId = group?.list_id;
 

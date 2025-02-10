@@ -1,4 +1,3 @@
-
 "use client";
 
 import { formatDateString } from "@/lib/helpers/format";
@@ -10,14 +9,11 @@ import Image from "next/image";
 import React from "react";
 import { MembersRole } from "./member-role";
 
-
 interface MemberItemProps extends AddMemberType {
   creator_id?: string;
   group_id?: string;
   permission?: boolean;
 }
-
-
 
 export default function MembersItem({
   created_at,
@@ -27,7 +23,6 @@ export default function MembersItem({
   creator_id,
   permission,
 }: MemberItemProps) {
-
   const { data: memberData, isPending } = useQuery({
     queryKey: ["members", member_id],
     queryFn: async () => {
@@ -36,24 +31,24 @@ export default function MembersItem({
     },
   });
 
- 
-
   return (
     <div className='grid grid-cols-2 md:grid-cols-5 gap-4 items-center pt-4'>
-      <div className='md:col-span-2 flex space-x-4 items-center'>
+      <div className='md:col-span-2 flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4 md:items-center'>
         {isPending && <MemberItemSkeleton />}
         {isPending === false && (
-          <div className='relative w-10 aspect-square rounded-full overflow-hidden'>
-            <Image
-              src={
-                (memberData?.avatar as string) ||
-                "/images/image_placeholder.jpg"
-              }
-              alt='Avatar'
-              fill
-              priority
-              className='object-cover'
-            />
+          <div>
+            <div className='relative w-10 aspect-square rounded-full overflow-hidden'>
+              <Image
+                src={
+                  (memberData?.avatar as string) ||
+                  "/images/image_placeholder.jpg"
+                }
+                alt='Avatar'
+                fill
+                priority
+                className='object-cover'
+              />
+            </div>
           </div>
         )}
 

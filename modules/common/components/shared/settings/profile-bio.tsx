@@ -13,9 +13,12 @@ export default function ProfileBio() {
       <div className='flex space-x-4 items-center'>
         <ProfilePictureSelect />
 
-        <div className='flex flex-col'>
+        <div className='flex flex-col -space-y-1'>
           <Text variant={"h3"} className='capitalize'>
             {user?.username}
+          </Text>
+          <Text variant={"p"} className='text-xs text-foreground/60'>
+            {user?.email}
           </Text>
         </div>
       </div>

@@ -95,23 +95,26 @@ function RecieverItem({
   });
 
   return (
-    <div className='grid grid-cols-2 md:grid-cols-5 gap-4 items-center pt-4'>
+    <div className='grid grid-cols-2 md:grid-cols-5 gap-4 md:items-center pt-4'>
       {isLoading ? (
         <RecieverItemSkeleton />
       ) : (
-        <div className='col-span-2 flex space-x-4 items-center'>
-          <div className='relative w-10 aspect-square rounded-full overflow-hidden'>
-            <Image
-              src={
-                (recieverData?.avatar as string) ||
-                "/images/image_placeholder.jpg"
-              }
-              alt={`${recieverData?.full_name}'s avatar`}
-              fill
-              priority
-              className='object-cover'
-            />
+        <div className='col-span-1 md:col-span-2 flex flex-col md:flex-row md:space-x-4 md:items-center'>
+          <div>
+            <div className='relative w-10 aspect-square rounded-full overflow-hidden'>
+              <Image
+                src={
+                  (recieverData?.avatar as string) ||
+                  "/images/image_placeholder.jpg"
+                }
+                alt={`${recieverData?.full_name}'s avatar`}
+                fill
+                priority
+                className='object-cover'
+              />
+            </div>
           </div>
+
           <div className=''>
             <Text variant={"p"} className='font-medium'>
               {recieverData?.full_name}
@@ -188,8 +191,8 @@ function RecieverActions({
   };
 
   return (
-    <div className='col-span-2 flex space-x-4'>
-      <div className='flex space-x-4 items-center'>
+    <div className='col-span-1 md:col-span-2 flex space-x-4 w-full justify-center'>
+      <div className='flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 md:items-center'>
         <Button
           variant={"ghost"}
           className='flex items-center bg-foreground/10 hover:bg-foreground/15'>

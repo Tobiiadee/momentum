@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Logo from "../../shared/logo/logo";
-
 import { useListStore } from "@/modules/store/list-store";
 import useGroupStore from "@/modules/store/group-store";
 import Modal from "@/modules/common/ui/modal";
@@ -27,6 +25,7 @@ import { motion, Variants } from "framer-motion";
 import { X } from "lucide-react";
 import useSidebarStore from "@/modules/store/sidebar-store";
 import AdminProfile from "../../desktop/header/admin-profile";
+import { Text } from "@/modules/common/ui/text";
 
 const slideInAnim: Variants = {
   visible: {
@@ -51,8 +50,6 @@ const slideInAnim: Variants = {
     },
   },
 };
-
-
 
 export default function SideBarMobile() {
   const router = useRouter();
@@ -141,7 +138,15 @@ export default function SideBarMobile() {
         }}
         className='fixed w-full md:w-[70%] lg:hidden flex flex-col space-y-8 h-screen min-h-screen z-50 bg-background px-4 pt-6 pb-10 shadow-md overflow-x-hidden overflow-y-auto'>
         <div className='flex items-center justify-between'>
-          <Logo />
+          <div className='flex flex-col -space-y-1'>
+            <Text variant={"h4"} className='font-semibold'>
+              {user?.username}
+            </Text>
+            <Text variant={"p"} className='text-xs text-foreground/60'>
+              {user?.email}
+            </Text>
+          </div>
+
           <Button
             onClick={() => setIsSidebarOpen(false)}
             variant={"ghost"}

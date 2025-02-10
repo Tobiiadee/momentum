@@ -10,14 +10,22 @@ interface EmptyTaskModuleProps {
   module?: string;
   text?: string;
   height?: string;
+  isAdmin?: boolean;
 }
 
 export default function EmptyTaskModule({
   module,
+  isAdmin = true,
   text: state,
-  height = "h-[60vh]",
+  height = "h-[55vh]",
 }: EmptyTaskModuleProps) {
   const router = useRouter();
+
+  const lowerCaseModule = module?.toLowerCase();
+
+  const handleAddTask = () => {
+    router.push("/dashboard/create-new-task");
+  };
 
   return (
     <div className={cn(height, "grid place-items-center")}>
@@ -25,22 +33,25 @@ export default function EmptyTaskModule({
         <Text variant={"h4"}>{state}</Text>
       ) : (
         <div className='flex flex-col space-y-4'>
-          <div className='flex flex-col'>
-            <Text variant={"h2"} className='font-normal'>
-              You have no task on {!!module && decodeURIComponent(module)} list.
+          <div className='flex flex-col text-center'>
+            <Text variant={"h2"} className='font-normal text-center'>
+              You have no task on{" "}
+              {!!module && decodeURIComponent(lowerCaseModule as string)} list.
             </Text>
             <Text variant={"h5"} className='text-center'>
               Start by adding a task to this list.
             </Text>
           </div>
-          <div className='w-full grid place-items-center'>
-            <Button
-              onClick={() => router.push("/dashboard/create-new-task")}
-              variant={"default"}
-              className='w-[40%]'>
-              Add Task
-            </Button>
-          </div>
+          {isAdmin && (
+            <div className='w-full grid place-items-center'>
+              <Button
+                onClick={handleAddTask}
+                variant={"default"}
+                className='w-[40%]'>
+                Add Task
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </div>

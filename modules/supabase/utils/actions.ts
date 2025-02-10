@@ -1,7 +1,9 @@
 /*eslint-disable @typescript-eslint/no-explicit-any */
 
 import { createClient } from "@supabase/supabase-js";
-import { deleteUserServer } from "./delete-user-server";
+import { deleteOwnAccount } from "./delete-user-server";
+// import { deleteUserServer } from "./delete-user-server";
+// import { deleteUserServer } from "./delete-user-server";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -64,7 +66,7 @@ export const fetchTasksByListId = async (listId: string): Promise<Task[]> => {
     throw new Error(error.message);
   }
 
-  return data;
+  return data || [];
 };
 
 //soft delete task
@@ -168,6 +170,19 @@ export async function createList(userId: string, list: ListType) {
     .select();
 
   return error;
+}
+
+//fetch list by id
+export async function fetchList(listId: string): Promise<ListType> {
+  const { data, error } = await supabase
+    .from("lists")
+    .select()
+    .eq("list_id", listId)
+    .single();
+
+  if (error) throw error;
+
+  return data;
 }
 
 //soft detete list
@@ -688,6 +703,12 @@ export async function deleteTaskFiles(fileUrls: string[], taskId: string) {
 // Delete user
 export async function deleteUser(userId: string) {
   try {
+    // Delete user form invite table
+    await supabase.from("invite_table").delete().eq("sender_id", userId);
+
+    // Delete user form notification table
+    await supabase.from("notification_table").delete().eq("user_id", userId);
+
     // Step 1: Fetch task IDs for storage cleanup
     const { data: taskData, error: fetchTaskError } = await supabase
       .from("tasks")
@@ -695,6 +716,63 @@ export async function deleteUser(userId: string) {
       .eq("user_id", userId);
 
     if (fetchTaskError) throw new Error("Failed to fetch task IDs");
+
+    // Step 4: Delete tasks associated with the user
+    await supabase.from("tasks").delete().eq("user_id", userId);
+
+    // Step 5: Delete lists associated with the user
+    await supabase.from("lists").delete().eq("user_id", userId);
+
+    // Step 6: Remove user from groups
+    const { data: groups, error: fetchGroupsError } = await supabase
+      .from("groups")
+      .select("list_id, creator_id, members")
+      .returns<GroupType[]>();
+
+    if (fetchGroupsError) throw new Error("Failed to fetch groups");
+
+    for (const group of groups) {
+      const { list_id, creator_id, members } = group;
+
+      // Remove the user from the members array
+      const updatedMembers = members.filter(
+        (member) => member?.member_id !== userId
+      );
+
+      if (creator_id === userId) {
+        // User is the creator - reassign or delete
+
+        const newCreator = updatedMembers[0].member_id;
+
+        const updatedMembersRoles = updatedMembers.map((member) => ({
+          member_id: member.member_id,
+          role: member.member_id === newCreator ? "Admin" : "Member",
+        }));
+
+        if (updatedMembers.length > 0) {
+          await supabase
+            .from("groups")
+            .update({
+              creator_id: newCreator,
+              members: updatedMembersRoles,
+            })
+            .eq("list_id", list_id);
+        } else {
+          await supabase.from("groups").delete().eq("list_id", list_id);
+        }
+      } else {
+        // Just a member - update group
+
+        const updatedMembers = members.filter(
+          (member) => member.member_id !== userId
+        );
+
+        await supabase
+          .from("groups")
+          .update({ members: updatedMembers })
+          .eq("list_id", list_id);
+      }
+    }
 
     const taskFilePaths =
       taskData?.map((task) => `task-files/${task.task_id}`) || [];
@@ -721,102 +799,18 @@ export async function deleteUser(userId: string) {
     if (profilePictureError)
       throw new Error("Failed to delete profile picture");
 
-    // Step 4: Delete tasks associated with the user
-    const { error: deleteTasksError } = await supabase
-      .from("tasks")
-      .delete()
-      .match({ user_id: userId });
-
-    if (deleteTasksError) throw new Error("Failed to delete tasks");
-
-    //delete user lists
-
-    const { error: deleteListsError } = await supabase
-      .from("lists")
-      .delete()
-      .match({ user_id: userId });
-
-    if (deleteListsError) throw new Error("Failed to delete lists");
-
-    // Step 5: Delete groups created by the user
-    const { error: deleteGroupsError } = await supabase
-      .from("groups")
-      .delete()
-      .match({ creator_id: userId });
-
-    if (deleteGroupsError) throw new Error("Failed to delete groups");
-
-    //Step 5: remove user from group members
-    const { data: groups, error: fetchGroupsError } = await supabase
-    .from("groups")
-    .select("list_id, creator_id, members")
-    .or(`creator_id.eq.${userId}, members.cs.[{"member_id": "${userId}"}]`);
-  
-  if (fetchGroupsError) throw new Error("Failed to fetch groups");
-  
-  // Iterate over each group to update the database
-  for (const group of groups || []) {
-    const { list_id, creator_id, members } = group;
-  
-    // Remove the user from the members array
-    const updatedMembers = members.filter((member: any) => member.member_id !== userId);
-  
-    if (creator_id === userId) {
-      // 🚀 User is the creator - reassign if possible
-      if (updatedMembers.length > 0) {
-        // Assign the first remaining member as the new creator
-        const newCreator = updatedMembers[0].member_id;
-  
-        // Update the group in Supabase
-        const { error: updateError } = await supabase
-          .from("groups")
-          .update({ creator_id: newCreator, members: updatedMembers })
-          .eq("list_id", list_id);
-  
-        if (updateError) {
-          console.error(`Failed to update group ${list_id}:`, updateError.message);
-        } else {
-          console.log(`Group ${list_id} creator reassigned to ${newCreator}`);
-        }
-      } else {
-        // No members left - delete the group
-        const { error: deleteError } = await supabase.from("groups").delete().eq("list_id", list_id);
-        if (deleteError) {
-          console.error(`Failed to delete group ${list_id}:`, deleteError.message);
-        } else {
-          console.log(`Group ${list_id} deleted as it had no remaining members.`);
-        }
-      }
-    } else {
-      // User is just a member - update without changing creator
-      const { error: updateError } = await supabase
-        .from("groups")
-        .update({ members: updatedMembers })
-        .eq("list_id", list_id);
-  
-      if (updateError) {
-        console.error(`Failed to remove user from group ${list_id}:`, updateError.message);
-      } else {
-        console.log(`User removed from group ${list_id}.`);
-      }
-    }
-  }
-  
-  console.log("User successfully removed or reassigned from all groups.");
-  
-
-    // Step 6: Delete the user's information from the database
+    // Step 7: Delete user from users table
     const { error: deleteUserError } = await supabase
       .from("users")
       .delete()
-      .match({ id: userId });
+      .eq("id", userId);
 
     if (deleteUserError) throw new Error("Failed to delete user data");
 
-    // Step 7: Delete the user from Supabase Auth
-    await deleteUserServer(userId);
+    // Step 8: Delete user from Supabase Auth
+    await deleteOwnAccount(userId);
 
-    console.log("User and all associated data deleted successfully!");
+    console.log("User deleted successfully!");
   } catch (error: any) {
     console.error("Error deleting user:", error.message);
   }

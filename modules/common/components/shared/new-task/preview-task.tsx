@@ -18,7 +18,7 @@ import { v4 as uuidv4 } from "uuid";
 export const previewVariant: Variants = {
   hidden: { scale: 0.9 },
   visible: { scale: 1, transition: { duration: 0.1 } },
-  exit: { opacity: 0, scale: 0.8 },
+  exit: { opacity: 0, scale: 0.8, transition: { duration: 0.1 } },
 };
 
 // Helper function to convert list icon to string or keep as is

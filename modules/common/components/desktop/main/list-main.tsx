@@ -4,38 +4,53 @@ import React, { useEffect } from "react";
 import DaySelector from "../../shared/day-selector";
 import SelectFilter from "../../shared/select-filter";
 import { useParams } from "next/navigation";
-import useUserStore from "@/modules/store/user-store";
 import useSortArrayStore from "@/modules/store/sort-array-store";
-import { useNewTask } from "@/hooks/use-new-task";
 import ListIdtask from "../../task/list-id-task";
+import { useQuery } from "@tanstack/react-query";
+import {
+  fetchList,
+  fetchTasksByListId,
+} from "@/modules/supabase/utils/actions";
+import { toast } from "sonner";
 
 export default function ListMain() {
   const { listId } = useParams();
 
-  const user = useUserStore((state) => state.user);
-  const {
-    refetchAllTasks,
-    isLoadingAllTasks,
-    isAllTasksError,
-    allTasks,
-    allTasksError,
-  } = useNewTask(user?.id as string);
   const setDataOnLoad = useSortArrayStore((state) => state.setSortData);
 
   const sortedTasks = useSortArrayStore((state) => state.sortData);
-  const listTasks = allTasks?.filter(
-    (task) =>
-      task.list_label.toLowerCase() === (decodeURIComponent(listId as string) as string)
-  );
 
-  // console.log(listId);
+  const {
+    data: list,
+    error: listError,
+    isLoading: isLoadingList,
+    isError: isListError,
+  } = useQuery({
+    queryKey: ["list_label", listId],
+    queryFn: () => fetchList(listId as string),
+    enabled: !!listId,
+  });
+
+  const {
+    data: tasks,
+    error: tasksError,
+    isLoading: isLoadingTasks,
+    isError: isTasksError,
+  } = useQuery({
+    queryKey: ["list", listId],
+    queryFn: () => fetchTasksByListId(listId as string),
+    enabled: !!listId,
+  });
 
   useEffect(() => {
-    refetchAllTasks();
-    if (!isLoadingAllTasks && listTasks) {
-      setDataOnLoad(listTasks);
+    if (!isLoadingTasks && tasks) {
+      setDataOnLoad(tasks);
     }
-  }, [isLoadingAllTasks]);
+  }, [isLoadingTasks, setDataOnLoad, tasks]);
+
+  if (isListError) {
+    return toast.error(listError?.message);
+  }
 
   return (
     <div className='flex flex-col space-y-4'>
@@ -50,10 +65,11 @@ export default function ListMain() {
 
       <div className='flex flex-col space-y-2 overflow-y-auto pb-14 h-[70vh] pl-2 py-2 pr-2'>
         <ListIdtask
-          task={sortedTasks ? sortedTasks : listTasks}
-          isError={isAllTasksError}
-          isLoading={isLoadingAllTasks}
-          error={allTasksError}
+          task={sortedTasks ? sortedTasks : tasks}
+          isError={isTasksError}
+          isLoading={isLoadingTasks || isLoadingList}
+          error={tasksError}
+          list_lable={list?.label}
         />
       </div>
     </div>

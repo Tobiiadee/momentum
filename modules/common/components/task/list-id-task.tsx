@@ -5,16 +5,14 @@ import TaskItem from "../shared/new-task/task-item";
 import TaskSkeleton from "../../ui/skeleton/task-skeleton";
 import EmptyTaskModule from "../shared/empty-state/empty-task-module";
 import { ComponentTaskProps } from "./work-task";
-import { useParams } from "next/navigation";
 
 export default function ListIdtask({
   task,
   isError,
   isLoading,
   error,
+  list_lable,
 }: ComponentTaskProps) {
-  const { listId } = useParams();
-
   if (isLoading) {
     return <TaskSkeleton />;
   }
@@ -36,7 +34,7 @@ export default function ListIdtask({
         ))}
       </div>
 
-      {task?.length === 0 && <EmptyTaskModule module={listId as string} />}
+      {task?.length === 0 && <EmptyTaskModule module={list_lable as string} />}
     </Accordion>
   );
 }

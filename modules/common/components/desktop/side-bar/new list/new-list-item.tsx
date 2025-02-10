@@ -57,7 +57,7 @@ export default function NewListItem({
   const setIsDeleteList = useListStore((state) => state.setIsDeleteList);
   const setDeleteObject = useListStore((state) => state.setDeleteObject);
 
-  const isActive = pathName === `/dashboard/list/${name.toLowerCase()}`;
+  const isActive = pathName === `/dashboard/list/${id}?label=${name}`;
 
   const handleDeleteList = () => {
     setIsDeleteList(true);
@@ -77,7 +77,7 @@ export default function NewListItem({
       className='relative'>
       <div
         onClick={() => {
-          router.push(`/dashboard/list/${name.toLowerCase()}`);
+          router.push(`/dashboard/list/${id}?label=${name}`);
           setIsSidebarOpen(false);
         }}
         id={id}

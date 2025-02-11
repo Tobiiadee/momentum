@@ -6,7 +6,7 @@ interface ProfileImageProps {
 
 export default function ProfileImage({ image }: ProfileImageProps) {
   return (
-    <div className='relative rounded-full w-12 lg:w-8 aspect-square flex items-center justify-center overflow-hidden'>
+    <div className='relative rounded-full w-9 lg:w-8 aspect-square flex items-center justify-center overflow-hidden'>
       <Image
         src={image || "/images/image_placeholder.jpg"}
         alt='avatar'

@@ -24,8 +24,7 @@ import NewGroup from "../../desktop/side-bar/group/new-group";
 import { motion, Variants } from "framer-motion";
 import { X } from "lucide-react";
 import useSidebarStore from "@/modules/store/sidebar-store";
-import AdminProfile from "../../desktop/header/admin-profile";
-import { Text } from "@/modules/common/ui/text";
+import AdminProfileMobile from "./admin-profile-mobile";
 
 const slideInAnim: Variants = {
   visible: {
@@ -138,14 +137,7 @@ export default function SideBarMobile() {
         }}
         className='fixed w-full md:w-[70%] lg:hidden flex flex-col space-y-8 h-screen min-h-screen z-50 bg-background px-4 pt-6 pb-10 shadow-md overflow-x-hidden overflow-y-auto'>
         <div className='flex items-center justify-between'>
-          <div className='flex flex-col -space-y-1'>
-            <Text variant={"h4"} className='font-semibold'>
-              {user?.username}
-            </Text>
-            <Text variant={"p"} className='text-xs text-foreground/60'>
-              {user?.email}
-            </Text>
-          </div>
+          <AdminProfileMobile />
 
           <Button
             onClick={() => setIsSidebarOpen(false)}
@@ -199,10 +191,6 @@ export default function SideBarMobile() {
         </div>
 
         <Group />
-
-        <div>
-          <AdminProfile />
-        </div>
       </motion.div>
       {/* <Modal onClick={() => setIsSidebarOpen(false)} className='bg-foreground/20'></Modal> */}
 

@@ -11,7 +11,9 @@ export default function GenerateAvatar({ letter, color }: GenerateAvatarProps) {
   return (
     <div
       style={{ backgroundColor: color }}
-      className={cn("rounded-full w-12 lg:w-8 aspect-square grid place-items-center")}>
+      className={cn(
+        "rounded-full w-9 lg:w-8 aspect-square grid place-items-center"
+      )}>
       <Text variant={"p"} className='font-semibold text-background'>
         {letter}
       </Text>

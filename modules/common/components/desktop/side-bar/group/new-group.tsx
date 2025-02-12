@@ -196,7 +196,7 @@ export default function NewGroup() {
           Create group
         </Button>
 
-        <div className='absolute -top-[2rem] -right-5 w-8 aspect-square shadow-md bg-background flex justify-center items-center rounded-full overflow-hidden'>
+        <div className='hidden absolute -top-[2rem] -right-5 w-8 aspect-square shadow-md bg-background md:flex justify-center items-center rounded-full overflow-hidden'>
           <Button
             onClick={() => {
               setIsGroup(false);

@@ -25,8 +25,6 @@ const variants: Variants = {
 
 export default function NewList() {
   const [listName, setListName] = useState("");
-  // const inputRef = useRef<HTMLInputElement>(null);
-  // const setIsList = useListStore((state) => state.setIsList);
   const isList = useListStore((state) => state.isList);
   const svgImage = useListStore((state) => state.svgImage);
   const reset = useListStore((state) => state.reset);
@@ -101,7 +99,7 @@ export default function NewList() {
           Create list
         </Button>
 
-        <div className='absolute -top-[2.2rem] -right-3 w-8 aspect-square shadow-md bg-background flex justify-center items-center rounded-full overflow-hidden'>
+        <div className='hidden absolute -top-[2.2rem] -right-3 w-8 aspect-square shadow-md bg-background md:flex justify-center items-center rounded-full overflow-hidden'>
           <Button
             type='button'
             onClick={() => reset()}

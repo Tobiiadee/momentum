@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useCallback } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
@@ -15,7 +15,6 @@ import { Button } from "@/modules/common/ui/button";
 import DaySelector from "@/modules/common/components/shared/day-selector";
 import SelectFilter from "@/modules/common/components/shared/select-filter";
 import GroupTask from "@/modules/common/components/task/group-task";
-
 
 export default function TasksGroup() {
   const router = useRouter();
@@ -83,9 +82,9 @@ export default function TasksGroup() {
   }, [isLoadingTasks, validTasks, setSortData]);
 
   // Refetch handler (debounced)
-  const handleAddTask = useCallback(() => {
+  const handleAddTask = () => {
     router.push(`/dashboard/create-new-task`);
-  }, []);
+  };
 
   const sortedTasks = useSortArrayStore((state) => state.sortData);
 

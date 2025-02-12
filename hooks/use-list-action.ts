@@ -37,7 +37,7 @@ export default function useListAction(userId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["all-list", userId] });
 
-      router.push("/dashboard");
+      router.push("/dashboard/all-list-group");
     },
   });
 

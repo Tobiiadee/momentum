@@ -30,7 +30,13 @@ export default function CreateAll() {
     pathname.startsWith("/dashboard/create-new-task") ||
     pathname.startsWith("/dashboard/group") ||
     pathname.startsWith("/dashboard/list") ||
-    pathname.startsWith("/dashboard/settings");
+    pathname.startsWith("/dashboard/settings") ||
+    pathname.startsWith("/dashboard/trash") ||
+    pathname.startsWith("/dashboard/achieve") ||
+    pathname.startsWith("/dashboard/personal") ||
+    pathname.startsWith("/dashboard/work") ||
+    pathname.startsWith("/dashboard/completed");
+    
   return (
     <>
       {!isExcluded && (
@@ -64,7 +70,11 @@ function CreateAllTab() {
           role='button'
           title='Create new events'
           className='w-14 aspect-square shadow-lg bg-foreground text-background rounded-full grid place-items-center'>
-          <Plus size={28} strokeWidth={1.5} className="data-[state=open]:rotate-180"/>
+          <Plus
+            size={28}
+            strokeWidth={1.5}
+            className='data-[state=open]:rotate-180'
+          />
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='ml-32'>

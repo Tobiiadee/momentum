@@ -36,7 +36,9 @@ export default function GroupTask({
         ))}
       </div>
 
-      {task?.length === 0 && <EmptyTaskModule module={group_label as string} />}
+      {!isLoading && !isGroupLoading && task?.length === 0 && (
+        <EmptyTaskModule module={group_label as string} />
+      )}
     </Accordion>
   );
 }

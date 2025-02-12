@@ -1,6 +1,11 @@
 "use client";
 
-import { AlignJustify, CalendarDays, MoveDownIcon, MoveUp } from "lucide-react";
+import {
+  ArrowDownWideNarrow,
+  CalendarDays,
+  MoveDownIcon,
+  MoveUp,
+} from "lucide-react";
 import { Button } from "../../ui/button";
 
 import {
@@ -32,8 +37,6 @@ export default function SelectFilter({ sortData }: SelectFilterProps) {
 
     // Update the query string
     router.push(`${pathName}?sort=asc`);
- 
-    
   };
   const onSortArrayByNameDesc = () => {
     if (!sortData) return;
@@ -88,7 +91,7 @@ function SelectFilterButton() {
     <Button
       variant={"ghost"}
       className='bg-background hover:bg-background/50 active:bg-background/40 shadow'>
-      <AlignJustify strokeWidth={1.5} size={20} />
+      <ArrowDownWideNarrow strokeWidth={1.5} size={20} />
     </Button>
   );
 }

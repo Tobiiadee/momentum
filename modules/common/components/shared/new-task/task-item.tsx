@@ -148,17 +148,15 @@ export default function TaskItem({
           </AccordionTrigger>
           <AccordionContent className='px-4 bg-background rounded-b-md'>
             <div className='flex items-center justify-between md:hidden'>
-              <div className='flex items-center space-x-4'>
-                {type === "group" && group?.label && (
-                  <TaskGroupTitle group_title={group?.label as string} />
-                )}
-
-                {type === "group" && !isLoadingGroup && group?.members && (
-                  <TaskGroupImg
-                    group_members={group.members as AddMemberType[]}
-                    isLoading={isLoading}
-                  />
-                )}
+              <div className='flex mhidden space-x-1 items-center bg-foreground/10 px-2 py-1 rounded-md'>
+                <CalendarDays
+                  strokeWidth={1.5}
+                  size={18}
+                  className='text-foreground/60'
+                />
+                <Text variant={"p"} className='text-foreground/60 text-xs'>
+                  {due_date}
+                </Text>
               </div>
 
               <div className='md:hidden space-x-1 items-center bg-foreground/10 px-2 py-1 rounded-md flex'>
@@ -172,6 +170,20 @@ export default function TaskItem({
                 </Text>
               </div>
             </div>
+
+            <div className='flex items-center space-x-4 md:hidden'>
+              {type === "group" && group?.label && (
+                <TaskGroupTitle group_title={group?.label as string} />
+              )}
+
+              {type === "group" && !isLoadingGroup && group?.members && (
+                <TaskGroupImg
+                  group_members={group.members as AddMemberType[]}
+                  isLoading={isLoading}
+                />
+              )}
+            </div>
+
             <div className='w-full flex items-start justify-between'>
               {!!description && (
                 <div className='flex flex-col space-y-1 mt-2 w-[60%]'>
@@ -314,7 +326,7 @@ function CollapsibleTrigger({
             {timeRange}
           </Text>
         </div>
-        <div className='flex space-x-1 items-center bg-foreground/10 px-2 py-1 rounded-md'>
+        <div className='md:flex hidden space-x-1 items-center bg-foreground/10 px-2 py-1 rounded-md'>
           <CalendarDays
             strokeWidth={1.5}
             size={18}
@@ -364,7 +376,7 @@ function MoreOptionsDropdown({
           onClick={itemOptionHandler}
           variant={"ghost"}
           size={"sm"}
-          className='text-foreground/70 bg-foreground/10 hover:bg-foreground/15 active:bg-foreground/20 py-1 px-2'>
+          className='text-foreground/70 md:bg-foreground/10 hover:bg-foreground/15 active:bg-foreground/20 py-1 px-2'>
           <EllipsisVertical strokeWidth={1.5} size={18} />
         </Button>
       </DropdownMenuTrigger>

@@ -19,7 +19,7 @@ export default function SignInPage() {
         <MoveLeft size={20} strokeWidth={1.5} />
         <Text variant={"p"}>Back</Text>
       </Button>
-      <div className='self-center flex flex-col h-full w-full space-y-6 items-center mt-32 lg:mt-0 lg:justify-center'>
+      <div className='self-center flex flex-col h-full w-full space-y-6 items-center mt-20 lg:mt-0 lg:justify-center'>
         <div className='flex flex-col space-y-4'>
           <Text variant={"h2"} className='font-normal text-center'>
             Welcome back

@@ -293,9 +293,9 @@ function CollapsibleTrigger({
 
   return (
     <div className='w-full flex justify-between items-center'>
-      <div className='flex items-center w-1/2 space-x-4 h-max'>
+      <div className='flex items-center w-full md:w-1/2 space-x-4 h-max'>
         <Checkbox onClick={(e) => e.stopPropagation()} />
-        <div className='flex items-center space-x-2'>
+        <div className='flex items-center space-x-2 w-max'>
           <Text variant={"p"} className=''>
             {title}
           </Text>

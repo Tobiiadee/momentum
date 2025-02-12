@@ -23,7 +23,7 @@ export default function CompletedTask() {
 
   useCallback(() => {
     refetchAllTasks();
-  }, []);
+  }, [refetchAllTasks]);
 
   if (isLoadingAllTasks) {
     return <TaskSkeleton />;

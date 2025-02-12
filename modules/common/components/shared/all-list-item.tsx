@@ -58,7 +58,7 @@ export function AllListItem({
       custom={index}
       className='relative bg-background rounded-md shadow-sm'>
       <div
-        onClick={() => router.push(`/dashboard/list/${name.toLowerCase()}`)}
+        onClick={() => router.push(`/dashboard/list/${id}?label=${name}`)}
         id={id}
         className={cn(
           "relative w-full flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-foreground/10 active:bg-foreground/20  transition-all duration-300 cursor-pointer overflow-hidden"

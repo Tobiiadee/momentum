@@ -140,9 +140,9 @@ export function timeAgo(timestampStr: string): string {
   } else if (days > 0) {
     return `${days} day${days > 1 ? "s" : ""} ago`;
   } else if (hours > 0) {
-    return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+    return `${hours} h${hours > 1 ? "s" : ""} ago`;
   } else if (minutes > 0) {
-    return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+    return `${minutes} min${minutes > 1 ? "s" : ""} ago`;
   } else {
     return `${deltaSeconds} second${deltaSeconds > 1 ? "s" : ""} ago`;
   }

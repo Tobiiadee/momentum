@@ -147,6 +147,31 @@ export default function TaskItem({
             />
           </AccordionTrigger>
           <AccordionContent className='px-4 bg-background rounded-b-md'>
+            <div className='flex items-center justify-between md:hidden'>
+              <div className='flex items-center space-x-4'>
+                {type === "group" && group?.label && (
+                  <TaskGroupTitle group_title={group?.label as string} />
+                )}
+
+                {type === "group" && !isLoadingGroup && group?.members && (
+                  <TaskGroupImg
+                    group_members={group.members as AddMemberType[]}
+                    isLoading={isLoading}
+                  />
+                )}
+              </div>
+
+              <div className='md:hidden space-x-1 items-center bg-foreground/10 px-2 py-1 rounded-md flex'>
+                <Clock
+                  strokeWidth={1.5}
+                  size={18}
+                  className='text-foreground/60'
+                />
+                <Text variant={"p"} className='text-foreground/60 text-xs '>
+                  {time_range}
+                </Text>
+              </div>
+            </div>
             <div className='w-full flex items-start justify-between'>
               {!!description && (
                 <div className='flex flex-col space-y-1 mt-2 w-[60%]'>
@@ -266,21 +291,26 @@ function CollapsibleTrigger({
             {convertStringToHTML({ list_icon })}
           </div>
         </div>
-        {type === "group" && group_title && (
-          <TaskGroupTitle group_title={group_title as string} />
-        )}
+        <div className='hidden md:block'>
+          {type === "group" && group_title && (
+            <TaskGroupTitle group_title={group_title as string} />
+          )}
+        </div>
       </div>
 
       <div className='flex space-x-2 items-center'>
-        {type === "group" && !isLoadingGroup && group_members && (
-          <TaskGroupImg
-            group_members={group_members as AddMemberType[]}
-            isLoading={isLoadingGroupDetails}
-          />
-        )}
-        <div className='flex space-x-1 items-center bg-foreground/10 px-2 py-1 rounded-md'>
+        <div className='hidden md:block'>
+          {type === "group" && !isLoadingGroup && group_members && (
+            <TaskGroupImg
+              group_members={group_members as AddMemberType[]}
+              isLoading={isLoadingGroupDetails}
+            />
+          )}
+        </div>
+
+        <div className='md:flex space-x-1 items-center bg-foreground/10 px-2 py-1 rounded-md hidden'>
           <Clock strokeWidth={1.5} size={18} className='text-foreground/60' />
-          <Text variant={"p"} className='text-foreground/60 text-xs'>
+          <Text variant={"p"} className='text-foreground/60 text-xs '>
             {timeRange}
           </Text>
         </div>

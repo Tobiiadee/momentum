@@ -54,7 +54,7 @@ export default function Group() {
             Group
           </Text>
           <div className='grid grid-cols-2 gap-2 w-full'>
-            {userGroups.slice(0, 2)?.map((group, index) => (
+            {userGroups.slice(0, 4)?.map((group, index) => (
               <GroupItem
                 key={group.list_id}
                 index={index}
@@ -75,7 +75,7 @@ export default function Group() {
           </div>
 
           {/* <CreateNewGroup /> */}
-          {userGroups.length > 2 && (
+          {userGroups.length > 4 && (
             <div className='flex justify-end'>
               <Button
                 variant={"link"}

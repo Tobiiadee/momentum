@@ -98,7 +98,7 @@ export default function TaskFileItem({ file_name, file_url }: TaskFileType) {
     lowerCaseFileName.endsWith(".jpeg");
 
   return (
-    <div className='relative inline-flex flex-col items-center space-y-1 flex-shrink-0 border p-2 rounded-lg shadow-sm hover:shadow-md transition-shadow'>
+    <div className='relative inline-flex flex-col items-center w-max space-y-1 flex-shrink-0 border p-2 rounded-lg shadow-sm hover:shadow-md transition-shadow'>
       {/* File Icon */}
       <div
         className={cn(

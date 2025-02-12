@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { RotateCw } from "lucide-react";
+import { Plus } from "lucide-react";
 import useGroupStore from "@/modules/store/group-store";
 import useSortArrayStore from "@/modules/store/sort-array-store";
 import useUserStore from "@/modules/store/user-store";
@@ -11,13 +11,11 @@ import {
   fetchGroup,
   fetchTasksByListId,
 } from "@/modules/supabase/utils/actions";
-
 import { Button } from "@/modules/common/ui/button";
 import DaySelector from "@/modules/common/components/shared/day-selector";
 import SelectFilter from "@/modules/common/components/shared/select-filter";
 import GroupTask from "@/modules/common/components/task/group-task";
 
-import { cn } from "@/lib/utils";
 
 export default function TasksGroup() {
   const router = useRouter();
@@ -29,7 +27,6 @@ export default function TasksGroup() {
     queryKey: [groupId],
     queryFn: async () => fetchGroup(groupId as string),
   });
-
 
   const listId = group?.list_id;
 
@@ -52,7 +49,6 @@ export default function TasksGroup() {
     isLoading: isLoadingTasks,
     isError: isTasksError,
     error: tasksError,
-    refetch: refetchTasks,
   } = useQuery({
     queryKey: ["all-tasks", listId],
     queryFn: () => fetchTasksByListId(listId as string),
@@ -87,9 +83,9 @@ export default function TasksGroup() {
   }, [isLoadingTasks, validTasks, setSortData]);
 
   // Refetch handler (debounced)
-  const handleRefetch = useCallback(() => {
-    refetchTasks();
-  }, [refetchTasks]);
+  const handleAddTask = useCallback(() => {
+    router.push(`/dashboard/create-new-task`);
+  }, []);
 
   const sortedTasks = useSortArrayStore((state) => state.sortData);
 
@@ -100,17 +96,11 @@ export default function TasksGroup() {
         <div className='flex space-x-2 items-center'>
           <Button
             variant='ghost'
-            onClick={handleRefetch}
+            onClick={handleAddTask}
             size='sm'
+            title='Add new task'
             className='bg-background hover:bg-background group'>
-            <RotateCw
-              strokeWidth={1.5}
-              size={18}
-              className={cn(
-                isLoadingTasks && "animate-spin",
-                "text-foreground/60 group-hover:text-foreground"
-              )}
-            />
+            <Plus strokeWidth={1} size={20} />
           </Button>
           <DaySelector />
           <SelectFilter />

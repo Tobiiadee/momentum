@@ -29,6 +29,8 @@ export default function MembersItems() {
 
   const permission = creator_id === user?.id;
 
+  // console.log(group);
+
   return (
     <div className='flex flex-col space-y-4'>
       <div className='flex justify-end'>

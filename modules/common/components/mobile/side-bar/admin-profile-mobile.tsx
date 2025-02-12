@@ -42,8 +42,8 @@ export default function AdminProfileMobile() {
           ) : (
             <GenerateAvatar letter={letter} color={color} />
           )}
-          <div className='flex flex-col -space-y-1'>
-            <Text variant={"h4"} className='font-semibold'>
+          <div className='flex flex-col justify-start -space-y-1'>
+            <Text variant={"h4"} className='font-semibold text-start'>
               {userData?.username}
             </Text>
             <Text variant={"p"} className='text-xs text-foreground/60'>

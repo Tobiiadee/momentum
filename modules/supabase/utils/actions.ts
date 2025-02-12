@@ -484,6 +484,15 @@ export const exitGroup = async (userId: string, groupId: string) => {
 
 export async function deleteGroup(group_id: string) {
   try {
+    //delete invites associated with the group
+    const { error: inviteError } = await supabase
+      .from("invite_table")
+      .delete()
+      .eq("group_id", group_id);
+
+    if (inviteError)
+      throw new Error(`Error deleting invites: ${inviteError.message}`);
+
     // Fetch tasks associated with the group
     const { data: tasksInGroup, error: fetchError } = await supabase
       .from("tasks")

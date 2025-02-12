@@ -17,7 +17,6 @@ export default function MobileHeader() {
       <HeaderSearch />
       <div className='flex items-center space-x-2'>
         <Notification />
-        {/* <AdminProfile /> */}
         <Hamburger />
       </div>
     </div>
@@ -25,7 +24,6 @@ export default function MobileHeader() {
 }
 
 function Hamburger() {
-  //   const isSidebarOpen = useSidebarStore((state) => state.isSidebarOpen);
   const setIsSidebarOpen = useSidebarStore((state) => state.setIsSidebarOpen);
 
   return (
@@ -33,7 +31,7 @@ function Hamburger() {
       onClick={() => setIsSidebarOpen(true)}
       variant={"ghost"}
       size={"sm"}
-      className='active:scale-80 transition-all '>
+      className='active:scale-80 transition-all'>
       <Menu size={24} strokeWidth={1} className='text-foreground' />
     </Button>
   );

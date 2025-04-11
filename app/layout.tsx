@@ -20,7 +20,6 @@ export default async function RootLayout({
   return (
     <html lang='en' suppressHydrationWarning>
       <body>
-       
         <div id='overlay'></div>
         <ClientProvider user={user}>{children}</ClientProvider>
         <Toaster />

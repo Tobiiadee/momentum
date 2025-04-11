@@ -16,6 +16,20 @@ export const fetchTasks = async (userId: string): Promise<Task[]> => {
     .from("tasks")
     .select("*")
     .eq("user_id", userId)
+    .eq("completed", false) // Exclude completed tasks
+    .eq("is_deleted", false); // Exclude soft-deleted tasks
+
+  if (error) throw error;
+
+  return data || [];
+};
+
+export const fetchCompletedTasks = async (userId: string) => {
+  const { data, error } = await supabase
+    .from("tasks")
+    .select("*")
+    .eq("user_id", userId)
+    .eq("completed", true) // Exclude completed tasks
     .eq("is_deleted", false); // Exclude soft-deleted tasks
 
   if (error) throw error;
@@ -67,6 +81,18 @@ export const fetchTasksByListId = async (listId: string): Promise<Task[]> => {
   }
 
   return data || [];
+};
+
+//set task as completed
+export const setTaskAsCompleted = async (task_id: string) => {
+  const { error } = await supabase
+    .from("tasks")
+    .update({ completed: true })
+    .eq("task_id", task_id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
 };
 
 //soft delete task

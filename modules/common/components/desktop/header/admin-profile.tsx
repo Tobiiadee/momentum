@@ -17,7 +17,7 @@ import ProfileImage from "./profile-image";
 import useUserStore from "@/modules/store/user-store";
 import GenerateAvatar from "./generate-avatar";
 import { getLetterAndDynamicColor } from "@/lib/helpers/helpers";
-import { FileStack, LogIn, LogOut, Settings, Trash2 } from "lucide-react";
+import { ClipboardList, FileStack, LogIn, LogOut, Settings, Trash2 } from "lucide-react";
 import { Text } from "@/modules/common/ui/text";
 import useSidebarStore from "@/modules/store/sidebar-store";
 
@@ -46,9 +46,19 @@ export default function AdminProfile() {
           </Text>
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className='ml-14 lg:mr-5 w-[12rem] lg:w-[10rem]'>
+      <DropdownMenuContent className='ml-14 lg:mr-5 w-[12rem]'>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onClick={() => {
+            router.push("/dashboard/incomplete-tasks");
+            setIsSidebarOpen(false);
+          }}>
+          Incomplete Tasks
+          <DropdownMenuShortcut>
+            <ClipboardList strokeWidth={1.5} size={16} />
+          </DropdownMenuShortcut>
+        </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => {
             router.push("/dashboard/achieve");

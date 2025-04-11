@@ -57,7 +57,7 @@ export default function SelectFilter({ sortData }: SelectFilterProps) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
         <SelectFilterButton />
       </DropdownMenuTrigger>
       <DropdownMenuContent className='mr-5 w-[10rem]'>
@@ -90,6 +90,7 @@ function SelectFilterButton() {
   return (
     <Button
       variant={"ghost"}
+      size='sm'
       className='bg-background hover:bg-background/50 active:bg-background/40 shadow'>
       <ArrowDownWideNarrow strokeWidth={1.5} size={20} />
     </Button>

@@ -23,6 +23,8 @@ import useListAction from "@/hooks/use-list-action";
 import { Skeleton } from "@/modules/common/ui/skeleton";
 import { Button } from "@/modules/common/ui/button";
 import { useRouter } from "next/navigation";
+import { fetchCompletedTasks } from "@/modules/supabase/utils/actions";
+import { useQuery } from "@tanstack/react-query";
 
 export default function SideBar() {
   const router = useRouter();
@@ -39,6 +41,17 @@ export default function SideBar() {
   const todaysTask = allTasks?.filter(
     (task) => formatDate(task.due_date) === today
   );
+
+  //fetch completed tasks
+  const {
+    data: completedTask,
+    // isLoading: isLoadingCompletedTasks,
+    // isError: isCompletedTasksError,
+    // error: completedTasksError,
+  } = useQuery({
+    queryKey: ["completed-task", user?.id as string],
+    queryFn: async () => fetchCompletedTasks(user?.id as string),
+  });
 
   //get user's id
   const userId = useUserStore((state) => state.user?.id);
@@ -59,7 +72,7 @@ export default function SideBar() {
     if (list.label === "home") {
       taskCount = todaysTask?.length; // Total tasks
     } else if (list.label === "completed") {
-      taskCount = allTasks?.filter((task) => task.completed === true).length;
+      taskCount = completedTask?.length;
     } else if (list.label === "personal") {
       taskCount = allTasks?.filter(
         (task) => task.list_label === "personal"

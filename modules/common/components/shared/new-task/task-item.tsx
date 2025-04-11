@@ -7,29 +7,21 @@ import {
 } from "@/modules/common/ui/accordion";
 import { useDrag } from "react-dnd";
 import { motion, Variants } from "framer-motion";
-import { Checkbox } from "../../../ui/checkbox";
 import { Text } from "../../../ui/text";
-import { CalendarDays, Clock, EllipsisVertical, Link } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/modules/common/ui/dropdown-menu";
-import { Button } from "../../../ui/button";
+import { CalendarDays, Clock } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 import TaskGroupImg from "../../task/task-group-img";
 import TaskGroupTitle from "../../task/task-group-title";
-import useNewTaskStore from "@/modules/store/new-task.store";
 import { useNewTask } from "@/hooks/use-new-task";
 import useUserStore from "@/modules/store/user-store";
 import { toast } from "sonner";
-import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { Skeleton } from "../../../ui/skeleton";
 import TaskFileItem from "./task-file-item";
 import { fetchGroup } from "@/modules/supabase/utils/actions";
-import { useQueryClient } from "@tanstack/react-query";
+import { CollapsibleTrigger } from "./collapsible-trigger";
+import { CallLink } from "./more-option-dropdown";
 // import { mergeRefs } from "react-merge-refs";
 
 const accordionVariants: Variants = {
@@ -147,6 +139,7 @@ export default function TaskItem({
             />
           </AccordionTrigger>
           <AccordionContent className='px-4 bg-background rounded-b-md'>
+            {/* mobile */}
             <div className='flex items-center justify-between md:hidden'>
               <div className='flex mhidden space-x-1 items-center bg-foreground/10 px-2 py-1 rounded-md'>
                 <CalendarDays
@@ -171,6 +164,7 @@ export default function TaskItem({
               </div>
             </div>
 
+            {/* mobile */}
             <div className='flex items-center space-x-4 md:hidden'>
               {type === "group" && group?.label && (
                 <TaskGroupTitle group_title={group?.label as string} />
@@ -235,191 +229,5 @@ export default function TaskItem({
           completed={completed}
         /> */}
     </div>
-  );
-}
-
-interface CollapsibleTriggerProps {
-  title: string;
-  timeRange: string;
-  completed: boolean;
-  category: string;
-  taskId: string;
-  list_label: string;
-  list_icon: string;
-  dueDate: string;
-  type?: "list" | "group";
-  file_url: string[];
-  group_title?: string;
-  group_members?: AddMemberType[];
-  isLoadingGroup?: boolean;
-  isLoadingGroupDetails?: boolean;
-}
-
-function CollapsibleTrigger({
-  timeRange,
-  title,
-  // completed,
-  // category, fix category instead of list
-  type,
-  taskId,
-  list_icon,
-  dueDate,
-  list_label,
-  file_url,
-  isLoadingGroup,
-  group_title,
-  group_members,
-  isLoadingGroupDetails,
-}: CollapsibleTriggerProps) {
-  // if (type === "group") fetch group members
-
-  const itemOptionHandler = (e: React.MouseEvent) => {
-    e.stopPropagation();
-  };
-
-  // console.log(group_members);
-
-  function convertStringToHTML({ list_icon }: { list_icon: string }) {
-    const htmlRegex = /<\/?[a-z][\s\S]*>/i; // Matches strings with HTML-like tags
-    if (htmlRegex.test(list_icon)) {
-      return <div dangerouslySetInnerHTML={{ __html: list_icon }} />;
-    } else
-      return (
-        <div className='relative w-6 aspect-square grid place-items-center'>
-          <Image src={list_icon} alt={list_label} fill priority />
-        </div>
-      );
-  }
-
-  return (
-    <div className='w-full flex justify-between items-center'>
-      <div className='flex items-center w-full md:w-1/2 space-x-4 h-max'>
-        <Checkbox onClick={(e) => e.stopPropagation()} />
-        <div className='flex items-center space-x-2 w-max'>
-          <Text variant={"p"} className=''>
-            {title}
-          </Text>
-          <div className='w-max h-max hidden md:grid place-items-center'>
-            {convertStringToHTML({ list_icon })}
-          </div>
-        </div>
-        <div className='hidden md:block'>
-          {type === "group" && group_title && (
-            <TaskGroupTitle group_title={group_title as string} />
-          )}
-        </div>
-      </div>
-
-      <div className='flex space-x-2 items-center'>
-        <div className='hidden md:block'>
-          {type === "group" && !isLoadingGroup && group_members && (
-            <TaskGroupImg
-              group_members={group_members as AddMemberType[]}
-              isLoading={isLoadingGroupDetails}
-            />
-          )}
-        </div>
-
-        <div className='md:flex space-x-1 items-center bg-foreground/10 px-2 py-1 rounded-md hidden'>
-          <Clock strokeWidth={1.5} size={18} className='text-foreground/60' />
-          <Text variant={"p"} className='text-foreground/60 text-xs '>
-            {timeRange}
-          </Text>
-        </div>
-        <div className='md:flex hidden space-x-1 items-center bg-foreground/10 px-2 py-1 rounded-md'>
-          <CalendarDays
-            strokeWidth={1.5}
-            size={18}
-            className='text-foreground/60'
-          />
-          <Text variant={"p"} className='text-foreground/60 text-xs'>
-            {dueDate}
-          </Text>
-        </div>
-
-        <MoreOptionsDropdown
-          taskId={taskId}
-          itemOptionHandler={itemOptionHandler}
-          file_urls={file_url}
-        />
-      </div>
-    </div>
-  );
-}
-
-function MoreOptionsDropdown({
-  itemOptionHandler,
-  taskId,
-  file_urls,
-}: {
-  itemOptionHandler: (e: React.MouseEvent) => void;
-  taskId: string;
-  file_urls: string[];
-}) {
-  const queryClient = useQueryClient();
-  const user_id = useUserStore((state) => state.user?.id);
-
-  const setIsReschedule = useNewTaskStore((state) => state.setIsReschedule);
-  const setTaskId = useNewTaskStore((state) => state.setTaskId);
-  const user = useUserStore((state) => state.user);
-  const { deleteTaskMutate, deleteTaskError, deleteTaskFileMutate } =
-    useNewTask(user?.id as string);
-
-  if (deleteTaskError) {
-    toast.error(deleteTaskError.message);
-  }
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          onClick={itemOptionHandler}
-          variant={"ghost"}
-          size={"sm"}
-          className='text-foreground/70 md:bg-foreground/10 hover:bg-foreground/15 active:bg-foreground/20 py-1 px-2'>
-          <EllipsisVertical strokeWidth={1.5} size={18} />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className='mr-14'>
-        <DropdownMenuItem
-          onClick={(e) => {
-            e.stopPropagation();
-          }}>
-          Archive
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsReschedule(true);
-            setTaskId(taskId);
-          }}>
-          Reschedule
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={(e) => {
-            e.stopPropagation();
-            deleteTaskMutate(taskId);
-            if (file_urls.length > 0) {
-              deleteTaskFileMutate({ taskId, fileUrls: file_urls });
-            }
-            queryClient.invalidateQueries({ queryKey: ["all-task", user_id] });
-          }}>
-          Delete
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
-
-function CallLink({ callLink }: { callLink: string }) {
-  return (
-    <a
-      className='grid place-items-center bg-transparent hover:bg-foreground/10 w-10 aspect-square rounded-full'
-      title='tasks call link'
-      href={callLink}
-      target='_blank'
-      rel='noreferrer'>
-      <Link size={16} strokeWidth={1.5} />
-    </a>
   );
 }

@@ -21,7 +21,7 @@ export default function MainLayout({
       
       {/* <TaskButtons /> */}
       <NewTaskClient />
-      <PreviewTaskClient />
+      {/* <PreviewTaskClient /> */}
       <EditClient />
       <TaskRescheduleClient />
       <Wrapper className='flex flex-col space-y-5'>

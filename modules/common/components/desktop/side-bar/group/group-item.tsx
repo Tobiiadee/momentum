@@ -48,7 +48,7 @@ export default function GroupItem({
   );
 
   const sliceMembers = members.slice(0, 5);
-  const remaininMembers = members.length - 5;
+  const remainingMembers = members.length - 5;
 
   // Fetch members by ID
   const { data: memberData } = useQuery({
@@ -81,15 +81,15 @@ export default function GroupItem({
       className='relative flex flex-col space-y-2 cursor-pointer group'>
       <div className='relative w-full aspect-square rounded bg-foreground/10 group-hover:bg-foreground/15 group-active:scale-95 transition-all duration-300 grid place-content-center'>
         <div className='relative grid grid-cols-3 grid-flow-dense'>
-          {memberData?.map((member) => (
+          {memberData?.map((member, index) => (
             <GroupItemImage
-              key={member.id}
+              key={member?.id + index}
               image={member?.avatar as string}
               alt={member?.username as string}
             />
           ))}
           {members.length > 5 && (
-            <GroupRemainingMembers remainingMembers={remaininMembers} />
+            <GroupRemainingMembers remainingMembers={remainingMembers} />
           )}
         </div>
       </div>

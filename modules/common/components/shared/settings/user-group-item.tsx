@@ -33,7 +33,7 @@ export default function UserGroupItem({
   const router = useRouter();
 
   const sliceMembers = members.slice(0, 3);
-  const remaininMembers = members.length - 3;
+  const remainingMembers = members.length - 3;
 
   // Fetch members by ID
   const { data: memberData } = useQuery({
@@ -59,15 +59,15 @@ export default function UserGroupItem({
       className='relative min-w-40 flex flex-col space-y-2 cursor-pointer group'>
       <div className='w-full aspect-square rounded bg-foreground/10 group-hover:bg-foreground/15 group-active:scale-95 transition-all duration-300 grid place-content-center'>
         <div className='relative grid grid-cols-4 place-items-center grid-flow-dense'>
-          {memberData?.map((member) => (
+          {memberData?.map((member, index) => (
             <GroupItemImage
-              key={member.id}
-              alt={member.username + "profile picture"}
-              image={member.avatar}
+              key={member?.id + index}
+              alt={member?.username + "profile picture"}
+              image={member?.avatar}
             />
           ))}
           {memberData && memberData?.length > 3 && (
-            <GroupRemainingMembers remainingMembers={remaininMembers} />
+            <GroupRemainingMembers remainingMembers={remainingMembers} />
           )}
         </div>
       </div>

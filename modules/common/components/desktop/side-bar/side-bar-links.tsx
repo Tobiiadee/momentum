@@ -46,7 +46,7 @@ export default function SideBarLinks({
         isActive && "bg-foreground/10"
       )}
       aria-current={isActive ? "page" : undefined}>
-      <div className='flex space-x-4 items-center'>
+      <div className='flex space-x-4 items-center text-primary'>
         {icon}
         <Text variant='p' className='text-sm font-semibold capitalize'>
           {label}

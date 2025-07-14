@@ -19,8 +19,8 @@ export default function CreateNewTask() {
   return (
     <Button
       onClick={handleTask}
-      variant={"ghost"}
-      className='w-[90%] self-center flex justify-center rounded-3xl space-x-4 bg-foreground/10 hover:bg-foreground/15 active:bg-foreground/20 transition-all duration-300 mb-4'>
+      variant={"default"}
+      className='w-[90%] self-center flex justify-center rounded-3xl space-x-4 transition-all duration-300 mb-4'>
       <div className='flex items-center space-x-2 '>
         <Plus strokeWidth={2} size={20} />
         <Text variant={"p"} className='font-medium'>

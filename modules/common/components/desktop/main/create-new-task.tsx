@@ -27,7 +27,6 @@ export default function CreateNewTask() {
   // const pathName = usePathname();
 
   // const hide = pathName === "/dashboard/create-new-task";
-  
 
   const handleKeyEvent = (e: KeyboardEvent) => {
     if (e.altKey && e.key === "n") {
@@ -52,26 +51,28 @@ export default function CreateNewTask() {
   return (
     <motion.div
       variants={NewTaskVariant}
-      initial='hidden'
-      animate='visible'
-      className='w-[30%] h-12'>
+      initial="hidden"
+      animate="visible"
+      className="w-[30%] h-12"
+    >
       <Button
         onClick={handleTask}
-        variant={"ghost"}
-        className='w-full h-full flex justify-between rounded-3xl space-x-4 bg-foreground text-background hover:text-background hover:bg-foreground/95 active:bg-foreground/90 transition-all duration-300'>
-        <div className='flex items-center space-x-2 '>
+        variant={"default"}
+        className="w-full h-full flex justify-between rounded-3xl space-x-4 bg-foreground text-background hover:text-background hover:bg-foreground/95 active:bg-foreground/90 transition-all duration-300"
+      >
+        <div className="flex items-center space-x-2 ">
           <Plus
             strokeWidth={2}
             size={20}
             className={cn(isNewTask && "rotate-45 transition")}
           />
-          <Text variant={"p"} className='font-medium'>
+          <Text variant={"p"} className="font-medium">
             Create new task
           </Text>
         </div>
 
-        <div className='flex items-center space-x-2 px-1.5 py-0.5 rounded-xl bg-background'>
-          <Text variant={"p"} className='text-xs text-foreground font-medium'>
+        <div className="flex items-center space-x-2 px-1.5 py-0.5 rounded-xl bg-background">
+          <Text variant={"p"} className="text-xs text-foreground font-medium">
             alt + N
           </Text>
         </div>

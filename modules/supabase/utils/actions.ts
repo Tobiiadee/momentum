@@ -1,7 +1,7 @@
 /*eslint-disable @typescript-eslint/no-explicit-any */
 
 import { createClient } from "@supabase/supabase-js";
-import { deleteOwnAccount } from "./delete-user-server";
+import { deleteOwnAccount, deleteUserAccount } from "./delete-user-account";
 // import { deleteUserServer } from "./delete-user-server";
 // import { deleteUserServer } from "./delete-user-server";
 
@@ -737,115 +737,118 @@ export async function deleteTaskFiles(fileUrls: string[], taskId: string) {
 
 // Delete user
 export async function deleteUser(userId: string) {
+
+  // console.log(userId)
+
   try {
-    // Delete user form invite table
-    await supabase.from("invite_table").delete().eq("sender_id", userId);
+  //   // Delete user form invite table
+  //   await supabase.from("invite_table").delete().eq("sender_id", userId);
 
-    // Delete user form notification table
-    await supabase.from("notification_table").delete().eq("user_id", userId);
+  //   // Delete user form notification table
+  //   await supabase.from("notification_table").delete().eq("user_id", userId);
 
-    // Step 1: Fetch task IDs for storage cleanup
-    const { data: taskData, error: fetchTaskError } = await supabase
-      .from("tasks")
-      .select("task_id")
-      .eq("user_id", userId);
+  //   // Step 1: Fetch task IDs for storage cleanup
+  //   const { data: taskData, error: fetchTaskError } = await supabase
+  //     .from("tasks")
+  //     .select("task_id")
+  //     .eq("user_id", userId);
 
-    if (fetchTaskError) throw new Error("Failed to fetch task IDs");
+  //   if (fetchTaskError) throw new Error("Failed to fetch task IDs");
 
-    // Step 4: Delete tasks associated with the user
-    await supabase.from("tasks").delete().eq("user_id", userId);
+  //   // Step 4: Delete tasks associated with the user
+  //   await supabase.from("tasks").delete().eq("user_id", userId);
 
-    // Step 5: Delete lists associated with the user
-    await supabase.from("lists").delete().eq("user_id", userId);
+  //   // Step 5: Delete lists associated with the user
+  //   await supabase.from("lists").delete().eq("user_id", userId);
 
-    // Step 6: Remove user from groups
-    const { data: groups, error: fetchGroupsError } = await supabase
-      .from("groups")
-      .select("list_id, creator_id, members")
-      .returns<GroupType[]>();
+  //   // Step 6: Remove user from groups
+  //   const { data: groups, error: fetchGroupsError } = await supabase
+  //     .from("groups")
+  //     .select("list_id, creator_id, members")
+  //     .returns<GroupType[]>();
 
-    if (fetchGroupsError) throw new Error("Failed to fetch groups");
+  //   if (fetchGroupsError) throw new Error("Failed to fetch groups");
 
-    for (const group of groups) {
-      const { list_id, creator_id, members } = group;
+  //   for (const group of groups) {
+  //     const { list_id, creator_id, members } = group;
 
-      // Remove the user from the members array
-      const updatedMembers = members.filter(
-        (member) => member?.member_id !== userId
-      );
+  //     // Remove the user from the members array
+  //     const updatedMembers = members.filter(
+  //       (member) => member?.member_id !== userId
+  //     );
 
-      if (creator_id === userId) {
-        // User is the creator - reassign or delete
+  //     if (creator_id === userId) {
+  //       // User is the creator - reassign or delete
 
-        const newCreator = updatedMembers[0].member_id;
+  //       const newCreator = updatedMembers[0].member_id;
 
-        const updatedMembersRoles = updatedMembers.map((member) => ({
-          member_id: member.member_id,
-          role: member.member_id === newCreator ? "Admin" : "Member",
-        }));
+  //       const updatedMembersRoles = updatedMembers.map((member) => ({
+  //         member_id: member.member_id,
+  //         role: member.member_id === newCreator ? "Admin" : "Member",
+  //       }));
 
-        if (updatedMembers.length > 0) {
-          await supabase
-            .from("groups")
-            .update({
-              creator_id: newCreator,
-              members: updatedMembersRoles,
-            })
-            .eq("list_id", list_id);
-        } else {
-          await supabase.from("groups").delete().eq("list_id", list_id);
-        }
-      } else {
-        // Just a member - update group
+  //       if (updatedMembers.length > 0) {
+  //         await supabase
+  //           .from("groups")
+  //           .update({
+  //             creator_id: newCreator,
+  //             members: updatedMembersRoles,
+  //           })
+  //           .eq("list_id", list_id);
+  //       } else {
+  //         await supabase.from("groups").delete().eq("list_id", list_id);
+  //       }
+  //     } else {
+  //       // Just a member - update group
 
-        const updatedMembers = members.filter(
-          (member) => member.member_id !== userId
-        );
+  //       const updatedMembers = members.filter(
+  //         (member) => member.member_id !== userId
+  //       );
 
-        await supabase
-          .from("groups")
-          .update({ members: updatedMembers })
-          .eq("list_id", list_id);
-      }
-    }
+  //       await supabase
+  //         .from("groups")
+  //         .update({ members: updatedMembers })
+  //         .eq("list_id", list_id);
+  //     }
+  //   }
 
-    const taskFilePaths =
-      taskData?.map((task) => `task-files/${task.task_id}`) || [];
+  //   const taskFilePaths =
+  //     taskData?.map((task) => `task-files/${task.task_id}`) || [];
 
-    // Step 2: Delete associated files in storage
-    if (taskFilePaths.length > 0) {
-      const { error: storageError } = await supabase.storage
-        .from("task-files")
-        .remove(taskFilePaths);
+  //   // Step 2: Delete associated files in storage
+  //   if (taskFilePaths.length > 0) {
+  //     const { error: storageError } = await supabase.storage
+  //       .from("task-files")
+  //       .remove(taskFilePaths);
 
-      if (
-        storageError &&
-        storageError.message !== "Some paths were not found"
-      ) {
-        throw new Error("Failed to delete task files");
-      }
-    }
+  //     if (
+  //       storageError &&
+  //       storageError.message !== "Some paths were not found"
+  //     ) {
+  //       throw new Error("Failed to delete task files");
+  //     }
+  //   }
 
-    // Step 3: Delete user profile picture
-    const { error: profilePictureError } = await supabase.storage
-      .from("user_data")
-      .remove([`profile_picture/${userId}`]);
+  //   // Step 3: Delete user profile picture
+  //   const { error: profilePictureError } = await supabase.storage
+  //     .from("user_data")
+  //     .remove([`profile_picture/${userId}`]);
 
-    if (profilePictureError)
-      throw new Error("Failed to delete profile picture");
+  //   if (profilePictureError)
+  //     throw new Error("Failed to delete profile picture");
 
-    // Step 7: Delete user from users table
-    const { error: deleteUserError } = await supabase
-      .from("users")
-      .delete()
-      .eq("id", userId);
+  //   // Step 7: Delete user from users table
+  //   const { error: deleteUserError } = await supabase
+  //     .from("users")
+  //     .delete()
+  //     .eq("id", userId);
 
-    if (deleteUserError) throw new Error("Failed to delete user data");
+  //   if (deleteUserError) throw new Error("Failed to delete user data");
 
     // Step 8: Delete user from Supabase Auth
-    await deleteOwnAccount(userId);
+    await deleteUserAccount();
 
-    console.log("User deleted successfully!");
+    // console.log("User deleted successfully!");
   } catch (error: any) {
     console.error("Error deleting user:", error.message);
   }

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { FadeInOutvariants } from "../desktop/side-bar/group/new-group";
+import { FadeInOutVariants } from "../desktop/side-bar/group/new-group";
 import TaskSaveBtn from "./task-save-btn";
 import SetTimesBtn from "./set-time-btn";
 import ListSelect from "./list-select";
@@ -20,7 +20,7 @@ export default function NewTask() {
 
   return (
     <motion.div
-      variants={FadeInOutvariants}
+      variants={FadeInOutVariants}
       initial='hidden'
       animate='visible'
       exit={"exit"}

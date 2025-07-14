@@ -50,7 +50,7 @@ export default function Group() {
       </div>
       {userGroups && userGroups.length > 0 && (
         <div className='flex flex-col space-y-4 w-full'>
-          <Text variant={"h3"} className=''>
+          <Text variant={"h3"} className='text-primary'>
             Group
           </Text>
           <div className='grid grid-cols-2 gap-2 w-full'>

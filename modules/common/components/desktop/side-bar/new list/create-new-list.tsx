@@ -28,12 +28,12 @@ export default function CreateNewList() {
     <Button
       onClick={() => setIsList(true)}
       title='ctrl + L | Create new list'
-      variant={"ghost"}
-      className='w-full self-center flex rounded-md space-x-4 bg-foreground/10 hover:bg-foreground/15 active:bg-foreground/20 transition-all duration-300'>
+      variant={"default"}
+      className='w-full self-center flex rounded-md space-x-4  transition-all duration-300'>
       <div className='flex items-center space-x-2 '>
         <Plus strokeWidth={2} size={20} />
         <Text variant={"p"} className='font-medium'>
-          New list
+          New List
         </Text>
       </div>
     </Button>

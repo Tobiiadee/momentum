@@ -95,7 +95,7 @@ export default function NewListItem({
               className='object-cover'
             />
           </div>
-          <Text variant={"p"} className='font-semibold capitalize'>
+          <Text variant={"p"} className='font-semibold capitalize text-primary'>
             {name}
           </Text>
         </div>

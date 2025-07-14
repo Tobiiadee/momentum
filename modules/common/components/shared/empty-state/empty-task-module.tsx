@@ -21,7 +21,7 @@ export default function EmptyTaskModule({
 }: EmptyTaskModuleProps) {
   const router = useRouter();
 
-  const lowerCaseModule = module?.toLowerCase();
+  // const lowerCaseModule = module?.toLowerCase();
 
   const handleAddTask = () => {
     router.push("/dashboard/create-new-task");
@@ -36,7 +36,10 @@ export default function EmptyTaskModule({
           <div className='flex flex-col text-center'>
             <Text variant={"h2"} className='font-normal text-center w-full'>
               You have no task on{" "}
-              {!!module && decodeURIComponent(lowerCaseModule as string)} list.
+              <span className="capitalize">
+                {!!module && decodeURIComponent(module as string)}
+              </span>{" "}
+              list.
             </Text>
             <Text variant={"h5"} className='text-center'>
               Start by adding a task to this list.

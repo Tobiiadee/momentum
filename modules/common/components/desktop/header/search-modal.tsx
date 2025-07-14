@@ -3,7 +3,7 @@ import { useSearchStore } from "@/modules/store/search-store";
 import Modal from "@/modules/common/ui/modal";
 import { Loader, Search, X } from "lucide-react";
 import { motion } from "framer-motion";
-import { previewVariant } from "../../shared/new-task/preview-task";
+import { previewVariant } from "../../shared/new-task/add-task";
 import useUserStore from "@/modules/store/user-store";
 import useDebounce from "@/hooks/use-debounce";
 import { useQuery } from "@tanstack/react-query";

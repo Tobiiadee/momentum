@@ -19,7 +19,7 @@ export default function TaskNumber({
         "w-6 aspect-square rounded-full bg-foreground/5 flex items-center justify-center"
       )}>
       {!isLoading && (
-        <Text variant='p' className='text-xs font-semibold text-foreground/80'>
+        <Text variant='p' className='text-xs font-semibold text-primary'>
           {numberOfTask}
         </Text>
       )}

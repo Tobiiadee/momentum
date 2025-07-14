@@ -5,13 +5,15 @@ interface ProfileImageProps {
 }
 
 export default function ProfileImage({ image }: ProfileImageProps) {
+  console.log(image);
+
   return (
-    <div className='relative rounded-full w-9 lg:w-8 aspect-square flex items-center justify-center overflow-hidden'>
+    <div className="relative rounded-full w-9 lg:w-8 aspect-square flex items-center justify-center overflow-hidden">
       <Image
         src={image || "/images/image_placeholder.jpg"}
-        alt='avatar'
+        alt="avatar"
         fill
-        className='object-cover'
+        className="object-cover"
       />
     </div>
   );

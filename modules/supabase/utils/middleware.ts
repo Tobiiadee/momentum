@@ -62,7 +62,7 @@ export async function updateSession(request: NextRequest) {
   const user = data?.user;
 
   // Debug logs for testing
-  console.log("Authenticated User:", user);
+  // console.log("Authenticated User:", user);
   console.log("Auth Error:", error);
 
   // Redirect unauthenticated users accessing /dashboard

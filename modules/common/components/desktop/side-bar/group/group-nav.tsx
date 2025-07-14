@@ -49,10 +49,10 @@ export default function GroupNav() {
             <TabsTrigger
               key={tab.value}
               value={tab.value}
-              className='relative space-x-6 data-[state=active]:bg-foreground/5 group data-[state=active]:shadow-none h-full rounded-none shadow-none'>
+              className='relative space-x-6 data-[state=active]:bg-foreground/5 data-[state=active]:text-primary group data-[state=active]:shadow-none h-full rounded-none shadow-none'>
               <Text variant='p'>{tab.name}</Text>
               <div>{tab.icon}</div>
-              <div className='absolute -left-[1.5rem] top-0 w-full h-[1.5px] bg-foreground hidden group-data-[state=active]:block'></div>
+              <div className='absolute -left-[1.5rem] top-0 w-full h-[1.5px] bg-primary hidden group-data-[state=active]:block'></div>
             </TabsTrigger>
           ))}
         </TabsList>

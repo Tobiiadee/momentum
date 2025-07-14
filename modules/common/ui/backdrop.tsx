@@ -16,7 +16,7 @@ export default function Backdrop({ onClick, className }: BackdropType) {
       onClick={onClick}
       className={cn(
         className,
-        "w-screen h-screen fixed top-0 left-0 z-50 overflow-hidden"
+        "w-screen h-screen fixed top-0 left-0 z-50 backdrop-blur-sm overflow-hidden"
       )}></motion.div>
   );
 }

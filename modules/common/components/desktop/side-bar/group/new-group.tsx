@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import { sendInvite } from "@/lib/utils/invite-response";
 import ErrorTemp from "../../../shared/error-temp";
 
-export const FadeInOutvariants: Variants = {
+export const FadeInOutVariants: Variants = {
   hidden: { y: 0, opacity: 0 },
   visible: {
     y: -10,
@@ -141,21 +141,23 @@ export default function NewGroup() {
   const isValid = members.length > 0 && groupName !== "";
 
   return (
-    <div className='fixed top-1/3 -translate-y-1/3  left-1/2 -translate-x-1/2 w-max h-max flex items-center justify-center z-50'>
+    <div className="fixed top-1/3 -translate-y-1/3  left-1/2 -translate-x-1/2 w-max h-max flex items-center justify-center z-50">
       <motion.div
-        initial='hidden'
-        animate='visible'
+        initial="hidden"
+        animate="visible"
         exit={"exit"}
-        variants={FadeInOutvariants}
-        className='h-max max-h-72 w-[20rem] md:w-[24rem] flex flex-col space-y-4 justify-between shadow-lg bg-background rounded-md px-3 py-2'>
-        <div className='flex flex-col space-y-2 overflow-hidden p-0.5'>
+        variants={FadeInOutVariants}
+        className="h-max max-h-72 w-[20rem] md:w-[24rem] flex flex-col space-y-4 justify-between shadow-lg bg-background rounded-md px-3 py-2"
+      >
+        <div className="flex flex-col space-y-2 overflow-hidden p-0.5">
           {isGroupName && (
             <motion.div
               variants={SlideInNameVariants}
-              initial='hidden'
-              animate='visible'
-              className=''>
-              <Text variant={"p"} className='text-foreground/60 capitalize'>
+              initial="hidden"
+              animate="visible"
+              className=""
+            >
+              <Text variant={"p"} className="text-foreground/60 capitalize">
                 {isGroupName}
               </Text>
             </motion.div>
@@ -164,24 +166,25 @@ export default function NewGroup() {
           {!isGroupMember ? (
             <form
               onSubmit={groupNameHandler}
-              className='w-full flex flex-col space-y-2'>
-              <div className='flex flex-col items-center space-y-1'>
+              className="w-full flex flex-col space-y-2"
+            >
+              <div className="flex flex-col items-center space-y-1">
                 <Input
                   onChange={(e) => {
                     setGroupName(e.target.value);
                   }}
                   ref={inputRef}
                   value={groupName}
-                  placeholder='Choose a group name...'
-                  className='placeholder:text-xs'
+                  placeholder="Choose a group name..."
+                  className="placeholder:text-xs"
                 />
                 {isGroupNameExist && (
-                  <ErrorTemp error='Group name already exists' />
+                  <ErrorTemp error="Group name already exists" />
                 )}
               </div>
             </form>
           ) : (
-            <AnimatePresence mode='wait'>
+            <AnimatePresence mode="wait">
               <AddMember />
             </AnimatePresence>
           )}
@@ -190,20 +193,22 @@ export default function NewGroup() {
         <Button
           isLoading={isAddingGroup}
           onClick={groupHandler}
-          variant={"default"}
+          variant={"ghost"}
           disabled={!isValid}
-          className=''>
-          Create group
+          className="full self-center w-full flex rounded-md space-x-4 bg-secondary hover:bg-secondary-hover transition-all duration-300"
+        >
+          Create Group
         </Button>
 
-        <div className='hidden absolute -top-[2rem] -right-5 w-8 aspect-square shadow-md bg-background md:flex justify-center items-center rounded-full overflow-hidden'>
+        <div className="hidden absolute -top-[2rem] -right-5 w-8 aspect-square shadow-md bg-background md:flex justify-center items-center rounded-full overflow-hidden">
           <Button
             onClick={() => {
               setIsGroup(false);
               reset();
             }}
             variant={"ghost"}
-            className=''>
+            className=""
+          >
             <X strokeWidth={1.5} size={20} />
           </Button>
         </div>

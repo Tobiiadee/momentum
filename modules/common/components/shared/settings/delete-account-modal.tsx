@@ -88,7 +88,7 @@ export default function DeleteAccountModal() {
         <div className=''>
           <Text variant={"p"} className='text-center'>
             If you&apos;re facing issues, you can{" "}
-            <Link href={"/dasboard"} className='text-blue-500'>
+            <Link href={"/dashboard"} className='text-blue-500'>
               Contact Support
             </Link>{" "}
             instead.

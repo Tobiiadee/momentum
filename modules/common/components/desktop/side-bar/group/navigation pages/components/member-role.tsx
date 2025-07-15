@@ -6,19 +6,19 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
 } from "@/modules/common/ui/dropdown-menu";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/modules/common/ui/select";
+
 import useUserStore from "@/modules/store/user-store";
 import { useQueryClient } from "@tanstack/react-query";
 import { EllipsisVertical } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
+
+import { RiAdminFill } from "react-icons/ri";
+import { IoMdPerson } from "react-icons/io";
+import { GoPersonFill } from "react-icons/go";
 
 interface MembersRoleProps {
   memberRole: string;
@@ -34,6 +34,7 @@ export function MembersRole({
   member_id,
   creator_id,
 }: MembersRoleProps) {
+  const [role, setRole] = React.useState(memberRole.toLowerCase());
   const user = useUserStore((state) => state.user);
 
   const queryClient = useQueryClient();
@@ -78,21 +79,53 @@ export function MembersRole({
     });
   };
 
+  let roleIcon;
+
+  console.log(role);
+
+  switch (role) {
+    case "admin":
+      roleIcon = <RiAdminFill size={25} className="text-primary" />;
+      break;
+    case "member":
+      roleIcon = <IoMdPerson className="text-blue-500" size={25} />;
+      break;
+    case "guest":
+      roleIcon = <GoPersonFill className="text-purple-500" size={25} />;
+      break;
+  }
+
   return (
-    <div className='flex space-x-4'>
-      <Select
-        defaultValue={memberRole.toLowerCase()}
-        disabled={!isAdmin}
-        onValueChange={handleRoleChange}>
-        <SelectTrigger className='w-[100px] md:w-[150px] border-foreground/30 text-xs'>
-          <SelectValue className='placeholder:text-xs' placeholder='Role' />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value='admin'>Admin</SelectItem>
-          <SelectItem value='member'>Member</SelectItem>
-          <SelectItem value='guest'>Guest</SelectItem>
-        </SelectContent>
-      </Select>
+    <div className="flex space-x-4 items-center">
+      <DropdownMenu>
+        <DropdownMenuTrigger
+        title={memberRole}
+          asChild
+          disabled={!isAdmin}
+          className="cursor-pointer hover:scale-105 transition-all duration-300"
+        >
+          {roleIcon}
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuRadioGroup
+            value={role}
+            onValueChange={(value) => {
+              setRole(value);
+              handleRoleChange(value);
+            }}
+          >
+            <DropdownMenuRadioItem value="admin">
+              Admin <RiAdminFill size={18} className="text-primary ml-6" />
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="member">
+              Member <IoMdPerson className="text-blue-500 ml-4" size={18} />
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="guest">
+              Guest <GoPersonFill className="text-purple-500 ml-8" size={18} />
+            </DropdownMenuRadioItem>
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       {isAdmin && (
         <RemoveMember deleteMember={handleDeleteMember} isAdmin={isAdmin} />
@@ -114,13 +147,14 @@ function RemoveMember({
         <Button
           onClick={deleteMember}
           disabled={!isAdmin}
-          variant='ghost'
-          size='sm'
-          className='hover:bg-foreground/15'>
+          variant="ghost"
+          size="sm"
+          className="hover:bg-foreground/15"
+        >
           <EllipsisVertical strokeWidth={1.5} size={18} />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className='mr-14 md:mr-24'>
+      <DropdownMenuContent className="mr-14 md:mr-24">
         <DropdownMenuItem onClick={deleteMember}>Remove</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

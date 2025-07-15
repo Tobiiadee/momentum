@@ -13,7 +13,7 @@ import useListAction from "@/hooks/use-list-action";
 import useUserStore from "@/modules/store/user-store";
 import { v4 as uuidv4 } from "uuid";
 
-const variants: Variants = {
+export const SlideUpVariants: Variants = {
   hidden: { y: 0, opacity: 0 },
   visible: {
     y: -10,
@@ -70,7 +70,7 @@ export default function NewList() {
         initial='hidden'
         animate='visible'
         exit={"exit"}
-        variants={variants}
+        variants={SlideUpVariants}
         className='w-[20rem] md:w-[24rem] h-max flex flex-col space-y-4 shadow-lg bg-background rounded-md px-3 py-4'>
         {!!svgImage && <SVGSelected />}
 

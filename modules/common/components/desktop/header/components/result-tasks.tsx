@@ -19,7 +19,7 @@ export default function ResultTasks({ task }: ResultTasksProps) {
     if (task?.type === "group") {
       router.push(`/dashboard/group/${task?.list_label}`);
     } else {
-      router.push(`/dashboard/list/${task?.list_label}`);
+      router.push(`/dashboard/list/${task?.task_id}?label=${task?.list_label}`);
     }
 
     setIsSearch(false);

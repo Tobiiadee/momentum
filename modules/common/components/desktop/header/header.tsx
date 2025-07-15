@@ -4,7 +4,7 @@ import Greeting from "./greeting";
 import Notification from "./notification";
 import HeaderSearch from "./header-search";
 
-export default function Header() {
+export default function DashboardHeader() {
   return (
     <div className='lg:flex justify-between items-start hidden'>
       <div className='flex items-start space-x-8 w-[80%]'>

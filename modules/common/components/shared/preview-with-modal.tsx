@@ -32,7 +32,7 @@ export default function PreviewWithModal({
 }: PreviewWithModalProps) {
   return (
     <Modal onClick={closeModal} className={cn(modalBackground)}>
-      <div className='fixed top-[40%] lg:top-1/2 lg:-translate-y-1/2 left-1/2 -translate-x-1/2 w-max h-max flex items-center justify-center z-50'>
+      <div className='fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-max h-max flex items-center justify-center z-50'>
         <motion.div
           variants={previewVariant}
           initial='hidden'
@@ -43,7 +43,7 @@ export default function PreviewWithModal({
             background,
             className,
             position,
-            "flex flex-col space-y-4 shadow-md absolute z-50 h-max pt-0 pb-5 rounded-lg"
+            "flex flex-col space-y-4 shadow-md absolute z-50 h-max max-h-[80vh] lg:max-h-[90vh] pt-0 pb-5 rounded-lg overflow-y-auto"
           )}>
           <div className='w-full flex justify-between items-center border-b py-1 pr-2 pl-4'>
             <Text variant={"p"} className='font-semibold capitalize'>

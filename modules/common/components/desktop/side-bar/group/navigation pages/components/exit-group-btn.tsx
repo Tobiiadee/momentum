@@ -44,10 +44,10 @@ export default function ExitGroupBtn({ group_id }: ExitGroupButtonProps) {
   };
 
   return (
-    <Button onClick={handleExitGroup} variant={"ghost"} className='text-xs'>
+    <Button title="Exit group" onClick={handleExitGroup} variant={"ghost"} className='text-xs'>
       <LogOut size={20} strokeWidth={1.5} />
       <Text variant={"p"} className='text-xs'>
-        Exit group
+        Exit Group
       </Text>
     </Button>
   );

@@ -1,13 +1,7 @@
 import { Button } from "@/modules/common/ui/button";
-import { Text } from "@/modules/common/ui/text";
+// import { Text } from "@/modules/common/ui/text";
 import { Trash2 } from "lucide-react";
 import React from "react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/modules/common/ui/tooltip";
 import useGroupAction from "@/hooks/use-group-action";
 import useUserStore from "@/modules/store/user-store";
 import { toast } from "sonner";
@@ -35,24 +29,18 @@ export default function DeleteGroupBtn({
   };
 
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            onClick={handleDeleteGroup}
-            isLoading={isDeletingGroup}
-            variant={"destructive"}
-            className='text-xs'>
-            <Trash2 size={20} strokeWidth={1.5} />
-            <Text variant={"p"} className='text-xs hidden md:block'>
-              Delete group
-            </Text>
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent className='mr-20 text-xs'>
-          <p>You must be the creator of the group to delete it.</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Button
+      onClick={handleDeleteGroup}
+      isLoading={isDeletingGroup}
+      title="Delete group"
+      variant={"ghost"}
+      size={"sm"}
+      className="text-xs hover:bg-red-300 group"
+    >
+      <Trash2 size={20} strokeWidth={1.5} className="text-red-500 group-hover:text-red-600"/>
+      {/* <Text variant={"p"} className="text-xs hidden md:block">
+        Delete group
+      </Text> */}
+    </Button>
   );
 }

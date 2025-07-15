@@ -1,4 +1,4 @@
-import Header from "@/modules/common/components/desktop/header/header";
+import DashboardHeader from "@/modules/common/components/desktop/header/header";
 import SideBar from "@/modules/common/components/desktop/side-bar/side-bar";
 import NewTaskClient from "@/modules/common/components/task/new-task-client";
 import Wrapper from "@/modules/common/components/shared/wrapper";
@@ -31,7 +31,7 @@ export default function MainLayout({
       <EditClient />
       <TaskRescheduleClient />
       <Wrapper className="flex flex-col space-y-5">
-        <Header />
+        <DashboardHeader />
         <MobileHeader />
         {children}
       </Wrapper>

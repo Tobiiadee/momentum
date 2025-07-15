@@ -47,7 +47,7 @@ export default function NewListItem({
   numberOfTask,
   isRemoving,
 }: NewListItemProps) {
-  const [deleteList, setDeletelist] = useState(false);
+  const [deleteList, setDeleteList] = useState(false);
 
   const setIsSidebarOpen = useSidebarStore((state) => state.setIsSidebarOpen);
 
@@ -68,8 +68,8 @@ export default function NewListItem({
 
   return (
     <motion.div
-      onMouseEnter={() => setDeletelist(true)}
-      onMouseLeave={() => setDeletelist(false)}
+      onMouseEnter={() => setDeleteList(true)}
+      onMouseLeave={() => setDeleteList(false)}
       variants={listItemVariants}
       initial='hidden'
       animate='visible'
@@ -99,8 +99,9 @@ export default function NewListItem({
             {name}
           </Text>
         </div>
-
+        
         <TaskNumber numberOfTask={numberOfTask} />
+
 
         {isRemoving && (
           <div className='absolute top-0 left-0 bg-foreground/10 backdrop-blur-md w-full h-full z-10 flex items-center justify-end px-4 rounde-md'>

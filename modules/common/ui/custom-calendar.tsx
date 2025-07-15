@@ -17,7 +17,7 @@ import {
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./button";
 import { Text } from "./text";
-import { dateColors } from "@/modules/constants/constants";
+import { dateColors } from "@/lib/constants/constants";
 import {
   HoverCard,
   HoverCardContent,

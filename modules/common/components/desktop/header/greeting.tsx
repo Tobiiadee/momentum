@@ -7,7 +7,7 @@ export default async function Greeting() {
   const { username, email } = await getUserData();
   return (
     <div>
-      <Text variant={"h3"} className="capitalize font-medium">
+      <Text variant={"h3"} className="capitalize font-medium text-primary">
         <span className='text-foreground/60 capitalize'>{getGreeting()}, </span>
         {username || email} 👏
       </Text>

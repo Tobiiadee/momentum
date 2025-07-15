@@ -83,7 +83,7 @@ export default function UserGroupItem({
 
       <div
         className={cn(
-          isAdmin ? "bg-green-600" : "bg-foreground/60",
+          isAdmin ? "bg-primary" : "bg-blue-500",
           "absolute left-2 w-2 aspect-square rounded-full shadow-md"
         )}></div>
     </motion.div>

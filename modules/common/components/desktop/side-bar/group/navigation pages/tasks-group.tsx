@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
+// import { Plus } from "lucide-react";
 import useGroupStore from "@/modules/store/group-store";
 import useSortArrayStore from "@/modules/store/sort-array-store";
 import useUserStore from "@/modules/store/user-store";
@@ -11,10 +11,11 @@ import {
   fetchGroup,
   fetchTasksByListId,
 } from "@/modules/supabase/utils/actions";
-import { Button } from "@/modules/common/ui/button";
+// import { Button } from "@/modules/common/ui/button";
 import DaySelector from "@/modules/common/components/shared/day-selector";
-import SelectFilter from "@/modules/common/components/shared/select-filter";
+// import SelectFilter from "@/modules/common/components/shared/select-filter";
 import GroupTask from "@/modules/common/components/task/group-task";
+import GroupDropdown from "./components/group-dropdown";
 
 export default function TasksGroup() {
   const router = useRouter();
@@ -82,32 +83,25 @@ export default function TasksGroup() {
   }, [isLoadingTasks, validTasks, setSortData]);
 
   // Refetch handler (debounced)
-  const handleAddTask = () => {
-    router.push(`/dashboard/create-new-task`);
-  };
+  // const handleAddTask = () => {
+  //   router.push(`/dashboard/create-new-task`);
+  // };
 
   const sortedTasks = useSortArrayStore((state) => state.sortData);
 
   return (
-    <div className='flex flex-col space-y-4'>
+    <div className="flex flex-col space-y-4">
       {/* Top controls */}
-      <div className='flex justify-end'>
-        <div className='flex space-x-2 items-center'>
-          <Button
-            variant='ghost'
-            onClick={handleAddTask}
-            size='sm'
-            title='Add new task'
-            className='bg-background hover:bg-background group'>
-            <Plus strokeWidth={1} size={20} />
-          </Button>
+      <div className="flex justify-end">
+        <div className="flex space-x-2 items-center">
+          <GroupDropdown />
           <DaySelector />
-          <SelectFilter />
+          {/* <SelectFilter /> */}
         </div>
       </div>
 
       {/* Group tasks */}
-      <div className='flex flex-col space-y-2'>
+      <div className="flex flex-col space-y-2">
         <GroupTask
           task={sortedTasks || validTasks}
           isError={isTasksError}

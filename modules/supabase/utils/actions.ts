@@ -1,7 +1,7 @@
 /*eslint-disable @typescript-eslint/no-explicit-any */
 
 import { createClient } from "@supabase/supabase-js";
-import { deleteOwnAccount, deleteUserAccount } from "./delete-user-account";
+import { deleteUserAccount } from "./delete-user-account";
 // import { deleteUserServer } from "./delete-user-server";
 // import { deleteUserServer } from "./delete-user-server";
 

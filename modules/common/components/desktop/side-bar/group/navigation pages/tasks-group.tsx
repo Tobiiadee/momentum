@@ -10,6 +10,7 @@ import useUserStore from "@/modules/store/user-store";
 import {
   fetchGroup,
   fetchTasksByListId,
+  isUserMemberOfGroup,
 } from "@/modules/supabase/utils/actions";
 // import { Button } from "@/modules/common/ui/button";
 import DaySelector from "@/modules/common/components/shared/day-selector";
@@ -31,14 +32,14 @@ export default function TasksGroup() {
   const listId = group?.list_id;
 
   // Check if user is a member
-  const isUserMember = useMemo(
-    () => group?.members.some((member) => member.member_id === user?.id),
-    [group, user?.id]
-  );
+  const isUserMember = useQuery({
+    queryKey: ["is-user-member", groupId],
+    queryFn: () => isUserMemberOfGroup(user?.id as string, groupId as string),
+  });
 
   // Redirect if the user is not a member
   useEffect(() => {
-    if (!isLoadingGroup && !isUserMember) {
+    if (!isLoadingGroup && !isUserMember.data) {
       router.replace("/dashboard");
     }
   }, [isLoadingGroup, isUserMember, router]);
@@ -52,7 +53,7 @@ export default function TasksGroup() {
   } = useQuery({
     queryKey: ["all-tasks", listId],
     queryFn: () => fetchTasksByListId(listId as string),
-    enabled: !!listId && isUserMember,
+    enabled: !!listId && !!isUserMember.data,
   });
 
   // Filter tasks (memoized)

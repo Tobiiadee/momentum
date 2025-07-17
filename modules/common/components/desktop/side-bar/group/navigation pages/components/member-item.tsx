@@ -23,6 +23,7 @@ export default function MembersItem({
   creator_id,
   permission,
 }: MemberItemProps) {
+  
   const { data: memberData, isPending } = useQuery({
     queryKey: ["members", member_id],
     queryFn: async () => {

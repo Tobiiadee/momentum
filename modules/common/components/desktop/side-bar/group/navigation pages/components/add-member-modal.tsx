@@ -12,7 +12,7 @@ import UpdateMembers from "./update-members";
 import { toast } from "sonner";
 import { sendInvite } from "@/lib/utils/invite-response";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchGroup } from "@/modules/supabase/utils/actions";
+import { fetchGroup, fetchMembersOfAGroup } from "@/modules/supabase/utils/actions";
 
 export default function AddMemberModal() {
   const { groupId } = useParams();
@@ -23,6 +23,12 @@ export default function AddMemberModal() {
   const { data: group } = useQuery({
     queryKey: [groupId],
     queryFn: async () => fetchGroup(groupId as string),
+  });
+
+  //fetch members of a group
+  const { data: groupMembers } = useQuery({
+    queryKey: ["members", groupId],
+    queryFn: async () => fetchMembersOfAGroup(groupId as string),
   });
 
   const queryClient = useQueryClient();
@@ -78,11 +84,11 @@ export default function AddMemberModal() {
         setGroupMembers();
       }}>
       <div className='flex flex-col space-y-4'>
-        <UpdateMembers oldMembers={group?.members as AddMemberType[]} />
+        <UpdateMembers oldMembers={groupMembers as AddMemberType[]} />
       </div>
       <Button
         isLoading={isInviting}
-        disabled={receiverIds.length === 0}
+        disabled={receiverIds.length === 0 || isInviting}
         onClick={handleMembersUpdateGroup}
         aria-label='invite members'
         className='w-full'>

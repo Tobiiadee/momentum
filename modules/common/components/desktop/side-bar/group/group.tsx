@@ -12,48 +12,49 @@ import { useRouter } from "next/navigation";
 import { capitalize } from "@/lib/helpers/helpers";
 import useSidebarStore from "@/modules/store/sidebar-store";
 
+
 export default function Group() {
   const router = useRouter();
   const user = useUserStore((state) => state.user);
 
   const setIsSidebarOpen = useSidebarStore((state) => state.setIsSidebarOpen);
 
-
   const {
-    allGroupsInTable,
-    isLoadingAllGroupsInTable,
-    isAllGroupsInTableError,
-    allGroupsInTableError,
-    refetchAllGroupsInTable,
+    allGroups,
+    isLoadingAllGroups,
+    isAllGroupsError,
+    allGroupsError,
+    refetchGroups,
   } = useGroupAction(user?.id as string);
 
+
   // Filter groups where the user is a member
-  const userGroups = allGroupsInTable?.filter((group) =>
+  const userGroups = allGroups?.filter((group) =>
     group.members.some((member) => member.member_id === user?.id)
   );
 
   useEffect(() => {
-    refetchAllGroupsInTable();
-  }, [refetchAllGroupsInTable]);
+    refetchGroups();
+  }, [refetchGroups]);
 
-  if (isAllGroupsInTableError) {
-    toast.error(allGroupsInTableError?.message);
+  if (isAllGroupsError) {
+    toast.error(allGroupsError?.message);
   }
 
   return (
     <>
-      <div className='grid grid-cols-2 gap-2 w-full'>
-        {isLoadingAllGroupsInTable &&
+      <div className="grid grid-cols-2 gap-2 w-full">
+        {isLoadingAllGroups &&
           Array.from({ length: 2 }).map((_, index) => (
             <GroupItemSkeleton key={index} />
           ))}
       </div>
       {userGroups && userGroups.length > 0 && (
-        <div className='flex flex-col space-y-4 w-full'>
-          <Text variant={"h3"} className='text-primary'>
+        <div className="flex flex-col space-y-4 w-full">
+          <Text variant={"h3"} className="text-primary">
             Group
           </Text>
-          <div className='grid grid-cols-2 gap-2 w-full'>
+          <div className="grid grid-cols-2 gap-2 w-full">
             {userGroups.slice(0, 4)?.map((group, index) => (
               <GroupItem
                 key={group.list_id}
@@ -71,18 +72,20 @@ export default function Group() {
                 }
               />
             ))}
-            {isLoadingAllGroupsInTable && <GroupItemSkeleton />}
+            {isLoadingAllGroups && <GroupItemSkeleton />}
           </div>
 
           {/* <CreateNewGroup /> */}
           {userGroups.length > 4 && (
-            <div className='flex justify-end'>
+            <div className="flex justify-end">
               <Button
                 variant={"link"}
-                onClick={() => {router.push("/dashboard/all-list-group")
+                onClick={() => {
+                  router.push("/dashboard/all-list-group");
                   setIsSidebarOpen(false);
-                }}>
-                <Text variant={"p"} className='text-xs'>
+                }}
+              >
+                <Text variant={"p"} className="text-xs">
                   View All Groups
                 </Text>
               </Button>
@@ -95,5 +98,5 @@ export default function Group() {
 }
 
 export function GroupItemSkeleton() {
-  return <Skeleton className='w-full aspect-square rounded' />;
+  return <Skeleton className="w-full aspect-square rounded" />;
 }

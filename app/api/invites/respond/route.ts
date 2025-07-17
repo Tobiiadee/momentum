@@ -1,7 +1,7 @@
 /*eslint-disable @typescript-eslint/no-explicit-any*/
 
 import {
-  addMembersToGroup,
+  addMemberToGroup,
   fetchGroup,
   fetchUser,
 } from "@/modules/supabase/utils/actions";
@@ -44,13 +44,7 @@ export async function POST(req: Request) {
 
     if (status === "accepted") {
       // Add user to the group
-      const newMember: AddMemberType = {
-        member_id: invite.reciever_id,
-        role: "Member",
-        created_at: new Date().toISOString(),
-      };
-
-      await addMembersToGroup(invite.group_id, [newMember]);
+      await addMemberToGroup(invite.group_id, invite.reciever_id, "Member");
 
       //remove notification from table
       const { error: removeError } = await supabaseAdmin

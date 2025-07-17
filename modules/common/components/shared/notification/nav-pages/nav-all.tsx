@@ -40,7 +40,7 @@ export default function NavAll() {
   );
 
   // Invite response
-  const inviteResposneNotifications = sortByCreatedAt(
+  const inviteResponseNotifications = sortByCreatedAt(
     notifications?.filter(
       (notification) => notification.type === "invite_response"
     ) || []
@@ -104,7 +104,7 @@ export default function NavAll() {
           group_label={notification.group_label}
         />
       ))}
-      {inviteResposneNotifications.map((notification, index) => (
+      {inviteResponseNotifications.map((notification, index) => (
         <GroupInviteUserResponseNotification
           created_at={notification.created_at}
           key={index}

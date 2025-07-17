@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { RiAdminFill } from "react-icons/ri";
 import { IoMdPerson } from "react-icons/io";
 import { GoPersonFill } from "react-icons/go";
+import { cn } from "@/lib/utils";
 
 interface MembersRoleProps {
   memberRole: string;
@@ -34,10 +35,11 @@ export function MembersRole({
   member_id,
   creator_id,
 }: MembersRoleProps) {
-  const [role, setRole] = React.useState(memberRole.toLowerCase());
+  const [role, setRole] = React.useState(memberRole || "");
   const user = useUserStore((state) => state.user);
 
   const queryClient = useQueryClient();
+
 
   // Fetch the group data to check the logged-in user's role.
   const { fetchedGroup, deleteMemberMutate, updateMemberRoleMutate } =
@@ -74,14 +76,13 @@ export function MembersRole({
     updateMemberRoleMutate({
       groupId: group_id,
       memberId: member_id,
-      newRole: capitalize(newRole) as GroupRoleType,
-      userId: user?.id as string,
+      newRole: capitalize(newRole) as "admin" | "member" | "guest",
     });
   };
 
   let roleIcon;
 
-  console.log(role);
+  // console.log(role);
 
   switch (role) {
     case "admin":
@@ -99,10 +100,13 @@ export function MembersRole({
     <div className="flex space-x-4 items-center">
       <DropdownMenu>
         <DropdownMenuTrigger
-        title={memberRole}
+          title={memberRole}
           asChild
           disabled={!isAdmin}
-          className="cursor-pointer hover:scale-105 transition-all duration-300"
+          className={cn(
+            isAdmin ? "cursor-pointer" : "cursor-not-allowed mr-8",
+            " hover:scale-105 transition-all duration-300"
+          )}
         >
           {roleIcon}
         </DropdownMenuTrigger>

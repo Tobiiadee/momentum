@@ -238,9 +238,43 @@ export async function createGroup(userId: string, group: GroupType) {
     throw new Error("No user ID found");
   }
 
-  const { error } = await supabase.from("groups").insert([group]).select();
+  //Insert group into groups table
+  const { error } = await supabase
+    .from("groups")
+    .insert([
+      {
+        list_id: group.list_id,
+        label: group.label,
+        creator_id: userId,
+        type: group.type,
+      },
+    ])
+    .select();
 
-  return error;
+  //Insert group creator into group_members table
+  const { error: memberError } = await supabase
+    .from("group_members")
+    .insert([{ group_id: group.list_id, member_id: userId, role: "admin" }])
+    .select();
+
+  return error || memberError;
+}
+
+//Add member to group_members table
+
+export async function addMemberToGroup(
+  groupId: string,
+  memberId: string,
+  role: string
+) {
+  const { error } = await supabase
+    .from("group_members")
+    .insert([{ group_id: groupId, member_id: memberId, role: role }])
+    .select();
+
+  if (error) throw error;
+
+  return `Successfully added ${memberId} to the group.`;
 }
 
 //update group data
@@ -281,6 +315,43 @@ export async function fetchGroups(userId: string): Promise<GroupType[]> {
   return data || [];
 }
 
+//Fetch groups where user is a member
+
+export async function groupsUserIsMember(userId: string): Promise<GroupType[]> {
+  //fetch the group ids where the user is a member
+  const { data: memberDetails, error: memberDetailsError } = await supabase
+    .from("group_members")
+    .select("group_id, member_id, role, created_at")
+    .eq("member_id", userId);
+
+  if (memberDetailsError) throw memberDetailsError;
+
+  //fetch the groups where the user is a member using the group_ids
+  const { data: groups, error: groupsError } = await supabase
+    .from("groups")
+    .select("list_id, label, creator_id, created_at, type")
+    .in(
+      "list_id",
+      memberDetails.map((group) => group.group_id)
+    );
+
+  if (groupsError) throw groupsError;
+
+  //Reconstruct the group object to include group members
+  const reconstructedGroups = groups.map((group) => ({
+    ...group,
+    members: memberDetails.filter((member) => {
+      return {
+        member_id: member.member_id,
+        role: member.role,
+        created_at: member.created_at,
+      };
+    }),
+  }));
+
+  return reconstructedGroups || [];
+}
+
 export async function fetchAllGroups(): Promise<GroupType[] | null> {
   const { data, error } = await supabase.from("groups").select("*");
 
@@ -313,48 +384,56 @@ export async function addMembersToGroup(
     throw new Error("No members provided to add to the group.");
   }
 
-  // Fetch the existing group
-  const { data: group, error: fetchError } = await supabase
-    .from("groups")
-    .select("members")
-    .eq("list_id", groupId)
-    .single();
+  const membersToAdd = newMembers.map((member) => ({
+    group_id: groupId,
+    member_id: member.member_id,
+    role: member.role,
+  }));
 
-  if (fetchError) {
-    throw new Error(`Error fetching group: ${fetchError.message}`);
-  }
+  //Insert new members into group_members table
+  const { error: memberError } = await supabase
+    .from("group_members")
+    .insert(membersToAdd)
+    .select();
 
-  if (!group) {
-    throw new Error(`Group with ID ${groupId} not found.`);
-  }
-
-  const existingMembers: AddMemberType[] = group.members || [];
-
-  // Filter out members that are already in the group
-  const membersToAdd = newMembers.filter(
-    (newMember) =>
-      !existingMembers.some(
-        (member) => member.member_id === newMember.member_id
-      )
-  );
-
-  if (membersToAdd.length === 0) {
-    return "All provided members are already in the group.";
-  }
-
-  // Update the group's members array with new members
-  const updatedMembers = [...existingMembers, ...membersToAdd];
-
-  const { error: updateError } = await supabase
-    .from("groups")
-    .update({ members: updatedMembers })
-    .eq("list_id", groupId);
-
-  if (updateError) {
-    throw new Error(`Error updating group members: ${updateError.message}`);
+  if (memberError) {
+    throw new Error(
+      `Error adding members to the group: ${memberError.message}`
+    );
   }
 
   return `Successfully added ${membersToAdd.length} members to the group.`;
+}
+
+//Check if user is a member of a group
+export async function isUserMemberOfGroup(userId: string, groupId: string) {
+  const { data, error } = await supabase
+    .from("group_members")
+    .select("*")
+    .eq("member_id", userId)
+    .eq("group_id", groupId);
+
+  if (error) throw error;
+
+  if (data.length > 0) {
+    return true;
+  }
+
+  return false;
+}
+
+//Fetch members of a group
+export async function fetchMembersOfAGroup(
+  groupId: string
+): Promise<AddMemberType[]> {
+  const { data, error } = await supabase
+    .from("group_members")
+    .select("*")
+    .eq("group_id", groupId);
+
+  if (error) throw error;
+
+  return data || [];
 }
 
 //Delete member from group
@@ -409,67 +488,25 @@ export async function deleteMemberFromGroup(
 export interface UpdateRoleType {
   groupId: string;
   memberId: string;
-  newRole: "Admin" | "Member" | "Guest";
-  userId: string; // The ID of the user making the request
+  newRole: "admin" | "member" | "guest";
+  userId?: string; // The ID of the user making the request
 }
 
 //update member role
+export async function updateMemberRole(
+  groupId: string,
+  memberId: string,
+  newRole: "Admin" | "Member" | "Guest"
+) {
+  const { error } = await supabase
+    .from("group_members")
+    .update({ role: newRole })
+    .eq("group_id", groupId)
+    .eq("member_id", memberId);
 
-export async function updateMemberRole({
-  groupId,
-  memberId,
-  newRole,
-  userId,
-}: UpdateRoleType): Promise<{ success: boolean; message: string }> {
-  try {
-    // Fetch the group data to check permissions
-    const { data: groupData, error: groupError } = await supabase
-      .from("groups")
-      .select("creator_id, members")
-      .eq("list_id", groupId)
-      .single();
+  if (error) throw error;
 
-    if (groupError) {
-      throw new Error("Failed to fetch group data.");
-    }
-
-    const { creator_id, members } = groupData;
-
-    // Check if the user is either the creator or an admin
-    const isAuthorized =
-      userId === creator_id ||
-      members.some(
-        (member: { member_id: string; role: string }) =>
-          member.member_id === userId && member.role === "Admin"
-      );
-
-    if (!isAuthorized) {
-      return {
-        success: false,
-        message: "You are not authorized to update roles.",
-      };
-    }
-
-    // Update the member's role in the members array
-    const updatedMembers = members.map(
-      (member: { member_id: string; role: string }) =>
-        member.member_id === memberId ? { ...member, role: newRole } : member
-    );
-
-    // Update the group in the database
-    const { error: updateError } = await supabase
-      .from("groups")
-      .update({ members: updatedMembers })
-      .eq("list_id", groupId);
-
-    if (updateError) {
-      throw new Error("Failed to update member role.");
-    }
-
-    return { success: true, message: "Member role updated successfully." };
-  } catch (error) {
-    return { success: false, message: (error as Error).message };
-  }
+  return `Successfully updated ${memberId} role to ${newRole} in group ${groupId}.`;
 }
 
 //user exit from group

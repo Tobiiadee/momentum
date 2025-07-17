@@ -5,7 +5,7 @@ import {
   deleteMemberFromGroup,
   fetchAllGroups,
   fetchGroup,
-  fetchGroups,
+  groupsUserIsMember,
   updateGroup,
   updateMemberRole,
   UpdateRoleType,
@@ -29,7 +29,7 @@ export default function useGroupAction(userId: string, group_id?: string) {
     queryKey: ["all-groups", userId],
     queryFn: async () => {
       if (!userId) throw new Error("User ID is required");
-      return fetchGroups(userId);
+      return groupsUserIsMember(userId);
     },
     enabled: !!userId,
   });
@@ -119,8 +119,8 @@ export default function useGroupAction(userId: string, group_id?: string) {
     error: updateMemberRoleError,
     isSuccess: isUpdateMemberRoleSuccess,
   } = useMutation({
-    mutationFn: ({ groupId, memberId, newRole, userId }: UpdateRoleType) =>
-      updateMemberRole({ groupId, memberId, newRole, userId }),
+    mutationFn: ({ groupId, memberId, newRole }: UpdateRoleType) =>
+      updateMemberRole(groupId, memberId, newRole),
     onSuccess: (data, variables) => {
       const { newRole } = variables;
       queryClient.invalidateQueries({ queryKey: ["all-groups", userId] });

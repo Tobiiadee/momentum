@@ -100,6 +100,7 @@ export default function NewGroup() {
 
   const groupHandler = async () => {
     const group_id = uuidv4();
+    
     const group: GroupType = {
       list_id: group_id,
       label: groupName.trim(),

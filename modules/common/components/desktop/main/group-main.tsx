@@ -21,7 +21,7 @@ export default function GroupMain() {
   });
 
   return (
-    <div className='relative flex flex-col space-y-4 h-max max-h-screen'>
+  <div className='relative flex flex-col space-y-4 h-max max-h-screen'>
       <div className='flex flex-col space-y-4'>
         <Text variant={"h4"} className='capitalize text-primary'>
           {group?.label}

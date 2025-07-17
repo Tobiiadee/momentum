@@ -14,6 +14,7 @@ interface MembersDescProps {
 export default function MembersDesc({ isAdmin }: MembersDescProps) {
   const setIsAddMember = useGroupStore((state) => state.setIsAddMember);
 
+
   return (
     <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:justify-between md:items-center">
       <div className="flex flex-col space-y-2">
